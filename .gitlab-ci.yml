@@ -1,0 +1,14 @@
+variables:
+    GIT_SUBMODULE_STRATEGY: recursive
+
+compile_pdf:
+    image: texlive/texlive
+    before_script:
+        - apt install qpdf -y
+    script:
+        - latexmk -lualatex paper.tex
+        - qpdf --linearize paper.pdf paper.pdf
+    after_script:
+    artifacts:
+        paths:
+        - paper.pdf

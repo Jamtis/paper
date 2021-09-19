@@ -1,0 +1,80 @@
+\def\mode{final}
+\let\ifsubmission\iftrue
+\let\ifeprint\iffalse
+
+\makeatletter
+\@ifundefined{mode}{
+    \def\mode{draft}
+}{
+}
+\makeatother
+
+\documentclass[\mode]{llncs}
+
+\input{config/packages}
+\input{config/config}
+\input{config/macros}
+\input{custom_config/macros}
+
+\def\eprinttitle{title}
+\def\submissiontitle{title}
+
+\ifeprint
+    \title{\resizebox{\textwidth}{!}{\eprinttitle}}
+    \subtitle{\small{\submissiontitle}}
+\else
+    \title{\submissiontitle}
+    \subtitle{\small{\eprinttitle}}
+\fi
+
+%\titlerunning{Abbreviated paper title}
+\ifsubmission
+\else
+    \author{
+        author\inst{1}
+        %\and
+        %author2\inst{2}
+    }
+    \authorrunning{author et al.}
+    \institute{
+        institute
+        %\email{}
+    }
+    %\date{\today}
+    %\tocauthor{\relax}
+    %\toctitle{\relax}
+
+    % hyper setup
+    \hypersetup{
+        linktoc=all,
+        pdfauthor={author et al.},
+        pdftitle={\submissiontitle},
+        pdfsubject={},
+        pdfkeywords={}
+    }
+\fi
+
+\addbibresource{cryptobib/abbrev3.bib}
+\addbibresource{cryptobib/crypto.bib}
+\addbibresource{references.bib}
+
+\begin{document}
+
+\mymaketitle
+
+\begin{abstract}
+    \import{sections/abstract}
+    \keywords{
+        keyword1
+        \and
+        keyword2
+    }
+\end{abstract}
+
+%\ifdraft{draft}{}
+%\ifllncspaper{lncs}{}
+\mytoc
+\setcounter{footnote}{0}
+\input{sections/content}
+
+\end{document}

@@ -1,0 +1,8 @@
+[submodule "cryptobib"]
+	path = cryptobib
+	url = https://github.com/cryptobib/export
+	shallow = true
+[submodule "config"]
+	path = config
+	url = https://github.com/Jamtis/config.git
+	shallow = true
