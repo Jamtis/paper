@@ -101,7 +101,7 @@
         "args": [
           "--linearize",
           "%DOC%.pdf",
-          "%DOC%.lin.pdf"
+          "%DOC%.pdf"
         ],
         "command": "qpdf",
         "env": {},
