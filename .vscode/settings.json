@@ -12,16 +12,16 @@
     "latex-workshop.latex.recipe.default": "lastUsed",
     "latex-workshop.latex.recipes": [
       {
+        "name": "lualatexmk",
+        "tools": [
+          "lualatexmk"
+        ]
+      },
+      {
         "name": "lualatexmk ➞ lin",
         "tools": [
           "lualatexmk",
           "qpdf"
-        ]
-      },
-      {
-        "name": "lualatexmk",
-        "tools": [
-          "lualatexmk"
         ]
       },
       {
