@@ -1,143 +1,183 @@
 {
-    "debug.onTaskErrors": "showErrors",
-    "editor.minimap.enabled": false,
-    "editor.suggestSelection": "first",
-    "editor.wordWrap": "on",
-    "explorer.confirmDelete": false,
-    "explorer.confirmDragAndDrop": false,
-    "extensions.ignoreRecommendations": true,
-    "git.ignoreLimitWarning": true,
-    "git.ignoreMissingGitWarning": true,
-    "latex-workshop.intellisense.citation.maxfilesizeMB": 100,
-    "latex-workshop.latex.recipe.default": "lastUsed",
-    "latex-workshop.latex.recipes": [
-      {
-        "name": "lualatexmk ➞ lin",
-        "tools": [
-          "lualatexmk",
-          "qpdf"
-        ]
-      },
-      {
-        "name": "lualatexmk",
-        "tools": [
-          "lualatexmk"
-        ]
-      },
-      {
-        "name": "latexmk",
-        "tools": [
-          "latexmk"
-        ]
-      },
-      {
-        "name": "lualatex",
-        "tools": [
-          "lualatex"
-        ]
-      },
-      {
-        "name": "linearize",
-        "tools": [
-          "qpdf"
-        ]
-      },
-      {
-        "name": "pdflatex ➞ bibtex ➞ pdflatex × 2",
-        "tools": [
-          "pdflatex",
-          "bibtex",
-          "pdflatex",
-          "pdflatex"
-        ]
-      },
-      {
-        "name": "lua+bibtex+lua",
-        "tools": [
-          "lualatex",
-          "bibtex",
-          "lualatex"
-        ]
-      }
-    ],
-    "latex-workshop.latex.tools": [
-      {
-        "args": [
-          "-synctex=1",
-          "-interaction=nonstopmode",
-          "-file-line-error",
-          "-pdf",
-          "-outdir=%OUTDIR%",
-          "%DOC%"
-        ],
-        "command": "latexmk",
-        "env": {},
-        "name": "latexmk"
-      },
-      {
-        "args": [
-          "-synctex=1",
-          "-interaction=nonstopmode",
-          "-file-line-error",
-          "%DOC%"
-        ],
-        "command": "lualatex",
-        "name": "lualatex"
-      },
-      {
-        "args": [
-          "-synctex=1",
-          "-interaction=nonstopmode",
-          "-file-line-error",
-          "-lualatex",
-          "-outdir=%OUTDIR%",
-          "%DOC%"
-        ],
-        "command": "latexmk",
-        "env": {},
-        "name": "lualatexmk"
-      },
-      {
-        "args": [
-          "--linearize",
-          "%DOC%.pdf",
-          "%DOC%.pdf"
-        ],
-        "command": "qpdf",
-        "env": {},
-        "name": "qpdf"
-      },
-      {
-        "args": [
-          "-synctex=1",
-          "-interaction=nonstopmode",
-          "-file-line-error",
-          "%DOC%"
-        ],
-        "command": "pdflatex",
-        "env": {},
-        "name": "pdflatex"
-      },
-      {
-        "args": [
-          "%DOCFILE%"
-        ],
-        "command": "bibtex",
-        "env": {},
-        "name": "bibtex"
-      }
-    ],
-    "latex-workshop.latex.watch.interval": 1500,
-    "latex-workshop.latex.watch.usePolling": true,
-    "latex-workshop.message.error.show": false,
-    "latex-workshop.synctex.afterBuild.enabled": true,
-    "latex-workshop.view.pdf.internal.synctex.keybinding": "double-click",
-    "latex-workshop.view.pdf.viewer": "tab",
-    "latex-workshop.view.pdf.zoom": "page-width",
-    "telemetry.enableCrashReporter": false,
-    "terminal.integrated.defaultProfile.linux": "bash",
-    "terminal.integrated.defaultProfile.windows": "Git Bash",
-    "terminal.integrated.tabs.enabled": true,
-    "workbench.startupEditor": "none",
-    "latex-workshop.view.pdf.spreadMode": 1
-  }
+  "debug.onTaskErrors": "showErrors",
+  "editor.minimap.enabled": false,
+  "editor.renderControlCharacters": true,
+  "editor.renderWhitespace": "boundary",
+  "editor.suggestSelection": "first",
+  "editor.wordWrap": "on",
+  "explorer.confirmDelete": false,
+  "explorer.confirmDragAndDrop": false,
+  "explorer.sortOrderLexicographicOptions": "unicode",
+  "extensions.ignoreRecommendations": true,
+  "files.eol": "\n",
+  "files.exclude": {
+    "**/.classpath": true,
+    "**/.DS_Store": false,
+    "**/.factorypath": true,
+    "**/.hg": false,
+    "**/.project": true,
+    "**/.settings": true,
+    "**/.svn": false,
+    "**/*.aux": true,
+    "**/*.bbl": true,
+    "**/*.bcf": true,
+    "**/*.blg": true,
+    "**/*.fdb_latexmk": true,
+    "**/*.fls": true,
+    "**/*.nav": true,
+    "**/*.out": true,
+    "**/*.run.xml": true,
+    "**/*.settings": true,
+    "**/*.snm": true,
+    "**/*.synctex.gz": true,
+    "**/*.synctex(busy)": true,
+    "**/*.toc": true,
+    "**/*.upa": true,
+    "**/*.upb": true,
+    "**/CVS": false
+  },
+  "git.ignoreLimitWarning": true,
+  "git.ignoreMissingGitWarning": true,
+  "latex-workshop.intellisense.citation.backend": "biblatex",
+  "latex-workshop.bibtex.maxFileSize": 100,
+  "latex-workshop.latex.autoBuild.cleanAndRetry.enabled": false,
+  "latex-workshop.latex.autoBuild.interval": 3000,
+  "latex-workshop.latex.clean.command": "lualatexmk",
+  "latex-workshop.latex.clean.subfolder.enabled": true,
+  "latex-workshop.latex.recipe.default": "lastUsed",
+  "latex-workshop.latex.recipes": [
+    {
+      "name": "lualatexmk",
+      "tools": [
+        "lualatexmk"
+      ]
+    },
+    {
+      "name": "lualatexmk ➞ lin",
+      "tools": [
+        "lualatexmk",
+        "qpdf"
+      ]
+    },
+    {
+      "name": "latexmk",
+      "tools": [
+        "latexmk"
+      ]
+    }
+  ],
+  "latex-workshop.latex.tools": [
+    {
+      "args": [
+        "-synctex=1",
+        "-interaction=nonstopmode",
+        "-file-line-error",
+        "-pdf",
+        "-outdir=%OUTDIR%",
+        "%DOC%"
+      ],
+      "command": "latexmk",
+      "env": {},
+      "name": "latexmk"
+    },
+    {
+      "args": [
+        "-synctex=1",
+        "-interaction=nonstopmode",
+        "-file-line-error",
+        "%DOC%"
+      ],
+      "command": "lualatex",
+      "name": "lualatex"
+    },
+    {
+      "args": [
+        "-synctex=1",
+        "-interaction=nonstopmode",
+        "-file-line-error",
+        "-lualatex",
+        "-outdir=%OUTDIR%",
+        "%DOC%"
+      ],
+      "command": "latexmk",
+      "env": {},
+      "name": "lualatexmk"
+    },
+    {
+      "args": [
+        "--linearize",
+        "%DOC%.pdf",
+        "%DOC%.pdf"
+      ],
+      "command": "qpdf",
+      "env": {},
+      "name": "qpdf"
+    },
+    {
+      "args": [
+        "-synctex=1",
+        "-interaction=nonstopmode",
+        "-file-line-error",
+        "%DOC%"
+      ],
+      "command": "pdflatex",
+      "env": {},
+      "name": "pdflatex"
+    },
+    {
+      "args": [
+        "%DOCFILE%"
+      ],
+      "command": "bibtex",
+      "env": {},
+      "name": "bibtex"
+    }
+  ],
+  "latex-workshop.latex.watch.interval": 1500,
+  "latex-workshop.latex.watch.usePolling": true,
+  "latex-workshop.linting.chktex.exec.args": [
+    "-wall",
+    "-n22",
+    "-n30",
+    "-e16",
+    "-q",
+    "-n1",
+    "-n11",
+    "-n27",
+    "-n41",
+    "-n43",
+    "-n9",
+    "-n21",
+    "-n8",
+    "-n26",
+    "-n14"
+  ],
+  "latex-workshop.message.error.show": false,
+  "latex-workshop.synctex.afterBuild.enabled": true,
+  "latex-workshop.view.pdf.internal.synctex.keybinding": "double-click",
+  "latex-workshop.view.pdf.invert": 0.95,
+  "latex-workshop.view.pdf.invertMode.brightness": 1.7,
+  "latex-workshop.view.pdf.invertMode.enabled": "never",
+  "latex-workshop.view.pdf.invertMode.sepia": 0.2,
+  "latex-workshop.view.pdf.spreadMode": 1,
+  "latex-workshop.view.pdf.tab.openDelay": 0,
+  "latex-workshop.view.pdf.trim": 0,
+  "latex-workshop.view.pdf.viewer": "tab",
+  "latex-workshop.view.pdf.zoom": "page-width",
+  "remote.SSH.remotePlatform": {
+    "192.168.188.41": "linux",
+    "foc.ethz.ch": "linux"
+  },
+  "security.workspace.trust.untrustedFiles": "newWindow",
+  "telemetry.telemetryLevel": "off",
+  "terminal.integrated.defaultLocation": "editor",
+  "terminal.integrated.defaultProfile.linux": "bash",
+  "terminal.integrated.defaultProfile.windows": "Git Bash",
+  "terminal.integrated.enableMultiLinePasteWarning": false,
+  "terminal.integrated.tabs.enabled": true,
+  "workbench.editorAssociations": {
+    "*.html": "default",
+    "*.xlsx": "default"
+  },
+  "workbench.startupEditor": "none"
+}
