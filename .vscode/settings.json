@@ -11,9 +11,6 @@
   "extensions.ignoreRecommendations": true,
   "files.eol": "\n",
   "files.exclude": {
-    "**/.classpath": true,
-    "**/.DS_Store": false,
-    "**/.factorypath": true,
     "**/.hg": false,
     "**/.project": true,
     "**/.settings": true,
@@ -133,8 +130,6 @@
       "name": "bibtex"
     }
   ],
-  "latex-workshop.latex.watch.interval": 1500,
-  "latex-workshop.latex.watch.usePolling": true,
   "latex-workshop.linting.chktex.exec.args": [
     "-wall",
     "-n22",
@@ -155,29 +150,13 @@
   "latex-workshop.message.error.show": false,
   "latex-workshop.synctex.afterBuild.enabled": true,
   "latex-workshop.view.pdf.internal.synctex.keybinding": "double-click",
-  "latex-workshop.view.pdf.invert": 0.95,
-  "latex-workshop.view.pdf.invertMode.brightness": 1.7,
-  "latex-workshop.view.pdf.invertMode.enabled": "never",
-  "latex-workshop.view.pdf.invertMode.sepia": 0.2,
-  "latex-workshop.view.pdf.spreadMode": 1,
-  "latex-workshop.view.pdf.tab.openDelay": 0,
   "latex-workshop.view.pdf.trim": 0,
   "latex-workshop.view.pdf.viewer": "tab",
   "latex-workshop.view.pdf.zoom": "page-width",
-  "remote.SSH.remotePlatform": {
-    "192.168.188.41": "linux",
-    "foc.ethz.ch": "linux"
-  },
-  "security.workspace.trust.untrustedFiles": "newWindow",
   "telemetry.telemetryLevel": "off",
   "terminal.integrated.defaultLocation": "editor",
   "terminal.integrated.defaultProfile.linux": "bash",
   "terminal.integrated.defaultProfile.windows": "Git Bash",
   "terminal.integrated.enableMultiLinePasteWarning": false,
   "terminal.integrated.tabs.enabled": true,
-  "workbench.editorAssociations": {
-    "*.html": "default",
-    "*.xlsx": "default"
-  },
-  "workbench.startupEditor": "none"
 }
