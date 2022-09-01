@@ -64,18 +64,18 @@
 
 \mymaketitle
 
-\begin{abstract}
-    \input{sections/abstract}
-    \keywords{
-        keyword1
-        \and
-        keyword2
-    }
-\end{abstract}
+\ifdraft{
+    \begin{abstract}
+        \input{sections/abstract}
+        \keywords{
+            keyword1
+            \and
+            keyword2
+        }
+    \end{abstract}
 
-%\ifdraft{draft}{}
-%\ifllncspaper{lncs}{}
-\mytoc
+    \mytoc
+}{}
 \setcounter{footnote}{0}
  
 \input{sections/introduction}
