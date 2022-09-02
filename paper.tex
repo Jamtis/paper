@@ -1,32 +1,33 @@
-\def\mode{final}
-\let\ifsubmission\iftrue
+%\def\mode{final}
+\let\ifsubmission\iffalse
 \let\ifeprint\iffalse
 
 \makeatletter
 \@ifundefined{mode}{
     \def\mode{draft}
+    \def\class{article}
 }{
+    \def\class{llncs}
 }
 \makeatother
 
-\documentclass[\mode]{llncs}
+\documentclass[\mode]{\class}
 
 \input{config/packages}
 \input{config/config}
 \input{config/macros}
 \input{custom_config/macros}
 
-\def\eprinttitle{title}
-\def\submissiontitle{title}
+\def\eprinttitle{eprint title}
+\def\submissiontitle{submission title}
 
 \ifeprint
     \title{\resizebox{\textwidth}{!}{\eprinttitle}}
     \subtitle{\small{\submissiontitle}}
 \else
     \title{\submissiontitle}
-    \subtitle{\small{\eprinttitle}}
+    %\subtitle{\small{\eprinttitle}}
 \fi
-
 %\titlerunning{Abbreviated paper title}
 \ifsubmission
     \author{\vspace*{-1cm}}
@@ -48,9 +49,6 @@
             %\email{}
         }
     }
-    %\date{\today}
-    %\tocauthor{\relax}
-    %\toctitle{\relax}
 
     % hyper setup
     \hypersetup{
@@ -68,22 +66,24 @@
 
 \begin{document}
 
-\mymaketitle
+\ifdraft{
+    \maketitle
+}{
+    \mymaketitle
 
-\begin{abstract}
-    \input{sections/abstract}
-    \keywords{
-        keyword1
-        \and
-        keyword2
-    }
-\end{abstract}
+    \begin{abstract}
+        \input{sections/abstract}
+        \keywords{
+            keyword1
+            \and
+            keyword2
+        }
+    \end{abstract}
 
-%\ifdraft{draft}{}
-%\ifllncspaper{lncs}{}
-\mytoc
+    \mytoc
+}{}
 \setcounter{footnote}{0}
- 
+
 \input{sections/introduction}
 \input{sections/contribution}
 \input{sections/prelims}
