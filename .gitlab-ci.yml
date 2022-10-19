@@ -7,8 +7,7 @@ compile_pdf:
         - apt install qpdf -y
     script:
         - latexmk -lualatex paper.tex
-        - qpdf --linearize paper.pdf paper.pdf
-    after_script:
+        - qpdf --linearize paper.pdf paper.lin.pdf
     artifacts:
         paths:
         - paper.pdf
