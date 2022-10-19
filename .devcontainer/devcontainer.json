@@ -4,7 +4,7 @@
 	"name": "texlive",
 	"image": "texlive/texlive:latest",
 	"extensions": ["james-yu.latex-workshop"],
-	"runArgs": ["--memory=1g"],
+	"runArgs": ["--memory=5g"],
 	"postCreateCommand": "bash .devcontainer/update.sh",
 	"postAttachCommand": "bash .devcontainer/update.sh"
 }
