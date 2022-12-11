@@ -1,3 +1,31 @@
 % !TEX root = ../paper.tex
 \section{Technical Overview}
 \label{sec:overview}
+
+\begin{itemize}
+    \item \(\Gen\parr{1^\secpar} \mapsto \parr{\pk,\sk}\):
+    the public and secret key are defined as \(\pk \coloneqq \parr{N, g_0, ..., g_d, X}\) and \(\sk \coloneqq \parr{N, g_0, ..., g_d, \alpha}\).
+    
+    \item \(\Enc\parr{\pk} \mapsto \parr{C,K}\):
+    sample \(r \gets \pars{\parr{N-1}/4}\),
+    set \(R \coloneqq g_0^{r z}\),
+    set \(T \coloneqq g_0^{r 2^{\ell_{\mathsf{T}}}}\),
+    set \(K \coloneqq \operatorname{BBS}_N\parr{T}\),
+    set \(t \coloneqq \operatorname{T}\parr{R}\),
+    set \(S \coloneqq \abs{\parr{\prod_{i=0}^d g_i^{t^i} X}^r}\),
+    and set \(C \coloneqq \parr{R,S}\).
+
+    \item \(\Dec\parr{\sk,C} \mapsto K\):
+    let \(\parr{R,S} \coloneqq C\),
+    set \(t \coloneqq \operatorname{T}\parr{R}\),
+    compute \(a\) and \(b\) s.t.\ \(2^c = a \Gamma\parr{t} + b z = \gcd\parr{\Gamma\parr{t}, z}\),
+    set \(T \coloneqq \parr{S^a \cdot R^{b - a \alpha}}^{2^{\ell_{\mathsf{T}}-c}}\),
+    and set \(K \coloneqq \operatorname{BBS}_N\parr{T}\).
+
+    \item \(\Punct\parr{\sk,C'_1,...,C'_d} \mapsto \sk'\):
+    set \(v_i \coloneqq \operatorname{dlog}\parr{g_i}\),
+    let \(V\parr{Z} \coloneqq \sum_{i=0}^d v_i Z^i\),
+    set \(\delta \coloneqq \sum_{i=1}^d V\parr{t'_i}\),
+    set \(\beta \coloneqq \alpha - \delta/z\),
+    set \(\sk' \coloneqq \parr{\beta, \delta}\).
+\end{itemize}
