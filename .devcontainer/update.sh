@@ -1,6 +1,6 @@
 apt update
 apt install qpdf -y
-rm /var/lib/dpkg/info usrmerge.*
+rm /var/lib/dpkg/info/usrmerge.*
 apt -y upgrade
 apt -y autoclean
 apt -y autoremove
