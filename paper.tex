@@ -1,60 +1,37 @@
-%\def\mode{final}
-\let\ifsubmission\iffalse
-\let\ifeprint\iffalse
+{\let\iffullversion\iftrue}
 
-\makeatletter
-\@ifundefined{mode}{
-    \def\mode{draft}
-    \def\class{article}
-}{
-    \def\class{llncs}
-}
-\makeatother
+\input{config/conditionals}
 
-\documentclass[\mode]{\class}
+\documentclass[draft]{\class}
 
 \input{config/packages}
 \input{config/config}
 \input{config/macros}
 \input{custom_config/macros}
 
-\def\eprinttitle{eprint title}
-\def\submissiontitle{submission title}
+\title{Paper title}
 
-\ifeprint
-    \title{\resizebox{\textwidth}{!}{\eprinttitle}}
-    \subtitle{\small{\submissiontitle}}
-\else
-    \title{\submissiontitle}
-    %\subtitle{\small{\eprinttitle}}
-\fi
 %\titlerunning{Abbreviated paper title}
-\ifsubmission
+\ifanonymous
     \author{\vspace*{-1cm}}
     \institute{\vspace*{-1cm}}
 \else
-    \ifdraft{
-        \author{
-            author
-        }
-    }{
-        \author{
-            author\inst{1}
-            %\and
-            %author2\inst{2}
-        }
-        \authorrunning{author et al.}
-        \institute{
-            institute
-            %\email{}
-        }
+    \author{
+        author%\inst{1}
+        %\and
+        %author2\inst{2}
     }
+    %\authorrunning{author et al.}
+    %\institute{
+        %institute
+        %\email{}
+    %}
 
     % hyper setup
     \hypersetup{
         linktoc=all,
-        pdfauthor={author et al.},
-        pdftitle={\submissiontitle},
+        pdfauthor={author},
+        pdftitle={title},
         pdfsubject={},
         pdfkeywords={}
     }
@@ -66,23 +43,24 @@
 
 \begin{document}
 
-\ifdraft{
+\iffullversion{
     \maketitle
 }{
     \mymaketitle
 
     \begin{abstract}
         \input{sections/abstract}
-        \keywords{
-            keyword1
-            \and
-            keyword2
-        }
+        %\keywords{
+        %    keyword1
+        %    \and
+        %    keyword2
+        %}
     \end{abstract}
 
     \mytoc
 }{}
 \setcounter{footnote}{0}
+
 
 \input{sections/introduction}
 \input{sections/contribution}

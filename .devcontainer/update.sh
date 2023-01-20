@@ -1,7 +1,8 @@
+git submodule update --init --recursive
 apt update
 apt install qpdf -y
-rm /var/lib/dpkg/info/usrmerge.*
+cd /var/lib/dpkg/info
+rm usrmerge.*
 apt -y upgrade
 apt -y autoclean
 apt -y autoremove
-git submodule update --init --recursive
