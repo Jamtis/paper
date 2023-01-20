@@ -1,4 +1,4 @@
-{\let\iffullversion\iftrue}
+\let\iffullversion\iftrue
 
 \input{config/conditionals}
 
@@ -11,21 +11,19 @@
 
 \title{Paper title}
 
-%\titlerunning{Abbreviated paper title}
 \ifanonymous
     \author{\vspace*{-1cm}}
     \institute{\vspace*{-1cm}}
 \else
     \author{
-        author%\inst{1}
+        author\inst{1}
         %\and
         %author2\inst{2}
     }
-    %\authorrunning{author et al.}
-    %\institute{
-        %institute
-        %\email{}
-    %}
+    \institute{
+         institute
+         \email{author@email.org}
+    }
 
     % hyper setup
     \hypersetup{
@@ -43,22 +41,22 @@
 
 \begin{document}
 
-\iffullversion{
+\iffullversion
     \maketitle
-}{
+\else
     \mymaketitle
 
     \begin{abstract}
         \input{sections/abstract}
-        %\keywords{
-        %    keyword1
-        %    \and
-        %    keyword2
-        %}
+        \keywords{
+            keyword1
+            \and
+            keyword2
+        }
     \end{abstract}
 
     \mytoc
-}{}
+\fi
 \setcounter{footnote}{0}
 
 
