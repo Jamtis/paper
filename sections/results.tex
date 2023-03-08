@@ -29,3 +29,64 @@
     set \(\beta \coloneqq \alpha - \delta/z\),
     set \(\sk' \coloneqq \parr{\beta, \delta}\).
 \end{itemize}
+
+
+\subsection{Randomness-Puncturable PKE}
+
+A randomness-puncturable PKE \(\mathsf{PKE} \coloneqq \parr{\Gen, \Enc_0, \Enc_1, \Dec, \Punct}\) fulfills the following properties:
+\begin{sitemize}
+    \item \(\Gen\parr{1^\secpar}\) outputs a key pair \(\parr{\pk,\sk} \gets \Gen\parr{1^\secpar}\).
+    \item \(\Enc\parr{\pk,m;r}\) outputs a two-part ciphertext \(c \coloneqq \parr{c_0,c_1}\).
+    \item \(\Dec\parr{\sk,c}\) decrypts the ciphertext \(c\).
+    \item \(\Punct\parr{\sk,c_0}\) outputs a punctured secret-key \(\sk'\pars{c_0}\) on the first part of a ciphertext \(c_0\) s.t.\ \(\sk'\pars{c_0}\) is unable to decrypt any ciphertext that has \(c_0\) as the first part.
+    \item Correctness:
+    \(\forall \parr{\pk,\sk} \in \Gen\ \forall m,r : \Dec\parr{\sk,c}\) where \(c \coloneqq \parr{\Enc_0\parr{\pk;r},\Enc_1\parr{\pk,m;r}}\).
+    \item Correctness of punctured secret-key:
+    \(\forall \parr{\pk,\sk} \in \Gen\ \forall c',m,r : c \neq c' \implies \Dec\parr{\sk'\pars{c'},c} = m\) where \(c \coloneqq \parr{\Enc_0\parr{\pk;r},\Enc_1\parr{\pk,m;r}}\) and \(\sk'\pars{c'} \gets \Punct\parr{\sk,c'}\).
+    \item IND-pKL security:
+    any PPT distinguisher \(\D = \parr{\D_1,\D_2}\) has negligible advantage, i.e., \(\abs{\Pr{\mathsf{EXP}^0_\D\parr{\secpar} = 0} - \Pr{\mathsf{EXP}^1_\D\parr{\secpar} = 0}} \leq \negl\parr{\secpar}\) where \(\mathsf{EXP}^b_\D\) is the following experiment:
+    \begin{sitemize}
+        \item sample \(\parr{\pk,\sk} \gets \Gen\parr{1^\secpar}\),
+        \item sample \(r^* = \parr{r^*_0,r^*_1} \gets \bit^{2\secpar}\),
+        \item sample \(b \gets \bit\),
+        \item set \(\parr{m_0,m_1,\sigma} \gets \D_1\parr{1^\secpar,\pk}\),
+        \item set \(c_0^* \coloneqq \Enc_0\parr{\pk;r^*_0}\),
+        \item set \(\sk\pars{c^*_0} \coloneqq \Punct\parr{\sk,c_0^*}\),
+        \item set \(c_1^* \coloneqq \Enc_1\parr{\pk,m_b;r^*_1}\),
+        \item set \(b' \gets \D_2\parr{\sigma,\parr{c^*_0,c^*_1},\sk\pars{c^*_0}}\),
+        \item output \(b = b'\).
+    \end{sitemize}
+\end{sitemize}
+
+\subsection{pKDM-CPA secure PKE}
+
+A randomness-puncturable PKE is pKDM-pKL secure iff any PPT distinguisher \(\D\) has negligible advantage, i.e., \(\abs{\Pr{\mathsf{EXP}^0_\D\parr{\secpar} = 0} - \Pr{\mathsf{EXP}^1_\D\parr{\secpar} = 0}} \leq \negl\parr{\secpar}\) where \(\mathsf{EXP}^b_\D\) is the following experiment:
+\begin{sitemize}
+    \item sample \(\parr{\pk,\sk} \gets \Gen\parr{1^\secpar}\),
+    \item sample \(r^* = \parr{r^*_0,r^*_1} \gets \bit^{2\secpar}\),
+    \item sample \(b \gets \bit\),
+    \item set \(c_0^* \coloneqq \Enc_0\parr{\pk;r^*_0}\),
+    \item set \(\sk\pars{c^*_0} \coloneqq \Punct\parr{\sk,c_0^*}\),
+    \item set \(m_0 \coloneqq 0\) and \(m_1 \coloneqq \sk\pars{c^*_0}\),
+    \item set \(c_1^* \coloneqq \Enc_1\parr{\pk,m_b;r^*_1}\),
+    \item set \(b' \gets \D\parr{\parr{c^*_0,c^*_1},\sk\pars{c^*_0}}\),
+    \item output \(b = b'\).
+\end{sitemize}
+
+Construction:
+
+\begin{sitemize}
+    \item \(\Gen_{\mathsf{KDM}}\parr{1^\secpar}\):
+    output \(\parr{\pk',\sk'} \gets \Gen'\parr{1^\secpar}\).
+
+    \item \(\Enc_{\mathsf{KDM}}\parr{\pk,m;r}\):
+    parse \(\parr{r_0,r_1} \coloneqq r\),
+    sample \(\parr{\pk_{\mathsf{PKE}},\sk_{\mathsf{PKE}}} \gets \Gen_{\mathsf{PKE}}\parr{1^\secpar}\),
+    set \(c_0 \gets \Enc_{\mathsf{PKE}}\parr{\pk',\sk_{\mathsf{PKE}};r_0}\),
+    set \(c_1 \gets \Enc_{\mathsf{PKE}}\parr{\pk_{\mathsf{PKE}},m;r_1}\),
+    output \(c \coloneqq \parr{c_0,c_1}\).
+
+    \item \(\Dec_{\mathsf{KDM}}\parr{\sk,c}\):
+    decrypt \(\sk_{\mathsf{PKE}} \gets \Dec'\parr{\sk',c_0}\),
+    output \(m \gets \Dec_{\mathsf{PKE}}\parr{\sk_{\mathsf{PKE}},c_1}\).
+\end{sitemize}
