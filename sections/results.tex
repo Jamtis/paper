@@ -1,3 +1,174 @@
 % !TEX root = ../paper.tex
 \section{Technical Overview}
 \label{sec:overview}
+
+\begin{sitemize}
+    \item \(\Gen\parr{1^\secpar} \mapsto \parr{\pk,\sk}\):
+    the public and secret key are defined as \(\pk \coloneqq \parr{N, g_0, ..., g_d, X}\) and \(\sk \coloneqq \parr{N, g_0, ..., g_d, \alpha}\).
+    
+    \item \(\Enc\parr{\pk} \mapsto \parr{C,K}\):
+    sample \(r \gets \pars{\parr{N-1}/4}\),
+    set \(R \coloneqq g_0^{r z}\),
+    set \(T \coloneqq g_0^{r 2^{\ell_{\mathsf{T}}}}\),
+    set \(K \coloneqq \operatorname{BBS}_N\parr{T}\),
+    set \(t \coloneqq \operatorname{T}\parr{R}\),
+    set \(S \coloneqq \abs{\parr{\prod_{i=0}^d g_i^{t^i} X}^r}\),
+    and set \(C \coloneqq \parr{R,S}\).
+
+    \item \(\Dec\parr{\sk,C} \mapsto K\):
+    let \(\parr{R,S} \coloneqq C\),
+    set \(t \coloneqq \operatorname{T}\parr{R}\),
+    compute \(a\) and \(b\) s.t.\ \(2^c = a \Gamma\parr{t} + b z = \gcd\parr{\Gamma\parr{t}, z}\),
+    set \(T \coloneqq \parr{S^a \cdot R^{b - a \alpha}}^{2^{\ell_{\mathsf{T}}-c}}\),
+    and set \(K \coloneqq \operatorname{BBS}_N\parr{T}\).
+
+    \item \(\Punct\parr{\sk,C'_1,...,C'_d} \mapsto \sk'\):
+    set \(v_i \coloneqq \operatorname{dlog}\parr{g_i}\),
+    let \(V\parr{Z} \coloneqq \sum_{i=0}^d v_i Z^i\),
+    set \(\delta \coloneqq \sum_{i=1}^d V\parr{t'_i}\),
+    set \(\beta \coloneqq \alpha - \delta/z\),
+    set \(\sk' \coloneqq \parr{\beta, \delta}\).
+\end{sitemize}
+
+
+\subsection{Partially-Puncturable PKE}
+
+\begin{definition}[Partially-Puncturable PKE]
+    A partially-puncturable PKE (ppPKE) \(\PKE \coloneqq \parr{\Gen, \Enc_0, \Enc_1, \Dec, \Punct}\) fulfills the following properties:
+    \begin{sitemize}
+        \item \(\Gen\parr{1^\secpar}\) outputs a key pair \(\parr{\pk,\sk} \gets \Gen\parr{1^\secpar}\).
+        \item \(\Enc\parr{\pk,m;r}\) outputs a two-part ciphertext \(c \coloneqq \parr{c_0,c_1}\).
+        \item \(\Dec\parr{\sk,c}\) decrypts the ciphertext \(c\).
+        \item \(\Punct\parr{\sk,c_0}\) outputs a secret-key \(\sk\pars{c_0}\) that is punctured on the first part of a ciphertext \(c_0\) s.t.\ \(\sk\pars{c_0}\) is unable to decrypt any ciphertext that has \(c_0\) as the first part.
+        \item Correctness:
+        \(\forall \parr{\pk,\sk} \in \Gen\ \forall m,r : \Dec\parr{\sk,\parr{c_0,c_1}}\) where \(c_0 \coloneqq \Enc_0\parr{\pk;r}\) and \(c_1 \coloneqq \Enc_1\parr{\pk,m;r}\).
+        \item Correctness of punctured secret-key:
+        \(\forall \parr{\pk,\sk} \in \Gen\ \forall c'_0,m,r : c_0 \neq c'_0 \implies \Dec\parr{\sk\pars{c'_0},\parr{c_0,c_1}} = m\) where \(c_0 \coloneqq \Enc_0\parr{\pk;r}\) and \(c_1 \coloneqq \Enc_1\parr{\pk,m;r}\) and \(\sk\pars{c'_0} \gets \Punct\parr{\sk,c'_0}\).
+    \end{sitemize}
+\end{definition}
+
+\begin{definition}[IND-pKL security]
+    A ppPKE is IND-pKL secure iff any PPT distinguisher \(\D = \parr{\D_1,\D_2}\) has negligible advantage, i.e., \(\abs{\Pr{\mathsf{EXP}^0_\D\parr{\secpar} = 0} - \Pr{\mathsf{EXP}^1_\D\parr{\secpar} = 0}} \leq \negl\parr{\secpar}\) where \(\mathsf{EXP}^b_\D\) is the following experiment:
+    \begin{sitemize}
+        \item sample \(\parr{\pk,\sk} \gets \Gen\parr{1^\secpar}\),
+        \item sample \(r^* \gets \bit^\secpar\),
+        \item sample \(b \gets \bit\),
+        \item set \(\parr{m_0,m_1,\sigma} \gets \D_1\parr{1^\secpar,\pk}\),
+        \item set \(c_0^* \coloneqq \Enc_0\parr{\pk;r^*}\),
+        \item set \(\sk\pars{c^*_0} \coloneqq \Punct\parr{\sk,c_0^*}\),
+        \item set \(c_1^* \coloneqq \Enc_1\parr{\pk,m_b;r^*}\),
+        \item set \(b' \gets \D_2\parr{\sigma,\parr{c^*_0,c^*_1},\sk\pars{c^*_0}}\),
+        \item output \(b = b'\).
+    \end{sitemize}
+\end{definition}
+
+
+\subsection{pKDM-pKL security}
+
+\begin{definition}[pKDM-pKL security]
+    A ppPKE is pKDM-pKL secure iff any PPT distinguisher \(\D\) has negligible advantage, i.e., \(\abs{\Pr{\mathsf{EXP}^0_\D\parr{\secpar} = 0} - \Pr{\mathsf{EXP}^1_\D\parr{\secpar} = 0}} \leq \negl\parr{\secpar}\) where \(\mathsf{EXP}^b_\D\) is the following experiment:
+    \begin{sitemize}
+        \item sample \(\parr{\pk,\sk} \gets \Gen\parr{1^\secpar}\),
+        \item sample \(r^* \gets \bit^\secpar\),
+        \item sample \(b \gets \bit\),
+        \item set \(c_0^* \coloneqq \Enc_0\parr{\pk;r^*}\),
+        \item set \(\sk\pars{c^*_0} \coloneqq \Punct\parr{\sk,c_0^*}\),
+        \item set \(m_0 \coloneqq 0\) and \(m_1 \coloneqq \sk\pars{c^*_0}\),
+        \item set \(c_1^* \coloneqq \Enc_1\parr{\pk,m_b;r^*}\),
+        \item set \(b' \gets \D\parr{1^\secpar,\pk,\parr{c^*_0,c^*_1},\sk\pars{c^*_0}}\),
+        \item output \(b = b'\).
+    \end{sitemize}
+\end{definition}
+
+\begin{lemma}
+    Let \(\PKE \coloneqq \parr{\Gen, \Enc, \Dec}\) be a IND-CPA secure PKE scheme.
+    Let \(\PKE' \coloneqq \parr{\Gen', \Enc'_0, \Enc'_1, \Dec', \Punct'}\) be a ppPKE.
+    Then there exists a pKDM-pKL secure ppPKE \(\overline{\PKE} \coloneqq \parr{\overline{\Gen}, \overline{\Enc}_0, \overline{\Enc}_1, \overline{\Dec}, \overline{\Punct}}\).
+\end{lemma}
+
+\begin{proof}
+    We first give a construction and then prove its security.
+    \paragraph{Construction.}
+    \begin{sitemize}
+        \item \(\overline{\Gen}\parr{1^\secpar;r}\):
+        output \(\parr{\overline{\pk},\overline{\sk}} \coloneqq \parr{\pk',\sk'} = \Gen'\parr{1^\secpar;r}\).
+
+        \item \(\overline{\Enc}_0\parr{\overline{\pk};r}\):
+        parse \(\parr{r_0,r_1,r_{\Gen}} \coloneqq r\),
+        set \(\parr{\pk,\sk} \coloneqq \Gen\parr{1^\secpar;r_{\Gen}}\),
+        output \(\overline{c}_0 \coloneqq \Enc'_0\parr{\pk';r_0}\).
+
+        \item \(\overline{\Enc}_1\parr{\overline{\pk},m;r}\):
+        parse \(\parr{r_0,r_1,r_{\Gen}} \coloneqq r\),
+        set \(\parr{\pk,\sk} \gets \Gen\parr{1^\secpar;r_{\Gen}}\),
+        set \(c'_1 \coloneqq \Enc'_1\parr{\pk',\sk;r_0}\),
+        set \(c \coloneqq \Enc\parr{\pk,m;r_1}\),
+        output \(\overline{c}_1 \coloneqq \parr{c'_1,c}\).
+
+        \item \(\overline{\Dec}\parr{\overline{\sk},\overline{c}}\):
+        parse \(\parr{c'_0,c'_1,c} \coloneqq \overline{c}\),
+        decrypt \(\sk \coloneqq \Dec'\parr{\sk',\parr{c'_0,c'_1}}\),
+        output \(m \coloneqq \Dec\parr{\sk,c}\).
+
+        \item \(\overline{\Punct}\parr{\overline{\sk},\overline{c}_0}\):
+        output \(\sk\pars{\overline{c}_0} \coloneqq \Punct'\parr{\sk',\overline{c}_0}\).
+    \end{sitemize}
+
+    \paragraph{Security proof.}
+    We prove security through four hybrid games.
+    \begin{hybrids}
+        \item Sample \(\parr{\overline{\pk},\overline{\sk}} \gets \overline{\Gen}\parr{1^\secpar}\),
+        sample \(r \gets \bit^\secpar\),
+        set \(\overline{c}^*_0 \coloneqq \overline{\Enc}_0\parr{\pk;r}\),
+        set \(\sk\pars{c^*_0} \coloneqq \Punct\parr{\sk,c^*_0}\),
+        set \(m_0 \coloneqq 0\) and \(m_1 \coloneqq \sk\pars{c^*_0}\),
+        sample \(b \gets \bit\),
+        set \(\overline{c}^*_1 \coloneqq \overline{\Enc}_1\parr{\pk,m_b;r}\),
+        output \(\parr{\overline{\pk},\overline{c}^*,\sk\pars{c^*_0}}\).
+
+        \item Sample \(\parr{\overline{\pk},\overline{\sk}} \gets \overline{\Gen}\parr{1^\secpar}\),
+        sample \(r = \parr{r_0,r_1,r_{\Gen}} \gets \bit^\secpar\),
+        set \(\overline{c}^*_0 \coloneqq \overline{\Enc}_0\parr{\pk;r}\),
+        set \(\sk\pars{c^*_0} \coloneqq \Punct\parr{\sk,c^*_0}\),
+        set \(m_0 \coloneqq 0\) and \(m_1 \coloneqq \sk\pars{c^*_0}\),
+        sample \(b \gets \bit\),
+        set \(c'_1 \coloneqq \Enc'_1\parr{\pk',\fbox{\sk};r_0}\),
+        set \(c \coloneqq \Enc\parr{\pk,m_b;r_1}\),
+        set \(\overline{c}^* \coloneqq \parr{\overline{c}^*_0, c'_1, c}\),
+        output \(\parr{\overline{\pk},\overline{c}^*,\sk\pars{c^*_0}}\).
+
+        \item Sample \(\parr{\overline{\pk},\overline{\sk}} \gets \overline{\Gen}\parr{1^\secpar}\),
+        sample \(r = \parr{r_0,r_1,r_{\Gen}} \gets \bit^\secpar\),
+        set \(\overline{c}^*_0 \coloneqq \overline{\Enc}_0\parr{\pk;r}\),
+        set \(\sk\pars{c^*_0} \coloneqq \Punct\parr{\sk,c^*_0}\),
+        set \(m_0 \coloneqq 0\) and \(m_1 \coloneqq \sk\pars{c^*_0}\),
+        sample \(b \gets \bit\),
+        set \(c'_1 \coloneqq \Enc'_1\parr{\pk',\fbox{0};r_0}\),
+        set \(c \coloneqq \Enc\parr{\pk,\fbox{\(m_b\)};r_1}\),
+        set \(\overline{c}^* \coloneqq \parr{\overline{c}^*_0, c'_1, c}\),
+        output \(\parr{\overline{\pk},\overline{c}^*,\sk\pars{c^*_0}}\).
+
+        \item Sample \(\parr{\overline{\pk},\overline{\sk}} \gets \overline{\Gen}\parr{1^\secpar}\),
+        sample \(r = \parr{r_0,r_1,r_{\Gen}} \gets \bit^\secpar\),
+        set \(\overline{c}^*_0 \coloneqq \overline{\Enc}_0\parr{\pk;r}\),
+        set \(\sk\pars{c^*_0} \coloneqq \Punct\parr{\sk,c^*_0}\),
+        set \(m_0 \coloneqq 0\) and \(m_1 \coloneqq \sk\pars{c^*_0}\),
+        set \(c'_1 \coloneqq \Enc'_1\parr{\pk',0;r_0}\),
+        set \(c \coloneqq \Enc\parr{\pk,\fbox{0};r_1}\),
+        set \(\overline{c}^* \coloneqq \parr{\overline{c}^*_0, c'_1, c}\),
+        output \(\parr{\overline{\pk},\overline{c}^*,\sk\pars{c^*_0}}\).
+    \end{hybrids}
+    First, note that the output distribution of \(\H_1\) is the same as in the original pKDM-pKL security game.
+    The distribution of \(\H_2\) is distributionally equal to the one of \(\H_1\).
+    The indistinguishability between \(\H_3\) and \(\H_2\) follows from the IND-pKDM security of \(\PKE'\).
+    The indistinguishability between \(\H_4\) and \(\H_3\) follows from the IND-CPA security of \(\PKE\).
+    Lastly, the distribution of \(\H_4\) is independent of the choice bit \(b\).
+\end{proof}
+
+
+
+\begin{lemma}
+    Let \(\FHE \coloneqq \parr{\Gen, \Enc, \Dec, \Eval}\) be a IND-CPA secure FHE scheme for \(\NC^1\).
+    Let \(\PKE' \coloneqq \parr{\Gen', \Enc'_0, \Enc'_1, \Dec', \Punct'}\) be a ppPKE.
+    Then there exists a pKDM-pKL secure ppFHE \(\overline{\FHE} \coloneqq \parr{\overline{\Gen}, \overline{\Enc}_0, \overline{\Enc}_1, \overline{\Dec}, \overline{\Punct}, \overline{\Eval}}\) for \(\NC^1\).
+\end{lemma}
