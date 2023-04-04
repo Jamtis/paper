@@ -14,14 +14,6 @@
     set \(t \coloneqq \operatorname{T}\parr{R}\),
     set \(S \coloneqq \abs{\parr{\prod_{i=0}^d g_i^{t^i} X}^r}\),
     and set \(C \coloneqq \parr{R,S}\).
-
-    \item \(\Dec\parr{\sk,C} \mapsto K\):
-    let \(\parr{R,S} \coloneqq C\),
-    set \(t \coloneqq \operatorname{T}\parr{R}\),
-    compute \(a\) and \(b\) s.t.\ \(2^c = a \Gamma\parr{t} + b z = \gcd\parr{\Gamma\parr{t}, z}\),
-    set \(T \coloneqq \parr{S^a \cdot R^{b - a \alpha}}^{2^{\ell_{\mathsf{T}}-c}}\),
-    and set \(K \coloneqq \operatorname{BBS}_N\parr{T}\).
-
     \item \(\Punct\parr{\sk,C'_1,...,C'_d} \mapsto \sk'\):
     set \(v_i \coloneqq \operatorname{dlog}\parr{g_i}\),
     let \(V\parr{Z} \coloneqq \sum_{i=0}^d v_i Z^i\),
@@ -29,6 +21,144 @@
     set \(\beta \coloneqq \alpha - \delta/z\),
     set \(\sk' \coloneqq \parr{\beta, \delta}\).
 \end{sitemize}
+
+\begin{theorem}
+    Assuming indistinguishability obfuscation,
+    puncturable PRF,
+    statistically binding commitment,
+    and pseudorandom generator,
+    there exists a deterministic statistically sound NIWI in the CRS model.
+\end{theorem}
+
+\begin{proof}
+    Let \(\iO\) be an indistinguishability obfuscator,
+    let \(\PPRF = \parr{\KeyGen, \Eval, \Punct}\) be a 2-puncturable,
+    let \(\parr{\Com,\Open}\) be a statistically binding commitment scheme,
+    and let \(\PRG\) be a pseudorandom generator.
+    \\
+    We define the following \(\NIWI \coloneqq \parr{\Setup, \Prove, \Vfy}\):
+    \begin{sitemize}
+        \item \(\Setup\parr{1^\secpar}\):
+        Sample \(k_1,k_2 \gets \KeyGen\parr{1^\secpar}\).
+        \\
+        Let \(\mathsf{P} = \iO\parr{\parr{x, w} \mapsto \parr{\pi_0,\pi_1}}\) where \(\pi_0 \coloneqq \PRG\parr{\Eval\parr{k_1,x||w}}\) and \(\pi_1 \coloneqq \Com\parr{w; \Eval\parr{k_2,\pi_0}}\).
+        \\
+        Let \(\mathsf{V} = \iO\parr{\parr{x, \pi} \mapsto R\parr{x,w} = 1 \wedge \pi_0 = \PRG\parr{\Eval\parr{k_1,x||w}}}\) where \(w \coloneqq \Open\parr{\pi_1, \Eval\parr{k_2,\pi_0}}\).
+
+        \item \(\Prove\parr{\CRS,x,w} \coloneqq \mathsf{P}\parr{x,w}\)
+
+        \item \(\Vfy\parr{\CRS,x,\pi} \coloneqq \mathsf{V}\parr{x,\pi}\)
+    \end{sitemize}
+
+    Correctness directly follows from the correctness of the underlying primitives.
+    Since the verification algorithm checks \(R\parr{x,w}\) the NIWI is perfectly (statistically) sound if the obfuscator is perfectly (statistically) correct.
+    Now, we show the witness indistinguishability of \(\NIWI\) by a sequence of hybrid games.
+    For simplicity we assume a perfectly binding commitment scheme.%
+    \footnote{If the commitment scheme is statistically binding, then the saem argumentation applies but one has to consider the event that the scheme is not perfectly binding.}
+    Let \(L \in \NP\) be language with relation \(R\).
+    Let \(\hat{x} \in L\) be a statement with witnesses \(\hat{w}^0,\hat{w}^1\) s.t.\ \(\parr{\hat{x},\hat{w}^0},\parr{\hat{x},\hat{w}^1} \in R\).
+    Let
+    \begin{bralign}
+        \mathsf{P}_{\hat{\pi}^0,\hat{\pi}^1,k_1,k_2}
+        \coloneqq
+        \iO\parr{\parr{x,w} \mapsto \begin{cases}
+            \hat{\pi}^0 & x||w = \hat{x}||\hat{w}^0
+            \\
+            \hat{\pi}^1 & x||w = \hat{x}||\hat{w}^1
+            \\
+            \pi_0 \coloneqq \PRG\parr{\Eval\parr{k_1,x||w}}, \pi_1 \coloneqq \Com\parr{w; \Eval\parr{k_2, \pi_0}} & \text{else}\end{cases}
+        }
+    \end{bralign}
+    and let
+    \begin{bralign}
+        \mathsf{V}_{\hat{\pi}^0,\hat{\pi}^1,k_1,k_2}
+        \coloneqq
+        \iO\parr{\parr{x,\pi} \mapsto \begin{cases}
+            1 & \pi = \hat{\pi}^0
+            \\
+            1 & \pi = \hat{\pi}^1
+            \\
+            R\parr{x,w} = 1 \wedge \pi_0 = \PRG\parr{\Eval\parr{k'_1,x||w}} & \text{else}
+        \end{cases}}
+    \end{bralign}
+    where \(w \coloneqq \Open\parr{\pi_1, \Eval\parr{k_2,\pi_0}}\).
+    \begin{hybrids}
+        \item Sample \(\CRS \gets \Setup\parr{1^\secpar}\).
+        Let \(\pi^* \coloneqq \mathsf{P}\parr{\hat{x}||\hat{w}^0}\).
+        Output \(\parr{\CRS, \pi^*}\).
+        Note that this hybrid corresponds to the honest proving only uses the witness \(\hat{w}^0\).
+
+        \item Let \(k'_1 \coloneqq \Punct\parr{k_1, \hat{x}||\hat{w}^0, \hat{x}||\hat{w}^1}\),
+        let \(r_0^b \coloneqq \Eval\parr{k_1,\hat{x}||\hat{w}^b}\),
+        let \(\hat{\pi}_0^b \coloneqq \PRG\parr{r_0^b}\),
+        let \(r_1^b \coloneqq \Eval\parr{k_2,\hat{\pi}_0^b}\),
+        and let \(\hat{\pi}_1^b \coloneqq \Com\parr{\hat{w}^b; r_1^b}\) for both \(b \in \bit\).
+        Let \(\CRS \coloneqq \parr{\mathsf{P}_{\hat{\pi}^0,\hat{\pi}^1,k'_1,k_2}, \mathsf{V}_{\hat{\pi}^0,\hat{\pi}^1,k'_1,k_2}}\).
+
+        \item Sample \(r_0^b \gets \bit^\secpar\).
+
+        \item Sample \(\hat{\pi}_0^b \gets \bit^{2\secpar}\).
+        Denote by \(E\) the event that \(\hat{\pi}_0^0, \hat{\pi}_0^1 \not\in \PRG\parr{\bit^\secpar}\).
+
+        \item Let \(k'_2 \coloneqq \Punct\parr{k_2, \hat{\pi}_0^0, \hat{\pi}_0^1}\).
+        Let \(\CRS \coloneqq \parr{\mathsf{P}_{\hat{\pi}^0,\hat{\pi}^1,k'_1,k'_2}, \mathsf{V}_{\hat{\pi}^0,\hat{\pi}^1,k'_1,k'_2}}\).
+
+        \item Sample \(r_1^b \gets \bit^\secpar\).
+
+        \item Let \(\hat{\pi}_1^b \coloneqq \Com\parr{\hat{w}^{1-b}; r_1^b}\).
+        Let \(\pi^* \coloneqq \mathsf{P}\parr{\hat{x}||\hat{w}^1}\).
+
+        \item Sample \(r_1^b \coloneqq \Eval\parr{k_2,\hat{\pi}_0^b}\).
+
+        \item Let \(\CRS \coloneqq \parr{\mathsf{P}_{\hat{\pi}^0,\hat{\pi}^1,k'_1,k_2}, \mathsf{V}_{\hat{\pi}^0,\hat{\pi}^1,k'_1,k_2}}\).
+
+        \item Let \(\hat{\pi}_0^b \coloneqq \PRG\parr{r_0^b}\).
+        
+        \item Let \(r_0^b \coloneqq \Eval\parr{k_1,\hat{x}||\hat{w}^b}\).
+        Let \(\pi^* \coloneqq \mathsf{P}\parr{\hat{x}||\hat{w}^1}\).
+        Output \(\parr{\CRS, \pi^*}\).
+        Note that this hybrid corresponds to the honest proving only uses the witness \(\hat{w}^1\).
+    \end{hybrids}
+    For any PPT distinguisher \(\D\) consider the probability \(\varepsilon_i \coloneqq \Pr[{\parr{\CRS,\pi^*} \gets \H_i}]{\D\parr{\CRS,\pi^*} = 0}\) that the distinguisher outputs \(0\) in hybrid \(i\).
+    \\
+    Because the circuits \(\mathsf{P}\) and \(\mathsf{P}_{\hat{\pi}^0,\hat{\pi}^1,k'_1,k_2}\), and \(\mathsf{V}\) and \(\mathsf{V}_{\hat{\pi}^0,\hat{\pi}^1,k'_1,k_2}\) are functionally equivalent it follows that \(\abs{\varepsilon_1 - \varepsilon_2} \leq \eta_{\iO}\parr{\secpar}\).
+    Because \(\H_2\) and \(\H_3\) only use \(k_1\) to compute \(r_0^b\) it follows that \(\abs{\varepsilon_2 - \varepsilon_3} \leq \eta_{\PPRF}\parr{\secpar}\) by the pseudorandomness of the puncturable PRF.
+    Because \(\H_3\) and \(\H_4\) use \(r_0^b\) only to compute \(\pi_0^b\) it follows that \(\abs{\varepsilon_4 - \varepsilon_4} \leq \eta_{\PRG}\parr{\secpar}\) by the pseudorandomness of the PRG.
+    Note
+    \begin{bralign}
+        \varepsilon_4
+        &=
+        \underbrace{\Pr[{\parr{\CRS,\pi^*} \gets \H_4}]{\D\parr{\CRS,\pi^*} = 0 \given E}}_{\varepsilon'_4} \underbrace{\Pr[{\parr{\CRS,\pi^*} \gets \H_4}]{E}}_{\leq 1}
+        \\
+        &+
+        \underbrace{\Pr[{\parr{\CRS,\pi^*} \gets \H_4}]{\D\parr{\CRS,\pi^*} = 0 \given \text{not } E}}_{\leq 1} \underbrace{\Pr[{\parr{\CRS,\pi^*} \gets \H_4}]{\text{not } E}}_{\leq 2^{1-\secpar}}
+        \\
+        &\leq
+        2^{1-\secpar}
+        +
+        \varepsilon'_4
+    \end{bralign}
+    and
+    \begin{bralign}
+        \varepsilon_4
+        &=
+        \varepsilon'_4 \underbrace{\Pr[{\parr{\CRS,\pi^*} \gets \H_4}]{E}}_{\geq 1-2^{1-\secpar}}
+        +
+        \Pr[{\parr{\CRS,\pi^*} \gets \H_4}]{\D\parr{\CRS,\pi^*} = 0 \given \text{not } E} \underbrace{\Pr[{\parr{\CRS,\pi^*} \gets \H_4}]{\text{not } E}}_{\geq 0}
+        \\
+        &\geq
+        \varepsilon'_4 \parr{1-2^{1-\secpar}}
+        \ ,
+    \end{bralign}
+    hence \(\abs{\varepsilon_4 - \varepsilon'_4} \leq 2^{1-\secpar}\).
+    The event \(E\) implies that the circuits \(\mathsf{P}_{\hat{\pi}^0,\hat{\pi}^1,k'_1,k_2}\) and \(\mathsf{P}_{\hat{\pi}^0,\hat{\pi}^1,k'_1,k'_2}\) are functionally equivalent because \(\Eval\) only gets called on PRG images and \(k'_2\) in punctured at a non-PRG image.
+    Moreover, \(E\) implies that the circuits \(\mathsf{V}_{\hat{\pi}^0,\hat{\pi}^1,k'_1,k_2}\) and \(\mathsf{V}_{\hat{\pi}^0,\hat{\pi}^1,k'_1,k'_2}\) are functionally equivalent.
+    Specifically, on input \(\hat{x}||\hat{\pi}^b\) both circuits outputs \(1\).
+    On the other hand for any input \(\hat{x}||\widetilde{\pi}_0^b||\hat{\pi}_1^b\) with \(\widetilde{\pi}_0^b \neq \hat{\pi}_0^b\) the outputs is \(0\) because the recovered \(w \coloneqq \Open\parr{\hat{\pi}_1^b, \Eval\parr{k'_2,\widetilde{\pi}_0^b}} = \bot\) (this follows from the prefect binding property of the commitment) will never satisfy the relation \(R\).
+    Consequently, \(\abs{\varepsilon'_4 - \varepsilon'_5} \leq \eta_{\iO}\parr{\secpar}\) by the indistinguishability of the obfuscations.
+    \\
+    In \(\H_5\) the key \(k_2\) is only used to compute \(r_1^b\) and derive the key \(k'_2\) it follows \(\abs{\varepsilon'_5 - \varepsilon'_6} \leq \eta_{\PPRF}\parr{\secpar}\) by the pseudorandomness of the puncturable PRF.
+\end{proof}
 
 
 \subsection{Partially-Puncturable PKE}
