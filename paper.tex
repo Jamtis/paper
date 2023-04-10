@@ -1,4 +1,6 @@
+\let\ifdraft\iftrue
 \let\iffullversion\iftrue
+\let\ifanonymous\iftrue
 
 \input{config/conditionals}
 
@@ -43,22 +45,29 @@
 
 \iffullversion
     \maketitle
-\else
-    \mymaketitle
 
     \begin{abstract}
         \input{sections/abstract}
         \keywords{
-            keyword1
-            \and
-            keyword2
         }
     \end{abstract}
 
     \mytoc
+\else
+    \maketitle
+
+    \begin{abstract}
+        \input{sections/abstract}
+        \keywords{
+            average-case complexity
+            \and
+            Kolmogorov complexity
+            \and
+            meta-complexity
+        }
+    \end{abstract}
 \fi
 \setcounter{footnote}{0}
-
 
 \input{sections/introduction}
 \input{sections/contribution}
