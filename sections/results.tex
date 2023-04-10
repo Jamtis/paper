@@ -4,7 +4,14 @@
 
 \begin{sitemize}
     \item \(\Gen\parr{1^\secpar} \mapsto \parr{\pk,\sk}\):
-    the public and secret key are defined as \(\pk \coloneqq \parr{N, g_0, ..., g_d, X}\) and \(\sk \coloneqq \parr{N, g_0, ..., g_d, \alpha}\).
+    \begin{sitemize}
+        \item sample \(P',Q' \gets \Primes_\secpar\) and set \(N \coloneqq \parr{2P'+1} \parr{2Q'+1}\),
+        \item sample \(\alpha \gets \pars{\parr{N-1}/4}\),
+        \item sample \(g \gets \Q\R_N\),
+        \item set \(X \coloneqq g^{\alpha 2^{\ell_K+\ell_T}}\),
+        \item set \(\pk \coloneqq \parr{N,g,X}\),
+        \item set \(\sk \coloneqq \parr{N,g,\alpha}\).
+    \end{sitemize}
     
     \item \(\Enc\parr{\pk} \mapsto \parr{C,K}\):
     sample \(r \gets \pars{\parr{N-1}/4}\),
@@ -21,6 +28,37 @@
     set \(\beta \coloneqq \alpha - \delta/z\),
     set \(\sk' \coloneqq \parr{\beta, \delta}\).
 \end{sitemize}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\section{iO}
 
 \begin{theorem}
     Assuming indistinguishability obfuscation,
@@ -298,7 +336,7 @@
 
 
 \begin{lemma}
-    Let \(\FHE \coloneqq \parr{\Gen, \Enc, \Dec, \Eval}\) be a IND-CPA secure FHE scheme for \(\NC^1\).
+    Let \(\FHE \coloneqq \parr{\Gen, \Enc, \Dec, \Eval}\) be a IND-CPA secure FHE scheme for \(\NC[1]\).
     Let \(\PKE' \coloneqq \parr{\Gen', \Enc'_0, \Enc'_1, \Dec', \Punct'}\) be a ppPKE.
-    Then there exists a pKDM-pKL secure ppFHE \(\overline{\FHE} \coloneqq \parr{\overline{\Gen}, \overline{\Enc}_0, \overline{\Enc}_1, \overline{\Dec}, \overline{\Punct}, \overline{\Eval}}\) for \(\NC^1\).
+    Then there exists a pKDM-pKL secure ppFHE \(\overline{\FHE} \coloneqq \parr{\overline{\Gen}, \overline{\Enc}_0, \overline{\Enc}_1, \overline{\Dec}, \overline{\Punct}, \overline{\Eval}}\) for \(\NC[1]\).
 \end{lemma}
