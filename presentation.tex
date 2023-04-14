@@ -6,32 +6,23 @@
 
 \documentclass[18pt]{beamer}
 
-\usepackage[nopostdot,nomain,acronym,symbols,nogroupskip,nonumberlist]{glossaries} % load before hyperref (otherwise acronyms will link to glossary)
 \input{config/packages}
 \input{config/config}
 \input{config/macros}
 \input{custom_config/macros}
-\input{custom_config/acronyms}
-\input{custom_config/symbols}
 
 \usetikzlibrary{tikzmark}
 
-\title{On the Correlation Complexity of MPC\\with Cheater Identification}
+\title{title}
 
 \ifanonymous
     \author{\vspace*{-1cm}}
     \institute{\vspace*{-1cm}}
 \else
     \author{
-        author1\inst{1}
-        \phantom{\thanks{
-            Footnote...
-        }}
-    }
-    %\authorrunning{N. Brandt et al.}
-    \institute{
-        Institute
-        \email{e@mail.com}
+        author1
+        \and
+        author2
     }
 
     % hyper setup
@@ -60,7 +51,7 @@
     \titlepage
 \end{frame}
 
-\input{sections/motivation}
+\input{sections/preliminaries}
 \input{sections/results}
 \input{sections/summary}
 
