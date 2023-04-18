@@ -18,7 +18,7 @@
 
 \begin{proof}
     Let \(L \coloneqq 2^{\secpar/2}\).
-    The sel-IND-CCKL PKE scheme is a marginally modified version of the IND-CCA secure KEM of~\textcite{EC:HofKil09}.
+    The sel-IND-CTKL PKE scheme is a marginally modified version of the IND-CCA secure KEM of~\textcite{EC:HofKil09}.
     \begin{sitemize}
         \item \(\Gen\parr{1^\secpar}\):
         \begin{sitemize}
@@ -168,9 +168,9 @@
         &=
         \negl\parr{\secpar}
     \end{bralign}
-    Now, let's prove sel-IND-CCKL security of our scheme.
+    Now, let's prove sel-IND-CTKL security of our scheme.
     \begin{hybrids}
-        \item This is the original sel-IND-CCKL with bit \(b = 0\), i.e., the challenge key \(\kappa = \kappa^*\) is the actual key.
+        \item This is the original sel-IND-CTKL with bit \(b = 0\), i.e., the challenge key \(\kappa = \kappa^*\) is the actual key.
         In particular, the challenge ciphertext is \(c^* = \parr{t^*,R^*,S^*}\).
 
         \item We sample \(\beta \gets \pars{\parr{N-1}/4}\).
@@ -383,7 +383,7 @@
 \end{proof}
 
 \begin{theorem}
-    Let \(\PKE' = \parr{\Gen',\Enc',\Dec',\Punct'}\) be a prefectly correct \(\varepsilon'_{\textsf{IND-CCKL}}\)-ad-IND-CCKL secure cpPKE with binary message space \(M'_\secpar \coloneq \parc{0^\secpar,1^\secpar}\).
+    Let \(\PKE' = \parr{\Gen',\Enc',\Dec',\Punct'}\) be a perfectly correct \(\varepsilon'_{\textsf{IND-CCKL}}\)-ad-IND-CCKL secure cpPKE with binary message space \(M'_\secpar \coloneq \parc{0^\secpar,1^\secpar}\).
     Then there exists an \(\varepsilon_{\textsf{IND-CCKL}}\)-ad-IND-CCKL cpPKE \(\PKE\) with exponentially large message space \(M_\secpar \coloneq \bit^\secpar\) where \(\varepsilon_{\textsf{IND-CCKL}}\parr{\secpar} \leq \secpar \varepsilon'_{\textsf{IND-CCKL}}\parr{\secpar}\).
 \end{theorem}
 
@@ -467,5 +467,85 @@
         \ .
     \end{bralign}
     Now, let's prove ad-IND-CCKL security of our scheme.
+\end{proof}
+
+
+\begin{theorem}
+    Let \(\PKE' = \parr{\Gen',\Enc',\Dec',\Punct'}\) be a prefectly correct \(\varepsilon'_{\textsf{IND-CCKL}}\)-ad-IND-CCKL secure cpPKE.
+    Then there exists an \(\varepsilon_{\textsf{IND-CCKL}}\)-ad-IND-CTKL cpPKE \(\PKE\) where \(\varepsilon_{\textsf{IND-CCKL}}\parr{\secpar} \leq \secpar \varepsilon'_{\textsf{IND-CCKL}}\parr{\secpar}\).
+\end{theorem}
+
+\begin{proof}
+    First, we define our ad-IND-CTKL PKE scheme \(\PKE\) and then prove correctness and security.
+    \begin{sitemize}
+        \item \(\Gen\parr{1^\secpar}\):
+        \begin{sitemize}
+            \item generate \(\parr{\pk',\sk'} \gets \Gen'\parr{1^{\secpar}}\),
+            \item set \(\pk \coloneqq \pk'\) and \(\sk \coloneqq \sk'\),
+            \item output \(\parr{\pk,\sk}\).
+        \end{sitemize}
+
+        \item \(\Enc\parr{\pk,m,t}\):
+        \begin{sitemize}
+            \item decrypt \(c' \coloneqq \Enc'\parr{\pk',m}\),
+            \item output \(c \coloneqq \parr{t,c'}\),
+        \end{sitemize}
+
+        \item \(\Dec\parr{\sk,c}\):
+        \begin{sitemize}
+            \item parse \(\parr{t,c'} \coloneqq c\),
+            \item output \(\widetilde{m} \coloneqq \Dec'\parr{\sk',c'}\).
+        \end{sitemize}
+
+        \item \(\Punct\parr{\sk, t'}\):
+        \begin{sitemize}
+            \item output \(\sk\pars{t'} \gets \iO\parr{C_{\sk',t'}}\) where \(C_{\sk',t'}\) is the circuit that on input \(c = \parr{t,c'}\)
+            \begin{sitemize}
+                \item if \(t \neq t'\), outputs \(\bot\),
+                \item outputs \(\widetilde{m} \coloneqq \Dec'\parr{\sk',c'}\).
+            \end{sitemize}
+        \end{sitemize}
+
+        \item \(\Dec\parr{\sk\pars{t'},c}\):
+        \begin{sitemize}
+            \item output \(\sk\pars{t'}\parr{c}\).
+        \end{sitemize}
+    \end{sitemize}
+    Perfect message correctness follows directly from the perfect correctness of \(\PKE'\).
+    Similarly, punctured key correctness follows from the perfect correctness of \(\iO\) and the statistical punctured key correctness of \(\PKE'\).
+    Now, let's prove ad-IND-CTKL security of our scheme.
+    \begin{hybrids}
+        \item This is the original ad-IND-CTKL with bit \(b = 0\).
+        In particular, the challenge ciphertext is \(c^* = \parr{t^*,c'^*}\).
+
+        \item We sample \(\beta \gets \pars{\parr{N-1}/4}\).
+        The public key is set as \(X \coloneqq g^{\beta L - t'}\) instead of sampling \(\alpha \gets \pars{\parr{N-1}/4}\) and setting \(X \coloneqq g^{\alpha L}\).
+        Note that here we do not need the secret \(\phi\) anymore.
+        The distribution of \(X\) is equal in this and the previous hybrid conditioned on \(\textsf{GOOD}\).
+
+        \item We set \(b = 1\), i.e., the challenge key \(\kappa \gets \bit^\secpar\) is a random key.
+    \end{hybrids}
+\end{proof}
+
+
+
+\begin{theorem}[Implausibility of perfect punctured key correctness]
+    If there is a reduction \(\advR\) from a non-interactive assumption \(\NIA\) to the ad-IND-CCKL security of tpPKE scheme with perfect punctured key correctness,
+    then \(\NIA\) does not hold.
+    \marginnote{This proof also works for message-selective security.}
+\end{theorem}
+
+\begin{proof}
+    We give a meta-reduction in the style of \cite{EC:Coron02}.
+    Given a challenge \(C\) from the \(\NIA\) challenger,
+    the meta-reduction \(\advM\) provides the reduction \(\advR\) with the challenge \(C\).
+    Then the reduction \(\advR\) produces a public key \(\pk\).
+    The meta-reduction in the role of the ad-IND-CCKL adversary samples two different tags \(t^*_1 \neq t^*_2 \gets T_\secpar\) and provides \(\parr{t^*_1,m_0=0,m_1=1}\) to the reduction \(\advR\).
+    The reduction responds with a challenge ciphertext \(c^*_1\) and a punctured secret key \(\sk\pars{c^*_1}\).
+    The meta-reduction rewinds the reduction to the point after it produced the public key and provides \(\parr{t^*_2,m_0=0,m_1=1}\) to the reduction \(\advR\).
+    The reduction responds with a challenge ciphertext \(c^*_2\) and a punctured secret key \(\sk\pars{c^*_2}\).
+    Now the meta-reduction decrypts \(\widetilde{m} \coloneqq \Dec\parr{\sk\pars{t^*_1},c^*_2}\) and feeds \(b' = 1 \iff \widetilde{m} = m_1\) back to the reduction as the solution of the ad-IND-CCKL adversary's challenge.
+    The meta-reduction then forwards the reduction's solution to its own \(\NIA\) challenger.
+    \marginnote{Analysis...}
 \end{proof}
 
