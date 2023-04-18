@@ -2,140 +2,263 @@
 \section{Technical Overview}
 \label{sec:overview}
 
-\begin{sitemize}
-    \item \(\Gen\parr{1^\secpar} \mapsto \parr{\pk,\sk}\):
-    \begin{sitemize}
-        \item sample \(P',Q' \gets \Primes_\secpar\) and set \(N \coloneqq \parr{2P'+1} \parr{2Q'+1}\),
-        \item sample \(\alpha \gets \pars{\parr{N-1}/4}\),
-        \item sample \(g \gets \Q\R_N\),
-        \item set \(X \coloneqq g^{\alpha 2^{\ell_K+\ell_T}}\),
-        \item set \(\pk \coloneqq \parr{N,g,X}\),
-        \item set \(\sk \coloneqq \parr{N,g,\alpha}\).
-    \end{sitemize}
-    
-    \item \(\Enc\parr{\pk} \mapsto \parr{C,K}\):
-    sample \(r \gets \pars{\parr{N-1}/4}\),
-    set \(R \coloneqq g_0^{r z}\),
-    set \(T \coloneqq g_0^{r 2^{\ell_{\mathsf{T}}}}\),
-    set \(K \coloneqq \operatorname{BBS}_N\parr{T}\),
-    set \(t \coloneqq \operatorname{T}\parr{R}\),
-    set \(S \coloneqq \abs{\parr{\prod_{i=0}^d g_i^{t^i} X}^r}\),
-    and set \(C \coloneqq \parr{R,S}\).
-    \item \(\Punct\parr{\sk,C'_1,...,C'_d} \mapsto \sk'\):
-    set \(v_i \coloneqq \operatorname{dlog}\parr{g_i}\),
-    let \(V\parr{Z} \coloneqq \sum_{i=0}^d v_i Z^i\),
-    set \(\delta \coloneqq \sum_{i=1}^d V\parr{t'_i}\),
-    set \(\beta \coloneqq \alpha - \delta/z\),
-    set \(\sk' \coloneqq \parr{\beta, \delta}\).
-\end{sitemize}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-\section{iO}
+\subsection{Constructions from Factoring}
 
 \begin{theorem}[Informal]
-    Let \(\PKE' = \parr{\Gen',\Enc',\Dec'}\) be a sel-IND-CPA secure PKE.
-    Let \(\iO\) be an indistinguishability obfuscator.
-    Let \(\NIWI = \parr{\Prove,\Verify}\) be a perfectly sound NIWI.
-    Let \(\COM = \parr{\Setup,\Commit,\Open}\) be a perfectly binding commitment scheme.
-    Then there exists an ad-IND-CTKL tpPKE \(\PKE\) with message space \(M_\secpar \coloneq \parc{0^\secpar,1^\secpar}\) and tag space \(T \coloneqq \bit^\secpar\).
+    If the factoring assumption holds,
+    then there exists a sel-IND-CTKL secure tpKEM.
+\end{theorem}
+
+\begin{theorem}
+    If the \(\varepsilon_{\textsf{IF}}\)-factoring assumption holds,
+    then there exists a \(\varepsilon_{\textsf{IND-CTKL}}\)-sel-IND-CTKL secure tpKEM with tag space \(K_\secpar \coloneqq \bit^{\secpar/4}\),
+    tag space \(T_\secpar \coloneqq \pars{2^{\secpar/4}}\) where \(\varepsilon_{\textsf{IND-CTKL}}\parr{\secpar} \coloneqq ...\).
 \end{theorem}
 
 \begin{proof}
-    Let \(m_b \coloneqq b^\secpar\).
-    First, we define our ad-IND-CTKL PKE scheme and then prove correctness and security.
+    Let \(L \coloneqq 2^{\secpar/2}\).
+    The sel-IND-CCKL PKE scheme is a marginally modified version of the IND-CCA secure KEM of~\textcite{EC:HofKil09}.
     \begin{sitemize}
         \item \(\Gen\parr{1^\secpar}\):
         \begin{sitemize}
-            \item sample \(R \gets \bit^{2\secpar}\),
-            \item generate \(\pp \gets \Setup\parr{1^{2\secpar}}\),
-            \item generate \(\parr{\pk'_1,\sk'_1}, \parr{\pk'_2,\sk'_2} \gets \Gen'\parr{1^\secpar}\),
-            \item generate \(C \coloneqq \Commit\parr{\pp,\square;R}\),\footnote{For simplicity we assume that the commitment scheme's message space contains a special symbol \(\square \not\in \bits\).}
+            \item sample \(P',Q' \gets \Primes_\secpar\) and set \(N \coloneqq \parr{2P'+1} \parr{2Q'+1}\),
+            \item let \(\phi \coloneqq P'Q'\),
+            \item sample \(\alpha \gets \pars{\parr{N-1}/4}\),
+            \item sample \(g \gets \Q\R_N\),
+            \item set \(X \coloneqq g^{\alpha L}\),
+            \item set \(\pk \coloneqq \parr{N,g,X}\),
+            \item set \(\sk \coloneqq \parr{\pk,\alpha,\phi}\),
+            \item output \(\parr{\pk,\sk}\).
+        \end{sitemize}
+        \item \(\Enc\parr{\pk,t}\):
+        \begin{sitemize}
+            \item sample \(r \gets \pars{\parr{N-1}/4}\),
+            \item set \(R \coloneqq g^{r L}\),
+            \item set \(\tau \coloneqq g^{r 2^{\secpar/4}}\),
+            \item set \(\kappa \coloneqq \operatorname{BBS}_N\parr{\tau}\),
+            % \item set \(t \coloneqq \operatorname{\tau}\parr{R}\),
+            \item set \(S \coloneqq \abs{\parr{g^t X}^r}\),
+            \item output \(C \coloneqq \parr{t,R,S}\).
+        \end{sitemize}
+        \item \(\Dec\parr{\sk,C}\):
+        \begin{sitemize}
+            \item parse \(\parr{t,R,S} \coloneqq C\),
+            \item set \(a,b,c\) such that \(\gcd\parr{t,L} = 2^c = a t + b L\),
+            \item set \(\tau \coloneqq \parr{S^{2a} R^{2b-2a\alpha}}^{2^{\secpar/4-c-1}}\),
+            \item output \(\kappa \coloneqq \operatorname{BBS}_N\parr{\tau}\).
+        \end{sitemize}
+
+        \item \(\Punct\parr{\sk,t'}\):
+        \begin{sitemize}
+            \item set \(\beta \coloneqq \alpha + t'/L \mod \phi\),
+            \item output \(\sk\pars{t'} \coloneqq \parr{\pk,\beta,t'}\).
+        \end{sitemize}
+        \item \(\Dec\parr{\sk[t'],C}\):
+        \begin{sitemize}
+            \item parse \(\parr{t,R,S} \coloneqq C\),
+            \item if \(t = t'\) output \(\bot\),
+            \item set \(a',b',c'\) such that \(\gcd\parr{t-t',L} = 2^{c'} = a' \parr{t-t'} + b' L\),
+            \item set \(\tau' \coloneqq \parr{S^{2a'} R^{2b'-2a'\beta}}^{2^{\secpar/4-c'-1}}\),
+            \item output \(\kappa \coloneqq \operatorname{BBS}_N\parr{\tau'}\).
+        \end{sitemize}
+    \end{sitemize}
+    Statistical message correctness follows directly from the statistical correctness of the original KEM of~\cite{EC:HofKil09}.
+    Note here that whether the tag \(t\) is chosen arbitrarily or is the evaluation of a hash function (as in the original KEM) does not affect correctness.
+    Now, we prove punctured key correctness for each message \(m\) and each (possibly malformed) \(c\) ciphertext.
+    We declare an event \(\textsf{GOOD}\) which we define and analyze later.
+    For now, we only need to know that on \(\textsf{GOOD}\) the element \(g\) is a generator of \(\Q\R_N\) and ...
+    \marginnote{Write down details of GOOD.}
+    We see that
+    \begin{bralign}
+        &\Pr{
+            \begin{array}{rl}
+                \parr{\pk,\sk} &\gets \Gen\parr{1^\secpar}
+                \\
+                c &\gets \Enc\parr{\pk,t}
+                \\
+                \sk\pars{t'} &\gets \Punct\parr{\sk,t'}
+            \end{array}
+            :
+            \Dec\parr{\sk\pars{t'},c} \neq \Dec\parr{\sk,c}
+        }
+        \\
+        &=
+        \Pr{\Dec\parr{\sk\pars{t'},c} \neq \Dec\parr{\sk,c} \wedge \bracket{g} = \Q\R_N}
+        +
+        \Pr{\Dec\parr{\sk\pars{t'},c} \neq \Dec\parr{\sk,c} \wedge \bracket{g} \neq \Q\R_N}
+        \\
+        &=
+        \Pr{\Dec\parr{\sk\pars{t'},c} \neq \Dec\parr{\sk,c} \wedge \bracket{g} = \Q\R_N}
+        +
+        \Pr{\bracket{g} \neq \Q\R_N}
+        \\
+        &\leq
+        \Pr{\Dec\parr{\sk\pars{t'},c} \neq \Dec\parr{\sk,c} \given \bracket{g} = \Q\R_N}
+        +
+        \negl\parr{\secpar}
+        \\
+        &=
+        \Pr{\tau' \neq \tau \given
+            \begin{array}{rl}
+                \bracket{g} &= \Q\R_N
+                \\
+                \gcd\parr{t,L} &= 2^c = a t + b L
+                \\
+                \tau &\coloneqq \parr{S^{2a} R^{2b-2a\alpha}}^{2^{\secpar/4-c-1}}
+                \\
+                \gcd\parr{t-t',L} &= 2^{c'} = a' \parr{t-t'} + b' L
+                \\
+                \tau' &\coloneqq \parr{S^{2a'} R^{2b'-2a'\beta}}^{2^{\secpar/4-c'-1}}
+            \end{array}
+        }
+        +
+        \negl\parr{\secpar}
+        \\
+        &=
+        \Pr{
+            \begin{array}{c}
+                \parr{{a'rt+a'\beta rL-a'rt'} + {b'rL-a'\beta rL}} / 2^{c'}
+                \\
+                \neq
+                \parr{{art+a\alpha rL} + {brL-a\alpha rL}} / 2^c
+            \end{array}
+            \given
+            \begin{array}{rl}
+                \bracket{g} &= \Q\R_N
+                \\
+                \gcd\parr{t,L} &= 2^c = a t + b L
+                \\
+                \gcd\parr{t-t',L} &= 2^{c'} = a' \parr{t-t'} + b' L
+            \end{array}
+        }
+        +
+        \negl\parr{\secpar}
+        \\
+        &=
+        \Pr{
+            \parr{a'rt-a'rt' + b'rL} / 2^{c'} \neq \parr{art + brL} / 2^c
+            \given
+            \begin{array}{rl}
+                \bracket{g} &= \Q\R_N
+                \\
+                \gcd\parr{t,L} &= 2^c = a t + b L
+                \\
+                \gcd\parr{t-t',L} &= 2^{c'} = a' \parr{t-t'} + b' L
+            \end{array}
+        }
+        +
+        \negl\parr{\secpar}
+        \\
+        &=
+        \Pr{
+            r \neq r
+            \given
+            \begin{array}{rl}
+                \bracket{g} &= \Q\R_N
+                \\
+                \gcd\parr{t,L} &= 2^c = a t + b L
+                \\
+                \gcd\parr{t-t',L} &= 2^{c'} = a' \parr{t-t'} + b' L
+            \end{array}
+        }
+        +
+        \negl\parr{\secpar}
+        \\
+        &=
+        \negl\parr{\secpar}
+    \end{bralign}
+    Now, let's prove sel-IND-CCKL security of our scheme.
+    \begin{hybrids}
+        \item This is the original sel-IND-CCKL with bit \(b = 0\), i.e., the challenge key \(\kappa = \kappa^*\) is the actual key.
+        In particular, the challenge ciphertext is \(c^* = \parr{t^*,R^*,S^*}\).
+
+        \item We sample \(\beta \gets \pars{\parr{N-1}/4}\).
+        The public key is set as \(X \coloneqq g^{\beta L - t'}\) instead of sampling \(\alpha \gets \pars{\parr{N-1}/4}\) and setting \(X \coloneqq g^{\alpha L}\).
+        Note that here we do not need the secret \(\phi\) anymore.
+        The distribution of \(X\) is equal in this and the previous hybrid conditioned on \(\textsf{GOOD}\).
+
+        \item We set \(b = 1\), i.e., the challenge key \(\kappa \gets \bit^\secpar\) is a random key.
+    \end{hybrids}
+\end{proof}
+
+
+\subsection{Constructions from iO}
+
+\begin{theorem}[Informal]
+    Let \(\PKE' = \parr{\Gen',\Enc',\Dec'}\) be a IND-CPA secure PKE.
+    Let \(\iO\) be an indistinguishability obfuscator.
+    Let \(\NIWI = \parr{\Prove,\Verify}\) be a perfectly sound NIWI.
+    Let \(\COM = \parr{\Setup,\Commit,\Open}\) be a perfectly binding commitment scheme.
+    Then there exists an ad-IND-CCKL cpPKE \(\PKE\) with binary message space \(M_\secpar \coloneq \parc{0^\secpar,1^\secpar}\).
+\end{theorem}
+
+\begin{theorem}
+    Let \(\PKE' = \parr{\Gen',\Enc',\Dec'}\) be a prefectly correct \(\varepsilon_{\textsf{IND-CPA}}\)-IND-CPA secure PKE.
+    Let \(\iO\) be an \(\varepsilon_{\textsf{iO}}\)-indistinguishable obfuscator.
+    Let \(\NIWI = \parr{\Prove,\Verify}\) be a \(\varepsilon_{\textsf{WI}}\)-indistinguishable perfectly sound NIWI.
+    Let \(\COM = \parr{\Setup,\Commit,\Open}\) be a \(\varepsilon_{\textsf{hide}}\)-hiding perfectly binding commitment scheme.
+    Then there exists an \(\varepsilon_{\textsf{IND-CCKL}}\)-ad-IND-CCKL cpPKE \(\PKE\) with binary message space \(M_\secpar \coloneq \parc{0^\secpar,1^\secpar}\) where \(\varepsilon_{\textsf{IND-CCKL}}\parr{\secpar} \leq 2\varepsilon_{\textsf{hide}}\parr{\secpar} + \varepsilon_{\textsf{WI}}\parr{\secpar} + \varepsilon_{\textsf{iO}}\parr{\secpar} + 2\varepsilon_{\textsf{IND-CPA}}\parr{\secpar}\).
+\end{theorem}
+
+\begin{proof}
+    W.l.o.g.\ we assume \(m_b \coloneqq b^\secpar\).
+    \marginnote{Otherwise we redefine the adversary to flip its output.}
+    For simple exhibition we assume that the underlying PKE and obfuscator are perfectly correct and the commitment scheme is perfectly binding.
+    For statistical security we would have to add the negligible probability that the generation algorithms \(\Gen'\) and \(\Setup\) output \enquote{faulty} parameters.
+    First, we define our ad-IND-CCKL PKE scheme and then prove correctness and security.
+    \begin{sitemize}
+        \item \(\Gen\parr{1^\secpar}\):
+        \begin{sitemize}
+            \item sample \(R \gets \bit^{4\secpar+1}\),
+            \item generate \(\pp \gets \Setup\parr{1^{\secpar}}\),
+            \item generate \(\parr{\pk'_1,\sk'_1}, \parr{\pk'_2,\sk'_2} \gets \Gen'\parr{1^{\secpar}}\),
+            \item generate \(C \coloneqq \Commit\parr{\pp,0^{4\secpar+1};R}\),
             \item set \(\pk \coloneqq \parr{\pp,\pk'_1,\pk'_2,C}\) and \(\sk \coloneqq \parr{\pk,\sk'_1}\),
             \item output \(\parr{\pk,\sk}\).
         \end{sitemize}
 
-        \item \(\Enc\parr{\pk,m,t}\):
+        \item \(\Enc\parr{\pk,m}\):
         \begin{sitemize}
-            \item sample \(r_1,r_2,r_{\mathsf{t}} \gets \bit^\secpar\),
-            \item set \(h \coloneqq \Commit\parr{t;r_{\mathsf{t}}}\),
-            \item set \(c_1 \coloneqq \Enc'\parr{\pk'_1,m||r_{\mathsf{t}};r_1}\),
-            \item set \(c_2 \coloneqq \Enc'\parr{\pk'_2,m||r_{\mathsf{t}};r_2}\),
-            \item prove \(\pi \gets \Prove\parr{s_{\pk,t,h,c_1,c_2},r_1,r_2,r_{\mathsf{t}}}\) where \(s_{\pk,t,h,c_1,c_2}\) is following statement
+            \item sample \(r_1,r_2 \gets \bit^\secpar\),
+            \item set \(c_1 \coloneqq \Enc'\parr{\pk'_1,m;r_1} \in \bit^{2\secpar}\),
+            \item set \(c_2 \coloneqq \Enc'\parr{\pk'_2,m;r_2} \in \bit^{2\secpar}\),
+            \item prove \(\pi \gets \Prove\parr{s_{\pk,c_1,c_2},m,r_1,r_2}\) where \(s_{\pk,c_1,c_2}\) is following statement
             \begin{bralign}\label{eq:consistency}
                 &\ \parr{
-                    \exists m,r_{\mathsf{t}},r_1,r_2 :
-                    c_1 = \Enc\parr{\pk'_1,m||r_{\mathsf{t}};r_1}
+                    \exists m,r_1,r_2 :
+                    c_1 = \Enc\parr{\pk'_1,m;r_1}
                     \wedge
-                    c_2 = \Enc\parr{\pk'_2,m||r_{\mathsf{t}};r_2}
-                    \wedge
-                    h = \Commit\parr{\pp,t;r_{\mathsf{t}}}
+                    c_2 = \Enc\parr{\pk'_2,m;r_2}
                 }
                 \\\label{eq:trapdoor}
                 \vee
                 &\ \parr{
                     \exists R :
-                    C = \Commit\parr{\pp,c_1||c_2;R}
-                    \wedge
-                    \exists \beta,m,r_{\mathsf{t}},r_\beta :
-                    c_\beta = \Enc\parr{\pk'_\beta,m||r_{\mathsf{t}};r_\beta}
-                    \wedge
-                    h = \Commit\parr{\pp,t;r_{\mathsf{t}}}
+                    C = \Commit\parr{\pp,c_1||c_2||1;R}
                 }
                 \ ,
             \end{bralign}
-            \item output \(c \coloneqq \parr{t,h,c_1,c_2,\pi}\),
+            \item output \(c \coloneqq \parr{c_1,c_2,\pi}\),
         \end{sitemize}
         Note that with an honestly generated public key \cref{eq:trapdoor} cannot be fulfilled.
 
         \item \(\Dec\parr{\sk,c}\):
         \begin{sitemize}
-            \item parse \(\parr{t,c_1,c_2,\pi} \coloneqq c\),
-            \item decrypt \(\widetilde{m}||\widetilde{t} \coloneqq \Dec'\parr{\sk'_1,c_1}\),
-            \item if \(\Verify\parr{s_{\pk,t,h,c_1,c_2},\pi} = 0\) or \(\widetilde{t} \neq t\), output \(\bot\),
-            \item output \(\widetilde{m}\).
+            \item parse \(\parr{c_1,c_2,\pi} \coloneqq c\),
+            \item if \(\Verify\parr{s_{\pk,c_1,c_2},\pi} = 0\) output \(\bot\),
+            \item output \(\widetilde{m} \coloneqq \Dec'\parr{\sk'_1,c_1}\).
         \end{sitemize}
 
-        \item \(\Punct\parr{\sk, t'}\):
+        \item \(\Punct\parr{\sk, c'}\):
         \begin{sitemize}
-            \item output \(\sk\pars{t'} \gets \iO\parr{C_{\sk,t'}}\) where
-            \begin{bralign}
-                C_{\sk,t'} :
-                c = \parr{t,c_1,c_2,\pi} \mapsto
-                \begin{cases}
-                    \Dec\parr{\sk,c} & t \neq t'
-                    \\
-                    \bot & t = t'
-                \end{cases}
-            \end{bralign}
-            is the circuit that decrypts a ciphertext \(c\) if its tag is not equal to the punctured tag \(t'\).
+            \item parse \(\parr{c'_1,c'_2,\pi'} \coloneqq c'\),
+            \item if \(\Verify\parr{s_{\pk,c'_1,c'_2},\pi'} = 0\), return \(\sk\),
+            \item output \(\sk\pars{c'} \gets \iO\parr{C_{\sk,c'}}\) where \(C_{\sk,c'}\) is the circuit that on input \(c = \parr{c_1,c_2,\pi}\)
+            \begin{sitemize}
+                \item if \(\Verify\parr{s_{\pk,c_1,c_2},\pi} = 0\) or \(c_1||c_2 = c'_1||c'_2\), outputs \(\bot\),
+                \item outputs \(\widetilde{m} \coloneqq \Dec'\parr{\sk'_1,c_1}\).
+            \end{sitemize}
         \end{sitemize}
 
         \item \(\Dec\parr{\sk\pars{t'},c}\):
@@ -143,46 +266,82 @@
             \item output \(\sk\pars{t'}\parr{c}\).
         \end{sitemize}
     \end{sitemize}
-    Now, let's prove ad-IND-CTKL security of our scheme.
-    For simple exhibition we assume that the underlying PKE is perfectly correct and the commitment scheme is perfectly binding.
-    For statistical security we would have to add the negligible probability that the generation algorithms \(\Gen'\) and \(\Setup\) output \enquote{faulty} parameters.
+    Perfect message correctness follows directly from the perfect correctness of \(\PKE'\), \(\NIWI\) and \(\COM\).
+    Now, we prove punctured key correctness for each message \(m\) and each (possibly malformed) \(c\) ciphertext.
+    Note that if \(c\) is malformed, i.e, verification fails, then \(\sk\pars{c'} = \sk\) and punctured key correctness follows directly from normal message correctness.
+    Hence, we consider only wellformed ciphertexts \(c\), i.e., there exists \(m',r'_1,r'_2\) such that \(c'_1 = \Enc\parr{\pk,m';r'_1} \wedge c'_2 = \Enc\parr{\pk,m';r'_2}\).
+    We see that
+    \begin{bralign}
+        &\Pr{
+            \begin{array}{rl}
+                \parr{\pk,\sk} &\gets \Gen\parr{1^\secpar}
+                \\
+                c &\gets \Enc\parr{\pk,m}
+                \\
+                \sk\pars{c'} &\gets \Punct\parr{\sk,c'}
+            \end{array}
+            :
+            \Dec\parr{\sk\pars{c'},c} \neq m
+        }
+        \\
+        &=
+        \Pr{c_1||c_2 = c'_1||c'_2}
+        \\
+        &=
+        \Pr{c_1||c_2 = c'_1||c'_2 \wedge m = m'}
+        +
+        \Pr{c_1||c_2 = c'_1||c'_2 \wedge m \neq m'}
+        \marginnote{Perfect correctness of \(\PKE'\)}
+        \\
+        &=
+        \Pr{c_1||c_2 = c'_1||c'_2 \wedge m = m'}
+        \\
+        &\leq
+        \Pr{r_1||r_2 = r'_1||r'_2}
+        \\
+        &=
+        2^{-2\secpar}
+    \end{bralign}
+    Now, let's prove ad-IND-CCKL security of our scheme.
     \begin{hybrids}
-        \item This is the original ad-IND-CTKL with a uniformly random bit \(b \gets \bit\).
-        In particular, the challenge ciphertext is \(c^* = \parr{t^*,h^*,c^*_1,c^*_2,\pi^*}\).
+        \item This is the original ad-IND-CCKL with a uniformly random bit \(b \gets \bit\).
+        In particular, the challenge ciphertext is \(c^* = \parr{c^*_1,c^*_2,\pi^*}\).
 
-        \item We set \(C_1 \coloneqq \Commit\parr{\pp,\parr{c^*_1,c^*_2};R}\).
+        \item We set \(C \coloneqq \Commit\parr{\pp,c^*_1||c^*_2||1;R}\).
         This step is justified by the (computational) hiding property of the commitment scheme because the randomness \(R\) is only used to generate \(C\).
 
-        \item We prove \(\pi^* \gets \Prove\parr{s_{\pk,t^*,h^*,c^*_1,c^*_2},w}\) using as witness \(w \coloneqq \parr{R,\beta=1,m=m_b,r_{\mathsf{t}},r^*_1}\) instead of \(\parr{m_b,r_{\mathsf{t}},r^*_1,r^*_2}\).
-        Note that now \cref{eq:trapdoor} is fulfilled instead of \cref{eq:consistency} and the randomness \(r^*_2\) is only used to generate \(c^*_2\).
-        Also, \(\sk'_2\) is not used anymore, though \(\sk'_1\) is used in the obfuscation \(\sk\pars{t^*}\).
+        \item We prove \(\pi^* \gets \Prove\parr{s_{\pk,,c^*_1,c^*_2},w}\) using as witness \(w \coloneqq R\) instead of \(\parr{m_b,r^*_1,r^*_2}\).
+        Note that now \cref{eq:trapdoor} is fulfilled instead of \cref{eq:consistency}.
         This step is justified by the (computational) witness indistinguishability of the NIWI.
 
-        \item We set \(c^*_2 \gets \Enc\parr{\pk'_2,0^\secpar||r_{\mathsf{t}};r^*_2}\) instead of \(\Enc\parr{\pk'_2,m_b||r_{\mathsf{t}};r^*_2}\).
+        \item We set \(c^*_2 \gets \Enc\parr{\pk'_2,0^{\secpar-1}||1;r^*_2}\) instead of \(\Enc\parr{\pk'_2,m_b;r^*_2}\).
         This step is justified by the (computational) IND-CPA security of the underlying PKE \(\PKE'\) because neither the secret key \(\sk'_2\) nor the randomness \(r^*_2\) are used (except to generate \(c^*_2\)).
 
-        \item We prove \(\pi^* \gets \Prove\parr{s_{\pk,t^*,h^*,c^*_1,c^*_2},w}\) using as witness \(w \coloneqq \parr{R,\beta=2,m=0^\secpar,r_{\mathsf{t}},r^*_2}\) instead of \(\parr{R,\beta=1,m=m_b,r_{\mathsf{t}},r^*_1}\).
-        Still, \cref{eq:trapdoor} is fulfilled and \(\sk'_1\) is used in the obfuscation \(\sk\pars{t^*}\),
-        but the randomness \(r^*_1\) is only used to generate \(c^*_1\).
-        This step is justified by the (computational) witness indistinguishability of the NIWI.
-
-        \item We set \(\sk\pars{t^*} \gets \iO\parr{C'_{\sk_2,t^*,c^*_1,c^*_2}}\) where \(C'_{\sk_2,t^*,c^*_1,c^*_2}\) does the following on input a ciphertext \(c\):
+        \item We set \(\sk\pars{t^*} \gets \iO\parr{C'_{\sk_2,c^*_1,c^*_2}}\) where \(C'_{\sk_2,c^*_1,c^*_2}\) does the following on input a ciphertext \(c\):
         \begin{sitemize}
-            \item parse \(\parr{t,c_1,c_2,\pi} \coloneqq c\),
-            \item decrypt \(\widetilde{m}||\widetilde{t} \coloneqq \Dec'\parr{\sk'_2,c_2}\),
-            \item if \(\Verify\parr{s_{\pk,t,h,c_1,c_2},\pi} = 0\) or \(\widetilde{t} \neq t\) or \(t = t^*\) or \(c_1||c_2 = c^*_1||c^*_2\), output \(\bot\),
-            \item output \(\widetilde{m}\).
+            \item parse \(\parr{c_1,c_2,\pi} \coloneqq c\),
+            \item if \(\Verify\parr{s_{\pk,c_1,c_2},\pi} = 0\) or \(c_1||c_2 = c^*_1||c^*_2\), output \(\bot\),
+            \item output \(\widetilde{m} \coloneqq \Dec'\parr{\sk'_2,c_2}\).
         \end{sitemize}
         Now, \(\sk\pars{t^*}\) contains \(\sk'_2\) but \(\sk'_1\) is no longer used.
-        This step is justified by the indistinguishability of \(\iO\) and the functional equivalence of \(C_{\sk_1,t^*}\) and \(C'_{\sk_2,t^*,c^*_1,c^*_2}\).
-        Let argue in detail why the two circuit are equivalent.
-        First, if the verification fails \(\Verify\parr{s_{\pk,t^*,h^*,c^*_1,c^*_2} = 0}\),
+        This step is justified by the indistinguishability of \(\iO\) and the functional equivalence of \(C_{\sk_1,k'}\) and \(C'_{\sk_2,c^*_1,c^*_2}\).
+        Let us argue in detail why the two circuit are equivalent.
+        First, if the verification fails \(\Verify\parr{s_{\pk,c^*_1,c^*_2} = 0}\),
         then both circuits output \(\bot\).
-        Thus we can concentrate on inputs (ciphertexts) where the verification passes \(\Verify\parr{s_{\pk,t^*,h^*,c^*_1,c^*_2} = 1}\).
-        Because of the perfect soundness of the NIWI it holds that either \cref{eq:consistency} or \cref{eq:trapdoor} holds.
-        If \cref{eq:trapdoor} holds, then \(c_1||c_2 = c^*_1||c^*_2\) because the perfectly binding commitment \(C\) contains \(c^*_1||c^*_2\).
+        Thus we can concentrate on inputs (ciphertexts) where the verification passes \(\Verify\parr{s_{\pk,c^*_1,c^*_2} = 1}\).
+        Because of the perfect soundness of the NIWI that either \cref{eq:consistency} or \cref{eq:trapdoor} holds but not both because \(c^*_2\) contains \(0^{\secpar-1}||1\) while \(c^*_1\) contains \(m_b = b^\secpar\).
+        \begin{sitemize}
+            \item If \cref{eq:consistency} holds,
+            then (by perfect correctness of \(\PKE'\)) \(c_1\) and \(c_2\) contain the same plaintext \(\widetilde{m}\) and (by negation of \cref{eq:trapdoor}) \(c_1||c_2 \neq c^*_1||c^*_2\).
+            Thus, if both circuits output some value \(\widetilde{m} \neq \bot\) it will be the same value (no matter if it is obtained by decrypting \(c_1\) or \(c_2\)).
+            \\
+            Since \(c_1||c_2 \neq c^*_1||c^*_2\) both circuits output \(\bot\) on the same inputs because their abort conditions are equal.
 
-        \item We set \(c^*_1 \gets \Enc\parr{\pk'_1,0;r^*_1}\) instead of \(\Enc\parr{\pk'_1,m_b;r^*_1}\).
+            \item If \cref{eq:trapdoor} holds, then \(c_1||c_2 = c^*_1||c^*_2\) because the perfectly binding commitment \(C\) contains \(c^*_1||c^*_2||1\).
+            In this case the both \(\bot\) because of the abort condition \(c_1||c_2 = c^*_1||c^*_2\).
+        \end{sitemize}
+
+        \item We set \(c^*_1 \gets \Enc\parr{\pk'_1,0^{\secpar};r^*_1}\) instead of \(\Enc\parr{\pk'_1,m_b||k^*;r^*_1}\).
         Note that this hybrid is independent of the bit \(b\).
         This step is justified by the (computational) IND-CPA security of the underlying PKE \(\PKE'\) because neither the secret key \(\sk'_1\) nor the randomness \(r^*_1\) are used (except to generate \(c^*_1\)).
     \end{hybrids}
@@ -190,15 +349,14 @@
     \begin{bralign}
         p_i \coloneqq
         \Pr{
-            \arraycolsep=1.4pt
             \begin{array}{rl}
                 \parr{\pk,\sk} &\gets \Gen\parr{1^\secpar}
                 \\
-                \parr{m_0,m_1,t^*} &\gets \A_1\parr{\pk}
+                \parr{m_0,m_1} &\gets \A_1\parr{\pk}
                 \\
                 b &\gets \bit
                 \\
-                \parr{\sk\pars{t^*},c^*} &\gets \H_i\parr{\pk,\sk,m_0,m_1,t^*}
+                \parr{\sk\pars{c^*},c^*} &\gets \H_i\parr{\pk,\sk,m_0,m_1}
                 \\
                 b' &\gets \A_2\parr{\pk,c^*,\sk\pars{t^*}}
             \end{array}
@@ -207,7 +365,7 @@
         }
     \end{bralign}
     be the probability that the adversary \(\A\) outputs the correct bit in hybrid \(i\).
-    Because \(p_1\) is the adversary's advantage in the original ad-IND-CTKL security game and \(p_6 = 1/2\),
+    Because \(p_1\) is the adversary's advantage in the original ad-IND-CCKL security game and \(p_6 = 1/2\),
     we see
     \begin{bralign}
         p_1
@@ -215,300 +373,99 @@
         \abs{p_1 - p_2} + \abs{p_2 - p_3} + \abs{p_3 - p_4} + \abs{p_4 - p_5} + \abs{p_5 - p_6} + p_6
         \\
         &\leq
-        \varepsilon_{\mathsf{hide}}\parr{\secpar} + \varepsilon_{\mathsf{WI}}\parr{\secpar} + \varepsilon_{\mathsf{IND-CPA}}\parr{\secpar} + \varepsilon_{\mathsf{iO}}\parr{\secpar} + \varepsilon_{\mathsf{IND-CPA}}\parr{\secpar} + 1/2
+        \varepsilon_{\textsf{hide}}\parr{\secpar} + \varepsilon_{\textsf{WI}}\parr{\secpar} + \varepsilon_{\textsf{IND-CPA}}\parr{\secpar} + \varepsilon_{\textsf{iO}}\parr{\secpar} + \varepsilon_{\textsf{IND-CPA}}\parr{\secpar} + 1/2
         \\
         &\leq
         1/2 + \negl\parr{\secpar}
     \end{bralign}
+
+    Note that our scheme only uses obfuscation for the punctured secret key.
 \end{proof}
 
-
-
-
-
-
-
-
-
-
-
 \begin{theorem}
-    Assuming indistinguishability obfuscation,
-    puncturable PRF,
-    statistically binding commitment,
-    and pseudorandom generator,
-    there exists a deterministic statistically sound NIWI in the CRS model.
+    Let \(\PKE' = \parr{\Gen',\Enc',\Dec',\Punct'}\) be a prefectly correct \(\varepsilon'_{\textsf{IND-CCKL}}\)-ad-IND-CCKL secure cpPKE with binary message space \(M'_\secpar \coloneq \parc{0^\secpar,1^\secpar}\).
+    Then there exists an \(\varepsilon_{\textsf{IND-CCKL}}\)-ad-IND-CCKL cpPKE \(\PKE\) with exponentially large message space \(M_\secpar \coloneq \bit^\secpar\) where \(\varepsilon_{\textsf{IND-CCKL}}\parr{\secpar} \leq \secpar \varepsilon'_{\textsf{IND-CCKL}}\parr{\secpar}\).
 \end{theorem}
 
 \begin{proof}
-    Let \(\iO\) be an indistinguishability obfuscator,
-    let \(\PPRF = \parr{\KeyGen, \Eval, \Punct}\) be a 2-puncturable,
-    let \(\parr{\Commit,\Open}\) be a statistically binding commitment scheme,
-    and let \(\PRG\) be a pseudorandom generator.
-    \\
-    We define the following \(\NIWI \coloneqq \parr{\Setup, \Prove, \Verify}\):
+    The construction is just a bitwise encryption of the message.
+    First, we define our ad-IND-CCKL PKE scheme \(\PKE\) and then prove correctness and security.
     \begin{sitemize}
-        \item \(\Setup\parr{1^\secpar}\):
-        Sample \(k_1,k_2 \gets \KeyGen\parr{1^\secpar}\).
-        \\
-        Let \(\mathsf{P} = \iO\parr{\parr{x, w} \mapsto \parr{\pi_0,\pi_1}}\) where \(\pi_0 \coloneqq \PRG\parr{\Eval\parr{k_1,x||w}}\) and \(\pi_1 \coloneqq \Commit\parr{w; \Eval\parr{k_2,\pi_0}}\).
-        \\
-        Let \(\mathsf{V} = \iO\parr{\parr{x, \pi} \mapsto R\parr{x,w} = 1 \wedge \pi_0 = \PRG\parr{\Eval\parr{k_1,x||w}}}\) where \(w \coloneqq \Open\parr{\pi_1, \Eval\parr{k_2,\pi_0}}\).
+        \item \(\Gen\parr{1^\secpar}\):
+        \begin{sitemize}
+            \item generate \(\parr{\pk'_1,\sk'_1}, ..., \parr{\pk'_\secpar,\sk'_\secpar} \gets \Gen'\parr{1^{\secpar}}\),
+            \item set \(\pk \coloneqq \parr{\pk'_i,}_{i \in \parc{1,...,\secpar}}\) and \(\sk \coloneqq \parr{\pk,\parr{\sk'_i,}_{i \in \parc{1,...,\secpar}}}\),
+            \item output \(\parr{\pk,\sk}\).
+        \end{sitemize}
 
-        \item \(\Prove\parr{\CRS,x,w} \coloneqq \mathsf{P}\parr{x,w}\)
+        \item \(\Enc\parr{\pk,m}\):
+        \begin{sitemize}
+            \item for each \(i \in \parc{1,...,\secpar}\) generate \(c_i \coloneqq \Enc'\parr{\pk'_i,m} \in \bit^{2\secpar}\),
+            \item output \(c \coloneqq \parr{c_i}_{i \in \parc{1,...,\secpar}}\),
+        \end{sitemize}
 
-        \item \(\Verify\parr{\CRS,x,\pi} \coloneqq \mathsf{V}\parr{x,\pi}\)
+        \item \(\Dec\parr{\sk,c}\):
+        \begin{sitemize}
+            \item parse \(\parr{c_i}_{i \in \parc{1,...,\secpar}} \coloneqq c\),
+            \item decrypt \(\widetilde{m}_i \coloneqq \Dec'\parr{\sk'_i,c_i}\),
+            \item output \(\widetilde{m} \coloneqq \widetilde{m}_1||...||\widetilde{m}_\secpar\).
+        \end{sitemize}
+
+        \item \(\Punct\parr{\sk, c'}\):
+        \begin{sitemize}
+            \item parse \(\parr{c'_i}_{i \in \parc{1,...,\secpar}} \coloneqq c'\),
+            \item puncture \(\sk'_i\pars{c'_i} \coloneqq \Punct'\parr{\sk'_i,c'_i}\),
+            \item output \(\sk\pars{c'} \coloneqq \parr{\pk,\parr{\sk'_i\pars{c'_i}}_{i \in \parc{1,...,\secpar}}}\).
+        \end{sitemize}
+
+        \item \(\Dec\parr{\sk\pars{c'},c}\):
+        \begin{sitemize}
+            \item parse \(\parr{c_i}_{i \in \parc{1,...,\secpar}} \coloneqq c\),
+            \item decrypt \(\widetilde{m}_i \coloneqq \Dec'\parr{\sk'_i\pars{c'_i},c_i}\),
+            \item for any \(i \in \parc{1,...,\secpar}\) if \(\widetilde{m}_i = \bot\) output \(\bot\),
+            \item output \(\widetilde{m} \coloneqq \widetilde{m}_1||...||\widetilde{m}_\secpar\).
+        \end{sitemize}
     \end{sitemize}
-
-    Correctness directly follows from the correctness of the underlying primitives.
-    Since the verification algorithm checks \(R\parr{x,w}\) the NIWI is perfectly (statistically) sound if the obfuscator is perfectly (statistically) correct.
-    Now, we show the witness indistinguishability of \(\NIWI\) by a sequence of hybrid games.
-    For simplicity we assume a perfectly binding commitment scheme.%
-    \footnote{If the commitment scheme is statistically binding, then the saem argumentation applies but one has to consider the event that the scheme is not perfectly binding.}
-    Let \(L \in \NP\) be language with relation \(R\).
-    Let \(\hat{x} \in L\) be a statement with witnesses \(\hat{w}^0,\hat{w}^1\) s.t.\ \(\parr{\hat{x},\hat{w}^0},\parr{\hat{x},\hat{w}^1} \in R\).
-    Let
+    Perfect message correctness follows directly from the perfect correctness of \(\PKE'\).
+    Now, we prove punctured key correctness for each message \(m\) and each (possibly malformed) \(c\) ciphertext.
+    Let \(\PKE'\) have at least \(1 - \alpha\parr{\secpar}\) punctured key correctness.
+    We see that \(\PKE\) has punctured key correctness
     \begin{bralign}
-        \mathsf{P}_{\hat{\pi}^0,\hat{\pi}^1,k_1,k_2}
-        \coloneqq
-        \iO\parr{\parr{x,w} \mapsto \begin{cases}
-            \hat{\pi}^0 & x||w = \hat{x}||\hat{w}^0
-            \\
-            \hat{\pi}^1 & x||w = \hat{x}||\hat{w}^1
-            \\
-            \pi_0 \coloneqq \PRG\parr{\Eval\parr{k_1,x||w}}, \pi_1 \coloneqq \Commit\parr{w; \Eval\parr{k_2, \pi_0}} & \text{else}\end{cases}
+        &\Pr{
+            \begin{array}{rl}
+                \parr{\pk,\sk} &\gets \Gen\parr{1^\secpar}
+                \\
+                c &\gets \Enc\parr{\pk,m}
+                \\
+                \sk\pars{c'} &\gets \Punct\parr{\sk,c'}
+            \end{array}
+            :
+            \Dec\parr{\sk\pars{c'},c} = m
         }
-    \end{bralign}
-    and let
-    \begin{bralign}
-        \mathsf{V}_{\hat{\pi}^0,\hat{\pi}^1,k_1,k_2}
-        \coloneqq
-        \iO\parr{\parr{x,\pi} \mapsto \begin{cases}
-            1 & \pi = \hat{\pi}^0
-            \\
-            1 & \pi = \hat{\pi}^1
-            \\
-            R\parr{x,w} = 1 \wedge \pi_0 = \PRG\parr{\Eval\parr{k'_1,x||w}} & \text{else}
-        \end{cases}}
-    \end{bralign}
-    where \(w \coloneqq \Open\parr{\pi_1, \Eval\parr{k_2,\pi_0}}\).
-    \begin{hybrids}
-        \item Sample \(\CRS \gets \Setup\parr{1^\secpar}\).
-        Let \(\pi^* \coloneqq \mathsf{P}\parr{\hat{x}||\hat{w}^0}\).
-        Output \(\parr{\CRS, \pi^*}\).
-        Note that this hybrid corresponds to the honest proving only uses the witness \(\hat{w}^0\).
-
-        \item Let \(k'_1 \coloneqq \Punct\parr{k_1, \hat{x}||\hat{w}^0, \hat{x}||\hat{w}^1}\),
-        let \(r_0^b \coloneqq \Eval\parr{k_1,\hat{x}||\hat{w}^b}\),
-        let \(\hat{\pi}_0^b \coloneqq \PRG\parr{r_0^b}\),
-        let \(r_1^b \coloneqq \Eval\parr{k_2,\hat{\pi}_0^b}\),
-        and let \(\hat{\pi}_1^b \coloneqq \Commit\parr{\hat{w}^b; r_1^b}\) for both \(b \in \bit\).
-        Let \(\CRS \coloneqq \parr{\mathsf{P}_{\hat{\pi}^0,\hat{\pi}^1,k'_1,k_2}, \mathsf{V}_{\hat{\pi}^0,\hat{\pi}^1,k'_1,k_2}}\).
-
-        \item Sample \(r_0^b \gets \bit^\secpar\).
-
-        \item Sample \(\hat{\pi}_0^b \gets \bit^{2\secpar}\).
-        Denote by \(E\) the event that \(\hat{\pi}_0^0, \hat{\pi}_0^1 \not\in \PRG\parr{\bit^\secpar}\).
-
-        \item Let \(k'_2 \coloneqq \Punct\parr{k_2, \hat{\pi}_0^0, \hat{\pi}_0^1}\).
-        Let \(\CRS \coloneqq \parr{\mathsf{P}_{\hat{\pi}^0,\hat{\pi}^1,k'_1,k'_2}, \mathsf{V}_{\hat{\pi}^0,\hat{\pi}^1,k'_1,k'_2}}\).
-
-        \item Sample \(r_1^b \gets \bit^\secpar\).
-
-        \item Let \(\hat{\pi}_1^b \coloneqq \Commit\parr{\hat{w}^{1-b}; r_1^b}\).
-        Let \(\pi^* \coloneqq \mathsf{P}\parr{\hat{x}||\hat{w}^1}\).
-
-        \item Sample \(r_1^b \coloneqq \Eval\parr{k_2,\hat{\pi}_0^b}\).
-
-        \item Let \(\CRS \coloneqq \parr{\mathsf{P}_{\hat{\pi}^0,\hat{\pi}^1,k'_1,k_2}, \mathsf{V}_{\hat{\pi}^0,\hat{\pi}^1,k'_1,k_2}}\).
-
-        \item Let \(\hat{\pi}_0^b \coloneqq \PRG\parr{r_0^b}\).
-        
-        \item Let \(r_0^b \coloneqq \Eval\parr{k_1,\hat{x}||\hat{w}^b}\).
-        Let \(\pi^* \coloneqq \mathsf{P}\parr{\hat{x}||\hat{w}^1}\).
-        Output \(\parr{\CRS, \pi^*}\).
-        Note that this hybrid corresponds to the honest proving only uses the witness \(\hat{w}^1\).
-    \end{hybrids}
-    For any PPT distinguisher \(\D\) consider the probability \(\varepsilon_i \coloneqq \Pr[{\parr{\CRS,\pi^*} \gets \H_i}]{\D\parr{\CRS,\pi^*} = 0}\) that the distinguisher outputs \(0\) in hybrid \(i\).
-    \\
-    Because the circuits \(\mathsf{P}\) and \(\mathsf{P}_{\hat{\pi}^0,\hat{\pi}^1,k'_1,k_2}\), and \(\mathsf{V}\) and \(\mathsf{V}_{\hat{\pi}^0,\hat{\pi}^1,k'_1,k_2}\) are functionally equivalent it follows that \(\abs{\varepsilon_1 - \varepsilon_2} \leq \eta_{\iO}\parr{\secpar}\).
-    Because \(\H_2\) and \(\H_3\) only use \(k_1\) to compute \(r_0^b\) it follows that \(\abs{\varepsilon_2 - \varepsilon_3} \leq \eta_{\PPRF}\parr{\secpar}\) by the pseudorandomness of the puncturable PRF.
-    Because \(\H_3\) and \(\H_4\) use \(r_0^b\) only to compute \(\pi_0^b\) it follows that \(\abs{\varepsilon_4 - \varepsilon_4} \leq \eta_{\PRG}\parr{\secpar}\) by the pseudorandomness of the PRG.
-    Note
-    \begin{bralign}
-        \varepsilon_4
-        &=
-        \underbrace{\Pr[{\parr{\CRS,\pi^*} \gets \H_4}]{\D\parr{\CRS,\pi^*} = 0 \given E}}_{\varepsilon'_4} \underbrace{\Pr[{\parr{\CRS,\pi^*} \gets \H_4}]{E}}_{\leq 1}
         \\
-        &+
-        \underbrace{\Pr[{\parr{\CRS,\pi^*} \gets \H_4}]{\D\parr{\CRS,\pi^*} = 0 \given \text{not } E}}_{\leq 1} \underbrace{\Pr[{\parr{\CRS,\pi^*} \gets \H_4}]{\text{not } E}}_{\leq 2^{1-\secpar}}
-        \\
-        &\leq
-        2^{1-\secpar}
-        +
-        \varepsilon'_4
-    \end{bralign}
-    and
-    \begin{bralign}
-        \varepsilon_4
         &=
-        \varepsilon'_4 \underbrace{\Pr[{\parr{\CRS,\pi^*} \gets \H_4}]{E}}_{\geq 1-2^{1-\secpar}}
-        +
-        \Pr[{\parr{\CRS,\pi^*} \gets \H_4}]{\D\parr{\CRS,\pi^*} = 0 \given \text{not } E} \underbrace{\Pr[{\parr{\CRS,\pi^*} \gets \H_4}]{\text{not } E}}_{\geq 0}
+        \Pr{
+            \forall i \in \parc{1,...,\secpar} : \Dec'\parr{\sk'_i\pars{c'_i},c_i} = m_i
+        }
+        \\
+        &=
+        1
+        -
+        \Pr{
+            \exists i \in \parc{1,...,\secpar} : \Dec'\parr{\sk'_i\pars{c'_i},c_i} \neq m_i
+        }
         \\
         &\geq
-        \varepsilon'_4 \parr{1-2^{1-\secpar}}
-        \ ,
+        1
+        -
+        \sum_{i=1}^{\secpar} \Pr{
+            \Dec'\parr{\sk'_i\pars{c'_i},c_i} \neq m_i
+        }
+        \\
+        &\geq
+        1 - \secpar \alpha\parr{\secpar}
+        \ .
     \end{bralign}
-    hence \(\abs{\varepsilon_4 - \varepsilon'_4} \leq 2^{1-\secpar}\).
-    The event \(E\) implies that the circuits \(\mathsf{P}_{\hat{\pi}^0,\hat{\pi}^1,k'_1,k_2}\) and \(\mathsf{P}_{\hat{\pi}^0,\hat{\pi}^1,k'_1,k'_2}\) are functionally equivalent because \(\Eval\) only gets called on PRG images and \(k'_2\) in punctured at a non-PRG image.
-    Moreover, \(E\) implies that the circuits \(\mathsf{V}_{\hat{\pi}^0,\hat{\pi}^1,k'_1,k_2}\) and \(\mathsf{V}_{\hat{\pi}^0,\hat{\pi}^1,k'_1,k'_2}\) are functionally equivalent.
-    Specifically, on input \(\hat{x}||\hat{\pi}^b\) both circuits outputs \(1\).
-    On the other hand for any input \(\hat{x}||\widetilde{\pi}_0^b||\hat{\pi}_1^b\) with \(\widetilde{\pi}_0^b \neq \hat{\pi}_0^b\) the outputs is \(0\) because the recovered \(w \coloneqq \Open\parr{\hat{\pi}_1^b, \Eval\parr{k'_2,\widetilde{\pi}_0^b}} = \bot\) (this follows from the prefect binding property of the commitment) will never satisfy the relation \(R\).
-    Consequently, \(\abs{\varepsilon'_4 - \varepsilon'_5} \leq \eta_{\iO}\parr{\secpar}\) by the indistinguishability of the obfuscations.
-    \\
-    In \(\H_5\) the key \(k_2\) is only used to compute \(r_1^b\) and derive the key \(k'_2\) it follows \(\abs{\varepsilon'_5 - \varepsilon'_6} \leq \eta_{\PPRF}\parr{\secpar}\) by the pseudorandomness of the puncturable PRF.
+    Now, let's prove ad-IND-CCKL security of our scheme.
 \end{proof}
 
-
-\subsection{Partially-Puncturable PKE}
-
-\begin{definition}[Partially-Puncturable PKE]
-    A partially-puncturable PKE (ppPKE) \(\PKE \coloneqq \parr{\Gen, \Enc_0, \Enc_1, \Dec, \Punct}\) fulfills the following properties:
-    \begin{sitemize}
-        \item \(\Gen\parr{1^\secpar}\) outputs a key pair \(\parr{\pk,\sk} \gets \Gen\parr{1^\secpar}\).
-        \item \(\Enc\parr{\pk,m;r}\) outputs a two-part ciphertext \(c \coloneqq \parr{c_0,c_1}\).
-        \item \(\Dec\parr{\sk,c}\) decrypts the ciphertext \(c\).
-        \item \(\Punct\parr{\sk,c_0}\) outputs a secret-key \(\sk\pars{c_0}\) that is punctured on the first part of a ciphertext \(c_0\) s.t.\ \(\sk\pars{c_0}\) is unable to decrypt any ciphertext that has \(c_0\) as the first part.
-        \item Correctness:
-        \(\forall \parr{\pk,\sk} \in \Gen\ \forall m,r : \Dec\parr{\sk,\parr{c_0,c_1}}\) where \(c_0 \coloneqq \Enc_0\parr{\pk;r}\) and \(c_1 \coloneqq \Enc_1\parr{\pk,m;r}\).
-        \item Correctness of punctured secret-key:
-        \(\forall \parr{\pk,\sk} \in \Gen\ \forall c'_0,m,r : c_0 \neq c'_0 \implies \Dec\parr{\sk\pars{c'_0},\parr{c_0,c_1}} = m\) where \(c_0 \coloneqq \Enc_0\parr{\pk;r}\) and \(c_1 \coloneqq \Enc_1\parr{\pk,m;r}\) and \(\sk\pars{c'_0} \gets \Punct\parr{\sk,c'_0}\).
-    \end{sitemize}
-\end{definition}
-
-\begin{definition}[IND-pKL security]
-    A ppPKE is IND-pKL secure iff any PPT distinguisher \(\D = \parr{\D_1,\D_2}\) has negligible advantage, i.e., \(\abs{\Pr{\mathsf{EXP}^0_\D\parr{\secpar} = 0} - \Pr{\mathsf{EXP}^1_\D\parr{\secpar} = 0}} \leq \negl\parr{\secpar}\) where \(\mathsf{EXP}^b_\D\) is the following experiment:
-    \begin{sitemize}
-        \item sample \(\parr{\pk,\sk} \gets \Gen\parr{1^\secpar}\),
-        \item sample \(r^* \gets \bit^\secpar\),
-        \item sample \(b \gets \bit\),
-        \item set \(\parr{m_0,m_1,\sigma} \gets \D_1\parr{1^\secpar,\pk}\),
-        \item set \(c_0^* \coloneqq \Enc_0\parr{\pk;r^*}\),
-        \item set \(\sk\pars{c^*_0} \coloneqq \Punct\parr{\sk,c_0^*}\),
-        \item set \(c_1^* \coloneqq \Enc_1\parr{\pk,m_b;r^*}\),
-        \item set \(b' \gets \D_2\parr{\sigma,\parr{c^*_0,c^*_1},\sk\pars{c^*_0}}\),
-        \item output \(b = b'\).
-    \end{sitemize}
-\end{definition}
-
-
-\subsection{pKDM-pKL security}
-
-\begin{definition}[pKDM-pKL security]
-    A ppPKE is pKDM-pKL secure iff any PPT distinguisher \(\D\) has negligible advantage, i.e., \(\abs{\Pr{\mathsf{EXP}^0_\D\parr{\secpar} = 0} - \Pr{\mathsf{EXP}^1_\D\parr{\secpar} = 0}} \leq \negl\parr{\secpar}\) where \(\mathsf{EXP}^b_\D\) is the following experiment:
-    \begin{sitemize}
-        \item sample \(\parr{\pk,\sk} \gets \Gen\parr{1^\secpar}\),
-        \item sample \(r^* \gets \bit^\secpar\),
-        \item sample \(b \gets \bit\),
-        \item set \(c_0^* \coloneqq \Enc_0\parr{\pk;r^*}\),
-        \item set \(\sk\pars{c^*_0} \coloneqq \Punct\parr{\sk,c_0^*}\),
-        \item set \(m_0 \coloneqq 0\) and \(m_1 \coloneqq \sk\pars{c^*_0}\),
-        \item set \(c_1^* \coloneqq \Enc_1\parr{\pk,m_b;r^*}\),
-        \item set \(b' \gets \D\parr{1^\secpar,\pk,\parr{c^*_0,c^*_1},\sk\pars{c^*_0}}\),
-        \item output \(b = b'\).
-    \end{sitemize}
-\end{definition}
-
-\begin{lemma}
-    Let \(\PKE \coloneqq \parr{\Gen, \Enc, \Dec}\) be a IND-CPA secure PKE scheme.
-    Let \(\PKE' \coloneqq \parr{\Gen', \Enc'_0, \Enc'_1, \Dec', \Punct'}\) be a ppPKE.
-    Then there exists a pKDM-pKL secure ppPKE \(\overline{\PKE} \coloneqq \parr{\overline{\Gen}, \overline{\Enc}_0, \overline{\Enc}_1, \overline{\Dec}, \overline{\Punct}}\).
-\end{lemma}
-
-\begin{proof}
-    We first give a construction and then prove its security.
-    \paragraph{Construction.}
-    \begin{sitemize}
-        \item \(\overline{\Gen}\parr{1^\secpar;r}\):
-        output \(\parr{\overline{\pk},\overline{\sk}} \coloneqq \parr{\pk',\sk'} = \Gen'\parr{1^\secpar;r}\).
-
-        \item \(\overline{\Enc}_0\parr{\overline{\pk};r}\):
-        parse \(\parr{r_0,r_1,r_{\Gen}} \coloneqq r\),
-        set \(\parr{\pk,\sk} \coloneqq \Gen\parr{1^\secpar;r_{\Gen}}\),
-        output \(\overline{c}_0 \coloneqq \Enc'_0\parr{\pk';r_0}\).
-
-        \item \(\overline{\Enc}_1\parr{\overline{\pk},m;r}\):
-        parse \(\parr{r_0,r_1,r_{\Gen}} \coloneqq r\),
-        set \(\parr{\pk,\sk} \gets \Gen\parr{1^\secpar;r_{\Gen}}\),
-        set \(c'_1 \coloneqq \Enc'_1\parr{\pk',\sk;r_0}\),
-        set \(c \coloneqq \Enc\parr{\pk,m;r_1}\),
-        output \(\overline{c}_1 \coloneqq \parr{c'_1,c}\).
-
-        \item \(\overline{\Dec}\parr{\overline{\sk},\overline{c}}\):
-        parse \(\parr{c'_0,c'_1,c} \coloneqq \overline{c}\),
-        decrypt \(\sk \coloneqq \Dec'\parr{\sk',\parr{c'_0,c'_1}}\),
-        output \(m \coloneqq \Dec\parr{\sk,c}\).
-
-        \item \(\overline{\Punct}\parr{\overline{\sk},\overline{c}_0}\):
-        output \(\sk\pars{\overline{c}_0} \coloneqq \Punct'\parr{\sk',\overline{c}_0}\).
-    \end{sitemize}
-
-    \paragraph{Security proof.}
-    We prove security through four hybrid games.
-    \begin{hybrids}
-        \item Sample \(\parr{\overline{\pk},\overline{\sk}} \gets \overline{\Gen}\parr{1^\secpar}\),
-        sample \(r \gets \bit^\secpar\),
-        set \(\overline{c}^*_0 \coloneqq \overline{\Enc}_0\parr{\pk;r}\),
-        set \(\sk\pars{c^*_0} \coloneqq \Punct\parr{\sk,c^*_0}\),
-        set \(m_0 \coloneqq 0\) and \(m_1 \coloneqq \sk\pars{c^*_0}\),
-        sample \(b \gets \bit\),
-        set \(\overline{c}^*_1 \coloneqq \overline{\Enc}_1\parr{\pk,m_b;r}\),
-        output \(\parr{\overline{\pk},\overline{c}^*,\sk\pars{c^*_0}}\).
-
-        \item Sample \(\parr{\overline{\pk},\overline{\sk}} \gets \overline{\Gen}\parr{1^\secpar}\),
-        sample \(r = \parr{r_0,r_1,r_{\Gen}} \gets \bit^\secpar\),
-        set \(\overline{c}^*_0 \coloneqq \overline{\Enc}_0\parr{\pk;r}\),
-        set \(\sk\pars{c^*_0} \coloneqq \Punct\parr{\sk,c^*_0}\),
-        set \(m_0 \coloneqq 0\) and \(m_1 \coloneqq \sk\pars{c^*_0}\),
-        sample \(b \gets \bit\),
-        set \(c'_1 \coloneqq \Enc'_1\parr{\pk',\fbox{\sk};r_0}\),
-        set \(c \coloneqq \Enc\parr{\pk,m_b;r_1}\),
-        set \(\overline{c}^* \coloneqq \parr{\overline{c}^*_0, c'_1, c}\),
-        output \(\parr{\overline{\pk},\overline{c}^*,\sk\pars{c^*_0}}\).
-
-        \item Sample \(\parr{\overline{\pk},\overline{\sk}} \gets \overline{\Gen}\parr{1^\secpar}\),
-        sample \(r = \parr{r_0,r_1,r_{\Gen}} \gets \bit^\secpar\),
-        set \(\overline{c}^*_0 \coloneqq \overline{\Enc}_0\parr{\pk;r}\),
-        set \(\sk\pars{c^*_0} \coloneqq \Punct\parr{\sk,c^*_0}\),
-        set \(m_0 \coloneqq 0\) and \(m_1 \coloneqq \sk\pars{c^*_0}\),
-        sample \(b \gets \bit\),
-        set \(c'_1 \coloneqq \Enc'_1\parr{\pk',\fbox{0};r_0}\),
-        set \(c \coloneqq \Enc\parr{\pk,\fbox{\(m_b\)};r_1}\),
-        set \(\overline{c}^* \coloneqq \parr{\overline{c}^*_0, c'_1, c}\),
-        output \(\parr{\overline{\pk},\overline{c}^*,\sk\pars{c^*_0}}\).
-
-        \item Sample \(\parr{\overline{\pk},\overline{\sk}} \gets \overline{\Gen}\parr{1^\secpar}\),
-        sample \(r = \parr{r_0,r_1,r_{\Gen}} \gets \bit^\secpar\),
-        set \(\overline{c}^*_0 \coloneqq \overline{\Enc}_0\parr{\pk;r}\),
-        set \(\sk\pars{c^*_0} \coloneqq \Punct\parr{\sk,c^*_0}\),
-        set \(m_0 \coloneqq 0\) and \(m_1 \coloneqq \sk\pars{c^*_0}\),
-        set \(c'_1 \coloneqq \Enc'_1\parr{\pk',0;r_0}\),
-        set \(c \coloneqq \Enc\parr{\pk,\fbox{0};r_1}\),
-        set \(\overline{c}^* \coloneqq \parr{\overline{c}^*_0, c'_1, c}\),
-        output \(\parr{\overline{\pk},\overline{c}^*,\sk\pars{c^*_0}}\).
-    \end{hybrids}
-    First, note that the output distribution of \(\H_1\) is the same as in the original pKDM-pKL security game.
-    The distribution of \(\H_2\) is distributionally equal to the one of \(\H_1\).
-    The indistinguishability between \(\H_3\) and \(\H_2\) follows from the IND-pKDM security of \(\PKE'\).
-    The indistinguishability between \(\H_4\) and \(\H_3\) follows from the IND-CPA security of \(\PKE\).
-    Lastly, the distribution of \(\H_4\) is independent of the choice bit \(b\).
-\end{proof}
-
-
-
-\begin{lemma}
-    Let \(\FHE \coloneqq \parr{\Gen, \Enc, \Dec, \Eval}\) be a IND-CPA secure FHE scheme for \(\NC[1]\).
-    Let \(\PKE' \coloneqq \parr{\Gen', \Enc'_0, \Enc'_1, \Dec', \Punct'}\) be a ppPKE.
-    Then there exists a pKDM-pKL secure ppFHE \(\overline{\FHE} \coloneqq \parr{\overline{\Gen}, \overline{\Enc}_0, \overline{\Enc}_1, \overline{\Dec}, \overline{\Punct}, \overline{\Eval}}\) for \(\NC[1]\).
-\end{lemma}
