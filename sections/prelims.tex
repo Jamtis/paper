@@ -6,8 +6,8 @@
     An admissible space \(A \coloneqq \parr{A_\secpar}_{\secpar \in \N}\) is a family of sets \(A_\secpar\) that are efficiently samplable and membership is efficiently decidable.
 \end{definition}
 
-\begin{definition}
-    A tag-puncturable KEM (tpKEM) is a tuple \(\parr{\Gen,\Enc,\Dec,\Punct}\) associated with
+\begin{definition}[Tag-Puncturable KEM]
+    A \(\parr{\alpha,\alpha_{\mathsf{PK}},\varepsilon_{\mathsf{IND-CTKL}}}\)-tag-puncturable KEM (tpKEM) is a tuple \(\parr{\Gen,\Enc,\Dec,\Punct}\) associated with
     an admissible key space \(K \coloneqq \parr{K_\secpar}_{\secpar \in \N}\),
     an admissible tag space \(T \coloneqq \parr{T_\secpar}_{\secpar \in \N}\) and
     an admissible randomness space \(R \coloneqq \parr{R_\secpar}_{\secpar \in \N}\) such that
@@ -15,7 +15,7 @@
         \item \(\Gen\) on input \(1^\secpar\) generates a pair \(\parr{\pk,\sk}\),
         \item \(\Enc\) on input a public key \(\pk\) and a tag \(t \in T_\secpar\) outputs a ciphertext \(c\),
         \item \(\Dec\) on input a secret key \(\sk\) and a ciphertext \(c\) outputs the encapsulated \(\kappa \in K_\secpar \cup \parc{\bot}\),
-        \item \(\Punct\) on input a secret key \(\sk\) and a tag \(t \in T_\secpar\) outputs a punctured secret key \(\sk\pars{t}\) that is able to decrypt almost all ciphertexts except those with tag \(t \in T_\secpar\).
+        \item \(\Punct\) on input a secret key \(\sk\) and a tag \(t \in T_\secpar\) outputs a punctured secret key \(\sk\pars{t}\) that is able to decrypt (almost) all ciphertexts except those with tag \(t \in T_\secpar\).
     \end{sitemize}
     For each security parameter \(\secpar \in \N\),
     each message \(m \in M_\secpar\),
@@ -30,7 +30,7 @@
                 :
                 \Dec\parr{\sk,c} = m
             }
-            \geq 1 - \negl\parr{\secpar}
+            \geq 1 - \alpha\parr{\secpar}
         \end{bralign}
 
         \item Punctured key correctness:
@@ -46,7 +46,7 @@
                 :
                 \Dec\parr{\sk\pars{t'},c} = \Dec\parr{\sk,c}
             }
-            \geq 1 - \negl\parr{\secpar}
+            \geq 1 - \alpha_{\mathsf{PK}}\parr{\secpar}
         \end{bralign}
     \end{sitemize}
     \marginnote{statistical punctured correctness seems inherent?!}
@@ -73,7 +73,7 @@
                 :
                 b' = b
             }
-            \leq 1/2 + \negl\parr{\secpar}
+            \leq 1/2 + \varepsilon_{\mathsf{IND-CTKL}}\parr{\secpar}
             \ ,
         \end{bralign}
 
@@ -98,21 +98,21 @@
                 :
                 b' = b
             }
-            \leq 1/2 + \negl\parr{\secpar}
+            \leq 1/2 + \varepsilon_{\mathsf{IND-CTKL}}\parr{\secpar}
         \end{bralign}
     \end{sitemize}
     for any efficient two-stage adversary \(\A = \parr{\A_1, \A_2}\) and some negligible function \(\negl\).
 \end{definition}
 
-\begin{definition}
-    A tag-puncturable PKE (tpPKE) is a tuple \(\parr{\Gen,\Enc,\Dec,\Punct}\) associated with an admissible message space \(M \coloneqq \parr{M_\secpar}_{\secpar \in \N}\),
+\begin{definition}[Tag-Puncturable PKE]
+    A \(\parr{\alpha,\alpha_{\mathsf{PK}},\varepsilon_{\mathsf{IND-CTKL}}}\)-tag-puncturable PKE (tpPKE) is a tuple \(\parr{\Gen,\Enc,\Dec,\Punct}\) associated with an admissible message space \(M \coloneqq \parr{M_\secpar}_{\secpar \in \N}\),
     an admissible tag space \(T \coloneqq \parr{T_\secpar}_{\secpar \in \N}\) and
     an admissible randomness space \(R \coloneqq \parr{R_\secpar}_{\secpar \in \N}\) such that
     \begin{sitemize}
         \item \(\Gen\) on input \(1^\secpar\) generates a pair \(\parr{\pk,\sk}\),
         \item \(\Enc\) on input a public key \(\pk\), a message \(m \in M_\secpar\) and a tag \(t \in T_\secpar\) outputs a ciphertext \(c\),
         \item \(\Dec\) on input a secret key \(\sk\) and a ciphertext \(c\) outputs the encrypted message \(m \in M_\secpar \cup \parc{\bot}\),
-        \item \(\Punct\) on input a secret key \(\sk\) and a tag \(t \in T_\secpar\) outputs a punctured secret key \(\sk\pars{t}\) that is able to decrypt almost all ciphertexts except those with tag \(t \in T_\secpar\).
+        \item \(\Punct\) on input a secret key \(\sk\) and a tag \(t \in T_\secpar\) outputs a punctured secret key \(\sk\pars{t}\) that is able to decrypt (almost) all ciphertexts except those with tag \(t \in T_\secpar\).
     \end{sitemize}
     For each security parameter \(\secpar \in \N\),
     each message \(m \in M_\secpar\),
@@ -126,7 +126,7 @@
                 :
                 \Dec\parr{\sk,c} = m
             }
-            \geq 1 - \negl\parr{\secpar}
+            \geq 1 - \alpha\parr{\secpar}
         \end{bralign}
 
         \item Punctured key correctness:
@@ -142,7 +142,7 @@
                 :
                 \Dec\parr{\sk\pars{t'},c} = m
             }
-            \geq 1 - \negl\parr{\secpar}
+            \geq 1 - \alpha_{\mathsf{PK}}\parr{\secpar}
         \end{bralign}
     \end{sitemize}
     \marginnote{statistical punctured correctness seems inherent?!}
@@ -167,7 +167,7 @@
                 :
                 b' = b
             }
-            \leq 1/2 + \negl\parr{\secpar}
+            \leq 1/2 + \varepsilon_{\mathsf{IND-CTKL}}\parr{\secpar}
             \ ,
         \end{bralign}
 
@@ -190,116 +190,20 @@
                 :
                 b' = b
             }
-            \leq 1/2 + \negl\parr{\secpar}
+            \leq 1/2 + \varepsilon_{\mathsf{IND-CTKL}}\parr{\secpar}
         \end{bralign}
     \end{sitemize}
     for any efficient two-stage adversary \(\A = \parr{\A_1, \A_2}\) and some negligible function \(\negl\).
 \end{definition}
 
-\begin{definition}
-    A tag-puncturable PKE (tpPKE) is a tuple \(\parr{\Gen,\Enc,\Dec,\Punct}\) associated with
-    an admissible key space \(K \coloneqq \parr{K_\secpar}_{\secpar \in \N}\),
-    an admissible tag space \(T \coloneqq \parr{T_\secpar}_{\secpar \in \N}\) and
-    an admissible randomness space \(R \coloneqq \parr{R_\secpar}_{\secpar \in \N}\) such that
-    \begin{sitemize}
-        \item \(\Gen\) on input \(1^\secpar\) generates a pair \(\parr{\pk,\sk}\),
-        \item \(\Enc\) on input a public key \(\pk\) a message \(m \in M_\secpar\) and a tag \(t \in T_\secpar\) outputs a ciphertext \(c\),
-        \item \(\Dec\) on input a secret key \(\sk\) and a ciphertext \(c\) outputs a message \(m \in M_\secpar \cup \parc{\bot}\),
-        \item \(\Punct\) on input a secret key \(\sk\) and a tag \(t \in T_\secpar\) outputs a punctured secret key \(\sk\pars{t}\) that is able to decrypt almost all ciphertexts except those with tag \(t \in T_\secpar\).
-    \end{sitemize}
-    For each security parameter \(\secpar \in \N\),
-    each message \(m \in M_\secpar\),
-    each randomness \(r' \in R_\secpar\),
-    and each tags \(t \neq t' \in T_\secpar\) we require the following correctness properties:
-    \begin{sitemize}
-        \item Message correctness:
-        \begin{bralign}
-            \Pr{
-                \parr{\pk,\sk} \gets \Gen\parr{1^\secpar},
-                c \gets \Enc\parr{\pk,m,t}
-                :
-                \Dec\parr{\sk,c} = m
-            }
-            \geq 1 - \negl\parr{\secpar}
-        \end{bralign}
-
-        \item Punctured key correctness:
-        \begin{bralign}
-            \Pr{
-                \begin{array}{rl}
-                    \parr{\pk,\sk} &\gets \Gen\parr{1^\secpar}
-                    \\
-                    \sk\pars{t'} &\gets \Punct\parr{\sk,t'}
-                    \\
-                    c &\gets \Enc\parr{\pk,m,t}
-                \end{array}
-                :
-                \Dec\parr{\sk\pars{t'},c} = m
-            }
-            \geq 1 - \negl\parr{\secpar}
-        \end{bralign}
-    \end{sitemize}
-    \marginnote{statistical punctured correctness seems inherent?!}
-    Furthermore we say a tpPKE is
-    \begin{sitemize}
-        \item selectively indistinguishable under chosen tag key leakage (sel-IND-CTKL) iff
-        \begin{bralign}
-            \Pr{
-                \begin{array}{rl}
-                    \parr{m_0,m_1,t^*} &\gets \A_1\parr{1^\secpar}
-                    \\
-                    \parr{\pk,\sk} &\gets \Gen\parr{1^\secpar}
-                    \\
-                    b &\gets \bit
-                    \\
-                    \sk\pars{t^*} &\gets \Punct\parr{\sk,t^*}
-                    \\
-                    c^* &\gets \Enc\parr{\pk,m_b,t^*}
-                    \\
-                    b' &\gets \A_2\parr{\pk,c^*,\sk\pars{t^*}}
-                \end{array}
-                :
-                b' = b
-            }
-            \leq 1/2 + \negl\parr{\secpar}
-            \ ,
-        \end{bralign}
-
-        \item adaptively indistinguishable under chosen tag key leakage (ad-IND-CTKL) iff
-        \begin{bralign}
-            \Pr{
-                \begin{array}{rl}
-                    \parr{\pk,\sk} &\gets \Gen\parr{1^\secpar}
-                    \\
-                    \parr{m_0,m_1,t^*} &\gets \A_1\parr{\pk}
-                    \\
-                    b &\gets \bit
-                    \\
-                    \sk\pars{t^*} &\gets \Punct\parr{\sk,t^*}
-                    \\
-                    c_0 &\gets \Enc\parr{\pk,t^*}
-                    \\
-                    c^* &\gets \Enc\parr{\pk,m_b,t^*}
-                    \\
-                    b' &\gets \A_2\parr{\pk,c^*,\sk\pars{t^*}}
-                \end{array}
-                :
-                b' = b
-            }
-            \leq 1/2 + \negl\parr{\secpar}
-        \end{bralign}
-    \end{sitemize}
-    for any efficient two-stage adversary \(\A = \parr{\A_1, \A_2}\) and some negligible function \(\negl\).
-\end{definition}
-
-\begin{definition}
+\begin{definition}[Ciphertext-Puncturable PKE]
     A ciphertext-puncturable PKE (cpPKE) is a tuple \(\parr{\Gen,\Enc,\Dec,\Punct}\) associated with an admissible message space \(M \coloneqq \parr{M_\secpar}_{\secpar \in \N}\) and
     an admissible randomness space \(R \coloneqq \parr{R_\secpar}_{\secpar \in \N}\) such that
     \begin{sitemize}
         \item \(\Gen\) on input \(1^\secpar\) generates a pair \(\parr{\pk,\sk}\),
         \item \(\Enc\) on input a public key \(\pk\), a message \(m \in M_\secpar\) and a tag \(t \in T_\secpar\) outputs a ciphertext \(c\),
         \item \(\Dec\) on input a secret key \(\sk\) and a ciphertext \(c\) outputs the encrypted message \(m \in M_\secpar \cup \parc{\bot}\),
-        \item \(\Punct\) on input a secret key \(\sk\) and a ciphertext \(c'\) outputs a punctured secret key \(\sk\pars{c'}\) that is able to decrypt almost all ciphertexts except \(c'\),
+        \item \(\Punct\) on input a secret key \(\sk\) and a ciphertext \(c'\) outputs a punctured secret key \(\sk\pars{c'}\) that is able to decrypt (almost) all ciphertexts except \(c'\),
     \end{sitemize}
     For each security parameter \(\secpar \in \N\),
     each message \(m \in M_\secpar\) and
