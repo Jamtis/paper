@@ -10,10 +10,15 @@
     then there exists a sel-IND-CTKL secure tpKEM.
 \end{theorem}
 
-\begin{theorem}
-    If the \(\varepsilon_{\textsf{IF}}\)-factoring assumption holds,
-    then there exists a \(\varepsilon_{\textsf{IND-CTKL}}\)-sel-IND-CTKL secure tpKEM with tag space \(K_\secpar \coloneqq \bit^{\secpar/4}\),
-    tag space \(T_\secpar \coloneqq \pars{2^{\secpar/4}}\) where \(\varepsilon_{\textsf{IND-CTKL}}\parr{\secpar} \coloneqq ...\).
+\begin{theorem}\label{thm:HK09-KEM}
+    If the \(\parr{t_{\textsf{IF}},\varepsilon_{\textsf{IF}}}\)-factoring assumption holds,
+    then there exists a \(\parr{t_{\textsf{IND-CTKL}},\varepsilon_{\textsf{IND-CTKL}}}\)-sel-IND-CTKL secure tpKEM with tag space \(K_\secpar \coloneqq \bit^{\secpar/4}\),
+    tag space \(T_\secpar \coloneqq \pars{2^{\secpar/4}}\) where
+    \begin{bralign}
+        \varepsilon_{\textsf{IND-CTKL}}\parr{\secpar} &\coloneqq \varepsilon_{\textsf{IF}}\parr{\secpar} \cdot \secpar/4 + 2^{-\secpar+5}
+        \\
+        t_{\textsf{IND-CTKL}}\parr{\secpar} &\geq t_{\textsf{IF}}\parr{\secpar} / 16 \secpar^4 \cdot \varepsilon_{\textsf{BBS}}\parr{\secpar}^2
+    \end{bralign}
 \end{theorem}
 
 \begin{proof}
@@ -63,7 +68,7 @@
             \item output \(\kappa \coloneqq \operatorname{BBS}_N\parr{\tau'}\).
         \end{sitemize}
     \end{sitemize}
-    Statistical message correctness follows directly from the statistical correctness of the original KEM of~\cite{EC:HofKil09}.
+    Perfect decapsulation correctness follows directly from the perfect correctness of the original KEM of~\cite{EC:HofKil09}.
     Note here that whether the tag \(t\) is chosen arbitrarily or is the evaluation of a hash function (as in the original KEM) does not affect correctness.
     Now, we prove punctured key correctness for each message \(m\) and each (possibly malformed) \(c\) ciphertext.
     We declare an event \(\textsf{GOOD}\) which we define and analyze later.
@@ -176,12 +181,88 @@
         \item We sample \(\beta \gets \pars{\parr{N-1}/4}\).
         The public key is set as \(X \coloneqq g^{\beta L - t'}\) instead of sampling \(\alpha \gets \pars{\parr{N-1}/4}\) and setting \(X \coloneqq g^{\alpha L}\).
         Note that here we do not need the secret \(\phi\) anymore.
-        The distribution of \(X\) is equal in this and the previous hybrid conditioned on \(\textsf{GOOD}\).
+        The distribution of \(\parr{N,g,X,C^*}\) is equal in this and the previous hybrid conditioned on \(\textsf{GOOD}\).
 
         \item We set \(b = 1\), i.e., the challenge key \(\kappa \gets \bit^\secpar\) is a random key.
     \end{hybrids}
+    We define the event \(\textsf{GOOD}\) as \(\bracket{g} = \Q\R_N\) and \(\alpha,\beta,r^* \leq \card{\Q\R_N} = P \cdot Q\).
+    We find that \(\textsf{GOOD}\) occurs with overwhelming probability
+    \begin{bralign}
+        \Pr{\textsf{GOOD}}
+        &\geq
+        1 - \Pr{\bracket{g} \neq \Q\R_N} - \Pr{\alpha > P \cdot Q} - \Pr{\beta > P \cdot Q} - \Pr{r^* > P \cdot Q}
+        \\
+        &=
+        1 - \Pr{\bracket{g} \neq \Q\R_N} - 3\Pr{\alpha > P \cdot Q}
+        \\
+        &=
+        1 - \parr{P + Q - 1}/PQ - 3 \cdot 2 \parr{P + Q} / \parr{N - 1}
+        \\
+        &\geq
+        1 - 2^{-\secpar+5}
+        \ .
+    \end{bralign}
+    Let \(p_i\) be the probability that the adversary \(\A\) outputs the correct bit in hybrid \(i\).
+    Similarly, let \(p'_i\) be the adversary's success probability conditioned on \(\textsf{GOOD}\).
+    Because \(p_1 \coloneqq 1/2 + \varepsilon_{\textsf{IND-CTKL}}\parr{\secpar}\) is the adversary's advantage in the original sel-IND-CTKL security game and \(p_3 = p'_3 = 1/2\),
+    we see
+    \begin{bralign}
+        \varepsilon_{\textsf{IND-CTKL}}\parr{\secpar}
+        =
+        p_1 - 1/2
+        &\leq
+        p'_1 + \Pr{\overline{\textsf{GOOD}}} - 1/2
+        \\
+        &\leq
+        \abs{p'_1 - p'_2} + \abs{p'_2 - p'_3} + p'_3 + \Pr{\overline{\textsf{GOOD}}} - 1/2
+        \\
+        &\leq
+        2^{-\secpar+5} + \varepsilon_{\textsf{BBS}}\parr{\secpar}
+        \\
+        &\leq
+        2^{-\secpar+5} + \varepsilon_{\textsf{IF}}\parr{\secpar} \cdot \secpar/4
+    \end{bralign}
+    Lastly, we can analyze the runtime of the factoring algorithm that result from the assumed sel-IND-CTKL distinguisher.
+    We see
+    \begin{bralign}
+        t_{\textsf{BSS}}\parr{\secpar}
+        &\leq
+        \secpar^2 t_{\textsf{IND-CTKL}}\parr{\secpar}
+        \\
+        \implies
+        t_{\textsf{IF}}\parr{\secpar}
+        &\leq
+        \secpar^4 t_{\textsf{BBS}}\parr{\secpar}/\varepsilon_{\textsf{BBS}}\parr{\secpar}^2
+        \\
+        &\leq
+        \secpar^6 t_{\textsf{IND-CTKL}}\parr{\secpar} / \varepsilon_{\textsf{BBS}}\parr{\secpar}^2
+        \\
+        &\leq
+        16 \secpar^4 t_{\textsf{IND-CTKL}}\parr{\secpar} / \varepsilon_{\textsf{IF}}\parr{\secpar}^2
+    \end{bralign}
 \end{proof}
 
+\begin{remark}
+    Note that the construction in \cref{thm:HK09-KEM} does not use a collision-resistant hash function while achieving a seemingly stronger notion of security IND-CTKL (key leakage) vs.\ IND-CCA (decryption oracle).
+    As discussed earlier, the notion of IND-CTKL security can be seen as a variant of IND-CCA security with a non-interactive decryption oracle.
+    However, in fact IND-CTKL is incomparable to IND-CCA\textemdash iff the punctured key is not perfectly (or statistically) correct\textemdash because the punctured key might fail to decrypt some ciphertexts that the challenger in the IND-CCA game could decrypt.
+    For this reason \cref{thm:HK09-KEM} does not need hash functions.
+\end{remark}
+
+\begin{lemma}[BBS pseudorandom generator]
+    If the \(\parr{t_{\textsf{IF}},\varepsilon_{\textsf{IF}}}\)-factoring assumption holds,
+    the \(\ell_{\textsf{K}}\)-BBS pseudorandom generator is \(\parr{t_{\textsf{BBS}},\varepsilon_{\textsf{BBS}}}\)-indistinguishable where
+    \begin{bralign}
+        t_{\textsf{IF}}\parr{\secpar}
+        \leq
+        \secpar^4 t_{\textsf{BBS}}\parr{\secpar}/\varepsilon_{\textsf{BBS}}\parr{\secpar}^2
+        \hspace*{2cm}
+        \varepsilon_{\textsf{IF}}\parr{\secpar}
+        \geq
+        \varepsilon_{\textsf{BBS}}\parr{\secpar}/\ell_{\textsf{K}}\parr{\secpar}
+        \ .
+    \end{bralign}
+\end{lemma}
 
 \subsection{Constructions from iO}
 
@@ -536,7 +617,7 @@
             \end{bralign}
             \item output \(c \coloneqq \parr{c_1,c_2,c_h,y,\pi}\),
         \end{sitemize}
-        Note that with an honestly generated public key \cref{eq:trapdoor} cannot be fulfilled.
+        Note that with an honestly generated public key \cref{eq:trapdoor2} cannot be fulfilled.
 
         \item \(\Dec\parr{\sk,c}\):
         \begin{sitemize}

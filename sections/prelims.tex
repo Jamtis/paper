@@ -7,14 +7,14 @@
 \end{definition}
 
 \begin{definition}[Tag-Puncturable KEM]
-    A \(\parr{\alpha,\alpha_{\mathsf{PK}},\varepsilon_{\mathsf{IND-CTKL}}}\)-tag-puncturable KEM (tpKEM) is a tuple \(\parr{\Gen,\Enc,\Dec,\Punct}\) associated with
+    An \(\parr{\alpha,\alpha_{\mathsf{PK}},\varepsilon_{\mathsf{IND-CTKL}}}\)-tag-puncturable KEM (tpKEM) is a tuple \(\parr{\Gen,\Enc,\Dec,\Punct}\) associated with
     an admissible key space \(K \coloneqq \parr{K_\secpar}_{\secpar \in \N}\),
     an admissible tag space \(T \coloneqq \parr{T_\secpar}_{\secpar \in \N}\) and
     an admissible randomness space \(R \coloneqq \parr{R_\secpar}_{\secpar \in \N}\) such that
     \begin{sitemize}
         \item \(\Gen\) on input \(1^\secpar\) generates a pair \(\parr{\pk,\sk}\),
         \item \(\Enc\) on input a public key \(\pk\) and a tag \(t \in T_\secpar\) outputs a ciphertext \(c\),
-        \item \(\Dec\) on input a secret key \(\sk\) and a ciphertext \(c\) outputs the encapsulated \(\kappa \in K_\secpar \cup \parc{\bot}\),
+        \item \(\Dec\) on input a secret key \(\sk\) and a ciphertext \(c\) outputs the encapsulated key \(\kappa \in K_\secpar \cup \parc{\bot}\),
         \item \(\Punct\) on input a secret key \(\sk\) and a tag \(t \in T_\secpar\) outputs a punctured secret key \(\sk\pars{t}\) that is able to decrypt (almost) all ciphertexts except those with tag \(t \in T_\secpar\).
     \end{sitemize}
     For each security parameter \(\secpar \in \N\),
@@ -22,7 +22,7 @@
     each randomness \(r' \in R_\secpar\),
     and each tags \(t \neq t' \in T_\secpar\) we require the following correctness properties:
     \begin{sitemize}
-        \item Message correctness:
+        \item Decapsulation correctness:
         \begin{bralign}
             \Pr{
                 \parr{\pk,\sk} \gets \Gen\parr{1^\secpar},
@@ -105,7 +105,7 @@
 \end{definition}
 
 \begin{definition}[Tag-Puncturable PKE]
-    A \(\parr{\alpha,\alpha_{\mathsf{PK}},\varepsilon_{\mathsf{IND-CTKL}}}\)-tag-puncturable PKE (tpPKE) is a tuple \(\parr{\Gen,\Enc,\Dec,\Punct}\) associated with an admissible message space \(M \coloneqq \parr{M_\secpar}_{\secpar \in \N}\),
+    An \(\parr{\alpha,\alpha_{\mathsf{PK}},\varepsilon_{\mathsf{IND-CTKL}}}\)-tag-puncturable PKE (tpPKE) is a tuple \(\parr{\Gen,\Enc,\Dec,\Punct}\) associated with an admissible message space \(M \coloneqq \parr{M_\secpar}_{\secpar \in \N}\),
     an admissible tag space \(T \coloneqq \parr{T_\secpar}_{\secpar \in \N}\) and
     an admissible randomness space \(R \coloneqq \parr{R_\secpar}_{\secpar \in \N}\) such that
     \begin{sitemize}
@@ -197,7 +197,7 @@
 \end{definition}
 
 \begin{definition}[Ciphertext-Puncturable PKE]
-    A ciphertext-puncturable PKE (cpPKE) is a tuple \(\parr{\Gen,\Enc,\Dec,\Punct}\) associated with an admissible message space \(M \coloneqq \parr{M_\secpar}_{\secpar \in \N}\) and
+    An \(\parr{\alpha,\alpha_{\mathsf{PK}},\varepsilon_{\mathsf{IND-CTKL}}}\)-ciphertext-puncturable PKE (cpPKE) is a tuple \(\parr{\Gen,\Enc,\Dec,\Punct}\) associated with an admissible message space \(M \coloneqq \parr{M_\secpar}_{\secpar \in \N}\) and
     an admissible randomness space \(R \coloneqq \parr{R_\secpar}_{\secpar \in \N}\) such that
     \begin{sitemize}
         \item \(\Gen\) on input \(1^\secpar\) generates a pair \(\parr{\pk,\sk}\),
@@ -217,7 +217,7 @@
                 :
                 \Dec\parr{\sk,c} = m
             }
-            = 1
+            \geq 1 - \alpha\parr{\secpar}
         \end{bralign}
 
         \item Punctured key correctness:
@@ -233,7 +233,7 @@
                 :
                 \Dec\parr{\sk\pars{c'},c} = m
             }
-            \geq 1 - \negl\parr{\secpar}
+            \geq 1 - \alpha_{\mathsf{PK}}\parr{\secpar}
         \end{bralign}
     \end{sitemize}
     \marginnote{statistical punctured correctness seems inherent?!}
@@ -258,7 +258,7 @@
                 :
                 b' = b
             }
-            \leq 1/2 + \negl\parr{\secpar}
+            \leq 1/2 + \varepsilon_{\textsf{IND-CCKL}}\parr{\secpar}
             \ ,
         \end{bralign}
 
