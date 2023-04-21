@@ -48,10 +48,13 @@
 \end{construction}
 
 \begin{theorem}[Selective to adaptive security]
-    If \(\PKE'\) is a sel-IND-CTKL secure \(\parr{\alpha',\alpha'_{\textsf{PK}},\alpha'_{\textsf{DE}},\varepsilon',t'}\)-tpPKE with binary tag space where \(\alpha,\alpha'_{\textsf{PK}}\parr{\secpar} \leq 1/\secpar^2\),
+    If \(\PKE'\) is a sel-IND-CTKL secure \(\parr{\alpha',\alpha'_{\textsf{PK}},\alpha'_{\textsf{DE}},\varepsilon',t'}\)-tpPKE with binary tag space where \(\alpha'_{\textsf{PK}}\parr{\secpar},\alpha'_{\textsf{DE}}\parr{\secpar} \leq 1/\secpar^2\),
     then \(\PKE\) from \cref{con:sel-to-ad} is an ad-IND-CTKL secure \(\parr{\alpha,\alpha_{\textsf{PK}},\alpha_{\textsf{DE}},\varepsilon,t}\)-tpPKE with exponential tag space where
     \begin{bralign}
-        \alpha\parr{\secpar},
+        \alpha\parr{\secpar}
+        &\leq
+        \alpha'\parr{\secpar}
+        \\
         \alpha_{\textsf{PK}}\parr{\secpar},
         \alpha_{\textsf{DE}}\parr{\secpar}
         &\leq
@@ -71,7 +74,7 @@
     First, we analyze message correctness for any message \(m \in M_\secpar\) and any tag \(t \in T_\secpar\)
     \begin{bralign}
         \alpha\parr{\secpar}
-        &=
+        &\leq
         \Pr{
             \parr{\pk,\sk} \gets \Gen\parr{1^\secpar},
             c \gets \Enc\parr{\pk,m,t}
@@ -88,10 +91,10 @@
     \end{bralign}
     Now, we analyze punctured key correctness for any message \(m \in M_\secpar\) and any tags \(t \neq t' \in T_\secpar\).
     Let \(\ihat\) be the first index where \(t\) and \(t'\) differ.
-    We see that
+    We find that
     \begin{bralign}
         \alpha_{\textsf{PK}}\parr{\secpar}
-        &=
+        &\leq
         \Pr{
             \parr{\pk,\sk} \gets \Gen\parr{1^\secpar},
             c \gets \Enc\parr{\pk,m,t}
@@ -106,20 +109,55 @@
         1 - \Pr{\forall i < \ihat : \Dec\parr{\sk_i\pars{t'_i},c_i} = \bot \wedge \Dec\parr{\sk\pars{t'_\ihat},c_\ihat} = m}
         \\
         &=
-        1 - \Pr{\Dec\parr{\sk_1\pars{t'_1},c_1} = \bot}^{\ihat-1} \Pr{\Dec\parr{\sk_\ihat\pars{t'_\ihat},c_\ihat} = m}
-        \marginnote{indepdence of events}
+        1 - \Pr{\Dec\parr{\sk_1\pars{t'_1},c_1} = \bot}^{\ihat-1} \cdot \Pr{\Dec\parr{\sk_\ihat\pars{t'_\ihat},c_\ihat} = m}
+        \marginnote{independence of events}
         \\
         &\leq
-        1 - \parr{1 - \alpha'_{\textsf{DE}}\parr{\secpar}}^{\ihat-1} \parr{1 - \alpha'_{\textsf{PK}}\parr{\secpar}}
+        1 - \parr{1 - \alpha'_{\textsf{DE}}\parr{\secpar}}^{\ihat-1} \cdot \parr{1 - \alpha'_{\textsf{PK}}\parr{\secpar}}
         \\
         &\leq
-        1 - \parr{1 - 1.1/\secpar} \parr{1 - 1/\secpar^2}
+        1 - \parr{1 - 1/\secpar^2}^{\ihat-1} \cdot \parr{1 - 1/\secpar^2}
+        \\
+        &\leq
+        1 - \parr{1 - 1/\secpar^2}^\ihat
+        \\
+        &\leq
+        1 - \parr{1 - 1/\secpar^2}^\secpar
         \\
         &\leq
         2/\secpar
         \ .
     \end{bralign}
-    where the crucial observation is that \(c\) decrypts correctly iff all \(c'_i\) decrypt correctly and all components of \(c\) are independent.
+    Furthermore, we find that
+    \begin{bralign}
+        \alpha_{\textsf{DE}}\parr{\secpar}
+        &\leq
+        \Pr{
+            \parr{\pk,\sk} \gets \Gen\parr{1^\secpar},
+            c \gets \Enc\parr{\pk,m,t'}
+            :
+            \Dec\parr{\sk\pars{t'},c} \neq \bot
+        }
+        \\
+        &=
+        1 - \Pr{\Dec\parr{\sk\pars{t'},c} = \bot}
+        \\
+        &=
+        1 - \Pr{\forall i : \Dec\parr{\sk_i\pars{t'_i},c_i} = \bot}
+        \\
+        &=
+        1 - \Pr{\Dec\parr{\sk_1\pars{t'_1},c_1} = \bot}^\secpar
+        \\
+        &\leq
+        1 - \parr{1 - \alpha'_{\textsf{DE}}\parr{\secpar}}^\secpar
+        \\
+        &\leq
+        1 - \parr{1 - 1/\secpar^2}^\secpar
+        \\
+        &\leq
+        2/\secpar
+        \ .
+    \end{bralign}
 \end{proof}
 
 
