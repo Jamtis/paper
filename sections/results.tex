@@ -3,27 +3,132 @@
 \label{sec:overview}
 
 
-\subsection{Constructions from Factoring}
+\subsection{Generic Constructions}
 
-\begin{theorem}[Informal]
-    If the factoring assumption holds,
-    then there exists a sel-IND-CTKL secure tpKEM.
-\end{theorem}
+\begin{construction}\label{con:sel-to-ad}
+    Let \(\PKE' = \parr{\Gen',\Enc',\Dec',\Punct'}\) be a tpPKE with tag space \(T'_\secpar \coloneqq \bit\).
+    We define a new tpKEM scheme \(\PKE = \parr{\Gen,\Enc,\Dec,\Punct}\) with tag space \(T_\secpar \coloneqq \bit^\secpar\) as follows:
+    \begin{sitemize}
+        \item \(\Gen\parr{1^\secpar}\):
+        \begin{sitemize}
+            \item sample \(\parr{\pk_1,\sk_1}, ..., \parr{\pk_1,\sk_1} \gets \Gen'\parr{1^\secpar}\),
+            \item set \(\pk \coloneqq \parr{\pk_i}_{i \in \parc{1,...,\secpar}}\),
+            \item set \(\sk \coloneqq \parr{\sk_i}_{i \in \parc{1,...,\secpar}}\),
+            \item output \(\parr{\pk,\sk}\).
+        \end{sitemize}
 
-\begin{theorem}\label{thm:HK09-KEM}
-    If the \(\parr{t_{\textsf{IF}},\varepsilon_{\textsf{IF}}}\)-factoring assumption holds,
-    then there exists a \(\parr{t_{\textsf{IND-CTKL}},\varepsilon_{\textsf{IND-CTKL}}}\)-sel-IND-CTKL secure tpKEM with tag space \(K_\secpar \coloneqq \bit^{\secpar/4}\),
-    tag space \(T_\secpar \coloneqq \pars{2^{\secpar/4}}\) where
+        \item \(\Enc\parr{\pk,m,t}\):
+        \begin{sitemize}
+            \item for each \(i \in \parc{1,...,\secpar}\) encrypt \(c_i \gets \Enc'\parr{\pk_i,m,t_i}\),
+            \item output \(c \coloneqq \parr{c_i}_{i \in \parc{1,...,\secpar}}\).
+        \end{sitemize}
+
+        \item \(\Dec\parr{\sk,c}\):
+        \begin{sitemize}
+            \item parse \(\parr{c_i}_{i \in \parc{1,...,\secpar}} \coloneqq c\),
+            \item for each \(i \in \parc{1,...,\secpar}\) decrypt \(\widetilde{m}_i \gets \Dec'\parr{\sk_i,c_i}\),
+            \item if there are two inconsistent messages abort, i.e., \(\exists i \neq j : \widetilde{m}_i \neq \widetilde{m}_j\) output \(\bot\),
+            \item output \(m_1\).
+        \end{sitemize}
+
+        \item \(\Punct\parr{\sk,t'}\):
+        \begin{sitemize}
+            \item for each \(i \in \parc{1,...,\secpar}\) puncture \(\sk_i\pars{t'_i} \gets \Punct'\parr{\sk_i,t'_i}\),
+            \item output \(\sk\pars{t'} \coloneqq \parr{\sk_i\pars{t'_i}}_{i \in \parc{1,...,\secpar}}\).
+        \end{sitemize}
+
+        \item \(\Dec\parr{\sk[t'],c}\):
+        \begin{sitemize}
+            \item parse \(\parr{c_i}_{i \in \parc{1,...,\secpar}} \coloneqq c\),
+            \item for each \(i \in \parc{1,...,\secpar}\) decrypt \(\widetilde{m}_i \gets \Dec'\parr{\sk_i,c_i}\),
+            \item let \(\ihat\) be the first index such that \(\widetilde{m}_\ihat \neq \bot\), if not such index exists output \(\bot\),
+            \item output \(\widetilde{m}_\ihat\).
+        \end{sitemize}
+    \end{sitemize}
+\end{construction}
+
+\begin{theorem}[Selective to adaptive security]
+    If \(\PKE'\) is a sel-IND-CTKL secure \(\parr{\alpha',\alpha'_{\textsf{PK}},\alpha'_{\textsf{DE}},\varepsilon',t'}\)-tpPKE with binary tag space where \(\alpha,\alpha'_{\textsf{PK}}\parr{\secpar} \leq 1/\secpar^2\),
+    then \(\PKE\) from \cref{con:sel-to-ad} is an ad-IND-CTKL secure \(\parr{\alpha,\alpha_{\textsf{PK}},\alpha_{\textsf{DE}},\varepsilon,t}\)-tpPKE with exponential tag space where
     \begin{bralign}
-        \varepsilon_{\textsf{IND-CTKL}}\parr{\secpar} &\coloneqq \varepsilon_{\textsf{IF}}\parr{\secpar} \cdot \secpar/4 + 2^{-\secpar+5}
+        \alpha\parr{\secpar},
+        \alpha_{\textsf{PK}}\parr{\secpar},
+        \alpha_{\textsf{DE}}\parr{\secpar}
+        &\leq
+        1 - 2/\secpar
         \\
-        t_{\textsf{IND-CTKL}}\parr{\secpar} &\geq t_{\textsf{IF}}\parr{\secpar} / 16 \secpar^4 \cdot \varepsilon_{\textsf{BBS}}\parr{\secpar}^2
+        \varepsilon\parr{\secpar}
+        &\geq
+        ...
+        \\
+        t\parr{\secpar}
+        &\leq
+        ...
     \end{bralign}
 \end{theorem}
 
 \begin{proof}
-    Let \(L \coloneqq 2^{\secpar/2}\).
-    The sel-IND-CTKL PKE scheme is a marginally modified version of the IND-CCA secure KEM of~\textcite{EC:HofKil09}.
+    First, we analyze message correctness for any message \(m \in M_\secpar\) and any tag \(t \in T_\secpar\)
+    \begin{bralign}
+        \alpha\parr{\secpar}
+        &=
+        \Pr{
+            \parr{\pk,\sk} \gets \Gen\parr{1^\secpar},
+            c \gets \Enc\parr{\pk,m,t}
+            :
+            \Dec\parr{\sk,c} \neq m
+        }
+        \\
+        &\leq
+        \Pr{\Dec\parr{\sk_1,c_1} \neq m}
+        \\
+        &=
+        \alpha'\parr{\secpar}
+        \ .
+    \end{bralign}
+    Now, we analyze punctured key correctness for any message \(m \in M_\secpar\) and any tags \(t \neq t' \in T_\secpar\).
+    Let \(\ihat\) be the first index where \(t\) and \(t'\) differ.
+    We see that
+    \begin{bralign}
+        \alpha_{\textsf{PK}}\parr{\secpar}
+        &=
+        \Pr{
+            \parr{\pk,\sk} \gets \Gen\parr{1^\secpar},
+            c \gets \Enc\parr{\pk,m,t}
+            :
+            \Dec\parr{\sk\pars{t'},c} \neq m
+        }
+        \\
+        &=
+        1 - \Pr{\Dec\parr{\sk\pars{t'},c} = m}
+        \\
+        &\leq
+        1 - \Pr{\forall i < \ihat : \Dec\parr{\sk_i\pars{t'_i},c_i} = \bot \wedge \Dec\parr{\sk\pars{t'_\ihat},c_\ihat} = m}
+        \\
+        &=
+        1 - \Pr{\Dec\parr{\sk_1\pars{t'_1},c_1} = \bot}^{\ihat-1} \Pr{\Dec\parr{\sk_\ihat\pars{t'_\ihat},c_\ihat} = m}
+        \marginnote{indepdence of events}
+        \\
+        &\leq
+        1 - \parr{1 - \alpha'_{\textsf{DE}}\parr{\secpar}}^{\ihat-1} \parr{1 - \alpha'_{\textsf{PK}}\parr{\secpar}}
+        \\
+        &\leq
+        1 - \parr{1 - 1.1/\secpar} \parr{1 - 1/\secpar^2}
+        \\
+        &\leq
+        2/\secpar
+        \ .
+    \end{bralign}
+    where the crucial observation is that \(c\) decrypts correctly iff all \(c'_i\) decrypt correctly and all components of \(c\) are independent.
+\end{proof}
+
+
+\subsection{Constructions from Factoring}
+
+\begin{construction}\label{con:HK09-KEM}
+    The tpKEM scheme \(\KEM = \parr{\Gen,\Enc,\Dec,\Punct}\) that is a marginally modified version of the IND-CCA secure KEM of~\textcite{EC:HofKil09}.
+    For ease of notation we split the decryption algorithm into one that takes normal secret keys and one that takes punctured secret keys.
+    Let \(\BBS\) be the pseudorandom generator of~\textcite{C:BluBluShu82}.
     \begin{sitemize}
         \item \(\Gen\parr{1^\secpar}\):
         \begin{sitemize}
@@ -41,7 +146,7 @@
             \item sample \(r \gets \pars{\parr{N-1}/4}\),
             \item set \(R \coloneqq g^{r L}\),
             \item set \(\tau \coloneqq g^{r 2^{\secpar/4}}\),
-            \item set \(\kappa \coloneqq \operatorname{BBS}_N\parr{\tau}\),
+            \item set \(\kappa \coloneqq \BBS_N\parr{\tau}\),
             % \item set \(t \coloneqq \operatorname{\tau}\parr{R}\),
             \item set \(S \coloneqq \abs{\parr{g^t X}^r}\),
             \item output \(C \coloneqq \parr{t,R,S}\).
@@ -51,7 +156,7 @@
             \item parse \(\parr{t,R,S} \coloneqq C\),
             \item set \(a,b,c\) such that \(\gcd\parr{t,L} = 2^c = a t + b L\),
             \item set \(\tau \coloneqq \parr{S^{2a} R^{2b-2a\alpha}}^{2^{\secpar/4-c-1}}\),
-            \item output \(\kappa \coloneqq \operatorname{BBS}_N\parr{\tau}\).
+            \item output \(\kappa \coloneqq \BBS_N\parr{\tau}\).
         \end{sitemize}
 
         \item \(\Punct\parr{\sk,t'}\):
@@ -65,15 +170,41 @@
             \item if \(t = t'\) output \(\bot\),
             \item set \(a',b',c'\) such that \(\gcd\parr{t-t',L} = 2^{c'} = a' \parr{t-t'} + b' L\),
             \item set \(\tau' \coloneqq \parr{S^{2a'} R^{2b'-2a'\beta}}^{2^{\secpar/4-c'-1}}\),
-            \item output \(\kappa \coloneqq \operatorname{BBS}_N\parr{\tau'}\).
+            \item output \(\kappa \coloneqq \BBS_N\parr{\tau'}\).
         \end{sitemize}
     \end{sitemize}
-    Perfect decapsulation correctness follows directly from the perfect correctness of the original KEM of~\cite{EC:HofKil09}.
+\end{construction}
+
+\begin{theorem}[Informal]
+    If the factoring assumption holds,
+    then \cref{con:HK09-KEM} is a sel-IND-CTKL secure tpKEM.
+\end{theorem}
+
+\begin{theorem}\label{thm:HK09-KEM}
+    If the \(\parr{t_{\textsf{IF}},\varepsilon_{\textsf{IF}}}\)-factoring assumption holds,
+    then there exists a sel-IND-CTKL secure \(\parr{\alpha,\alpha_{\textsf{PK}},t,\varepsilon}\)-tpKEM with tag space \(K_\secpar \coloneqq \bit^{\secpar/4}\),
+    tag space \(T_\secpar \coloneqq \pars{2^{\secpar/4}}\) where
+    \begin{bralign}
+        \alpha\parr{\secpar}
+        &\coloneqq
+        \alpha_{\textsf{PK}}\parr{\secpar}
+        \coloneqq
+        2^{-\lambda+2}
+        \\
+        \varepsilon\parr{\secpar} &\coloneqq \varepsilon_{\textsf{IF}}\parr{\secpar} \cdot \secpar/4 + 2^{-\secpar+5}
+        \\
+        t\parr{\secpar} &\geq t_{\textsf{IF}}\parr{\secpar} / 16 \secpar^4 \cdot \varepsilon_{\textsf{BBS}}\parr{\secpar}^2
+    \end{bralign}
+    \marginnote{Upper bound on \(\ell_K\)?}
+\end{theorem}
+
+\begin{proof}
+    Let \(L \coloneqq 2^{\secpar/2}\).
+    Statistical decapsulation correctness follows directly from the statistical correctness of the original KEM of~\cite{EC:HofKil09}.
     Note here that whether the tag \(t\) is chosen arbitrarily or is the evaluation of a hash function (as in the original KEM) does not affect correctness.
     Now, we prove punctured key correctness for each message \(m\) and each (possibly malformed) \(c\) ciphertext.
     We declare an event \(\textsf{GOOD}\) which we define and analyze later.
-    For now, we only need to know that on \(\textsf{GOOD}\) the element \(g\) is a generator of \(\Q\R_N\) and ...
-    \marginnote{Write down details of GOOD.}
+    For now, we only need to know that conditioned on \(\textsf{GOOD}\) the element \(g\) is a generator of \(\Q\R_N\).
     We see that
     \begin{bralign}
         &\Pr{
@@ -101,7 +232,12 @@
         &\leq
         \Pr{\Dec\parr{\sk\pars{t'},c} \neq \Dec\parr{\sk,c} \given \bracket{g} = \Q\R_N}
         +
-        \negl\parr{\secpar}
+        \parr{P + Q - 1}/PQ
+        \\
+        &\leq
+        \Pr{\Dec\parr{\sk\pars{t'},c} \neq \Dec\parr{\sk,c} \given \bracket{g} = \Q\R_N}
+        +
+        2^{-\lambda+2}
         \\
         &=
         \Pr{\tau' \neq \tau \given
@@ -118,7 +254,7 @@
             \end{array}
         }
         +
-        \negl\parr{\secpar}
+        2^{-\lambda+2}
         \\
         &=
         \Pr{
@@ -138,7 +274,7 @@
             \end{array}
         }
         +
-        \negl\parr{\secpar}
+        2^{-\lambda+2}
         \\
         &=
         \Pr{
@@ -153,7 +289,7 @@
             \end{array}
         }
         +
-        \negl\parr{\secpar}
+        2^{-\lambda+2}
         \\
         &=
         \Pr{
@@ -168,10 +304,10 @@
             \end{array}
         }
         +
-        \negl\parr{\secpar}
+        2^{-\lambda+2}
         \\
         &=
-        \negl\parr{\secpar}
+        2^{-\lambda+2}
     \end{bralign}
     Now, let's prove sel-IND-CTKL security of our scheme.
     \begin{hybrids}
@@ -204,10 +340,10 @@
     \end{bralign}
     Let \(p_i\) be the probability that the adversary \(\A\) outputs the correct bit in hybrid \(i\).
     Similarly, let \(p'_i\) be the adversary's success probability conditioned on \(\textsf{GOOD}\).
-    Because \(p_1 \coloneqq 1/2 + \varepsilon_{\textsf{IND-CTKL}}\parr{\secpar}\) is the adversary's advantage in the original sel-IND-CTKL security game and \(p_3 = p'_3 = 1/2\),
+    Because \(p_1 \coloneqq 1/2 + \varepsilon\parr{\secpar}\) is the adversary's advantage in the original sel-IND-CTKL security game and \(p_3 = p'_3 = 1/2\),
     we see
     \begin{bralign}
-        \varepsilon_{\textsf{IND-CTKL}}\parr{\secpar}
+        \varepsilon\parr{\secpar}
         =
         p_1 - 1/2
         &\leq
@@ -227,7 +363,7 @@
     \begin{bralign}
         t_{\textsf{BSS}}\parr{\secpar}
         &\leq
-        \secpar^2 t_{\textsf{IND-CTKL}}\parr{\secpar}
+        \secpar^2 t\parr{\secpar}
         \\
         \implies
         t_{\textsf{IF}}\parr{\secpar}
@@ -235,10 +371,10 @@
         \secpar^4 t_{\textsf{BBS}}\parr{\secpar}/\varepsilon_{\textsf{BBS}}\parr{\secpar}^2
         \\
         &\leq
-        \secpar^6 t_{\textsf{IND-CTKL}}\parr{\secpar} / \varepsilon_{\textsf{BBS}}\parr{\secpar}^2
+        \secpar^6 t\parr{\secpar} / \varepsilon_{\textsf{BBS}}\parr{\secpar}^2
         \\
         &\leq
-        16 \secpar^4 t_{\textsf{IND-CTKL}}\parr{\secpar} / \varepsilon_{\textsf{IF}}\parr{\secpar}^2
+        16 \secpar^4 t\parr{\secpar} / \varepsilon_{\textsf{IF}}\parr{\secpar}^2
     \end{bralign}
 \end{proof}
 
@@ -565,7 +701,7 @@
     Let \(\pcdiO\) be an \(\varepsilon_{\textsf{iO}}\)-indistinguishable public-coin differing-input obfuscator.
     Let \(\NIWI = \parr{\Setup_{\textsf{hiding}},\Setup_{\textsf{binding}},\Prove,\Verify}\) be a \(\varepsilon_{\textsf{WI}}\)-indistinguishable (perfectly) dual-mode NIWI.
     Let \(\COM = \parr{\Setup,\Commit,\Open}\) be a \(\varepsilon_{\textsf{hide}}\)-hiding perfectly binding commitment scheme.
-    Then there exists an \(\parr{0,0,\varepsilon_{\textsf{IND-CCKL}}}\)-ad-IND-CTKL tpPKE \(\PKE\) with binary message space \(M_\secpar \coloneq \parc{0^\secpar,1^\secpar}\) where \(\varepsilon_{\textsf{IND-CTKL}}\parr{\secpar} \leq ...\).
+    Then there exists an \(\parr{0,0,\varepsilon_{\textsf{IND-CCKL}}}\)-ad-IND-CTKL tpPKE \(\PKE\) with binary message space \(M_\secpar \coloneq \parc{0^\secpar,1^\secpar}\) where \(\varepsilon\parr{\secpar} \leq ...\).
 \end{theorem}
 
 \begin{proof}

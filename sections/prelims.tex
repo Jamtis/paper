@@ -7,7 +7,7 @@
 \end{definition}
 
 \begin{definition}[Tag-Puncturable KEM]
-    An \(\parr{\alpha,\alpha_{\mathsf{PK}},\varepsilon_{\mathsf{IND-CTKL}}}\)-tag-puncturable KEM (tpKEM) is a tuple \(\parr{\Gen,\Enc,\Dec,\Punct}\) associated with
+    An \(\parr{\alpha,\alpha_{\textsf{PK}},\alpha_{\textsf{DE}},\varepsilon}\)-tag-puncturable KEM (tpKEM) is a tuple \(\parr{\Gen,\Enc,\Dec,\Punct}\) associated with
     an admissible key space \(K \coloneqq \parr{K_\secpar}_{\secpar \in \N}\),
     an admissible tag space \(T \coloneqq \parr{T_\secpar}_{\secpar \in \N}\) and
     an admissible randomness space \(R \coloneqq \parr{R_\secpar}_{\secpar \in \N}\) such that
@@ -46,10 +46,25 @@
                 :
                 \Dec\parr{\sk\pars{t'},c} = \Dec\parr{\sk,c}
             }
-            \geq 1 - \alpha_{\mathsf{PK}}\parr{\secpar}
+            \geq 1 - \alpha_{\textsf{PK}}\parr{\secpar}
+        \end{bralign}
+
+        \item zero-sided decryption error on punctured key:
+        \begin{bralign}
+            \Pr{
+                \begin{array}{rl}
+                    \parr{\pk,\sk} &\gets \Gen\parr{1^\secpar}
+                    \\
+                    \sk\pars{t'} &\gets \Punct\parr{\sk,t'}
+                    \\
+                    c &\gets \Enc\parr{\pk,t'}
+                \end{array}
+                :
+                \Dec\parr{\sk\pars{t'},c} = \bot
+            }
+            \geq 1 - \alpha_{\textsf{DE}}\parr{\secpar}
         \end{bralign}
     \end{sitemize}
-    \marginnote{statistical punctured correctness seems inherent?!}
     Furthermore we say a tpPKE is
     \begin{sitemize}
         \item selectively indistinguishable under chosen tag key leakage (sel-IND-CTKL) iff
@@ -73,7 +88,7 @@
                 :
                 b' = b
             }
-            \leq 1/2 + \varepsilon_{\mathsf{IND-CTKL}}\parr{\secpar}
+            \leq 1/2 + \varepsilon\parr{\secpar}
             \ ,
         \end{bralign}
 
@@ -98,14 +113,14 @@
                 :
                 b' = b
             }
-            \leq 1/2 + \varepsilon_{\mathsf{IND-CTKL}}\parr{\secpar}
+            \leq 1/2 + \varepsilon\parr{\secpar}
         \end{bralign}
     \end{sitemize}
     for any efficient two-stage adversary \(\A = \parr{\A_1, \A_2}\) and some negligible function \(\negl\).
 \end{definition}
 
 \begin{definition}[Tag-Puncturable PKE]
-    An \(\parr{\alpha,\alpha_{\mathsf{PK}},\varepsilon_{\mathsf{IND-CTKL}}}\)-tag-puncturable PKE (tpPKE) is a tuple \(\parr{\Gen,\Enc,\Dec,\Punct}\) associated with an admissible message space \(M \coloneqq \parr{M_\secpar}_{\secpar \in \N}\),
+    An \(\parr{\alpha,\alpha_{\textsf{PK}},\alpha_{\textsf{DE}},\varepsilon}\)-tag-puncturable PKE (tpPKE) is a tuple \(\parr{\Gen,\Enc,\Dec,\Punct}\) associated with an admissible message space \(M \coloneqq \parr{M_\secpar}_{\secpar \in \N}\),
     an admissible tag space \(T \coloneqq \parr{T_\secpar}_{\secpar \in \N}\) and
     an admissible randomness space \(R \coloneqq \parr{R_\secpar}_{\secpar \in \N}\) such that
     \begin{sitemize}
@@ -142,10 +157,26 @@
                 :
                 \Dec\parr{\sk\pars{t'},c} = m
             }
-            \geq 1 - \alpha_{\mathsf{PK}}\parr{\secpar}
+            \geq 1 - \alpha_{\textsf{PK}}\parr{\secpar}
         \end{bralign}
+
+        \item zero-sided decryption error on punctured key:
+        \begin{bralign}
+            \Pr{
+                \begin{array}{rl}
+                    \parr{\pk,\sk} &\gets \Gen\parr{1^\secpar}
+                    \\
+                    \sk\pars{t'} &\gets \Punct\parr{\sk,t'}
+                    \\
+                    c &\gets \Enc\parr{\pk,m,t'}
+                \end{array}
+                :
+                \Dec\parr{\sk\pars{t'},c} = \bot
+            }
+            \geq 1 - \alpha_{\textsf{DE}}\parr{\secpar}
+        \end{bralign}
+        \marginnote{Statistical variant analogous}
     \end{sitemize}
-    \marginnote{statistical punctured correctness seems inherent?!}
     Furthermore we say a tpPKE is
     \begin{sitemize}
         \item selectively indistinguishable under chosen tag key leakage (sel-IND-CTKL) iff
@@ -167,7 +198,7 @@
                 :
                 b' = b
             }
-            \leq 1/2 + \varepsilon_{\mathsf{IND-CTKL}}\parr{\secpar}
+            \leq 1/2 + \varepsilon\parr{\secpar}
             \ ,
         \end{bralign}
 
@@ -190,14 +221,15 @@
                 :
                 b' = b
             }
-            \leq 1/2 + \varepsilon_{\mathsf{IND-CTKL}}\parr{\secpar}
+            \leq 1/2 + \varepsilon\parr{\secpar}
         \end{bralign}
     \end{sitemize}
     for any efficient two-stage adversary \(\A = \parr{\A_1, \A_2}\) and some negligible function \(\negl\).
+    We can analogously define variant where only the messages or only the tag are chosen selectively.
 \end{definition}
 
 \begin{definition}[Ciphertext-Puncturable PKE]
-    An \(\parr{\alpha,\alpha_{\mathsf{PK}},\varepsilon_{\mathsf{IND-CTKL}}}\)-ciphertext-puncturable PKE (cpPKE) is a tuple \(\parr{\Gen,\Enc,\Dec,\Punct}\) associated with an admissible message space \(M \coloneqq \parr{M_\secpar}_{\secpar \in \N}\) and
+    An \(\parr{\alpha,\alpha_{\textsf{PK}},\varepsilon}\)-ciphertext-puncturable PKE (cpPKE) is a tuple \(\parr{\Gen,\Enc,\Dec,\Punct}\) associated with an admissible message space \(M \coloneqq \parr{M_\secpar}_{\secpar \in \N}\) and
     an admissible randomness space \(R \coloneqq \parr{R_\secpar}_{\secpar \in \N}\) such that
     \begin{sitemize}
         \item \(\Gen\) on input \(1^\secpar\) generates a pair \(\parr{\pk,\sk}\),
@@ -233,10 +265,9 @@
                 :
                 \Dec\parr{\sk\pars{c'},c} = m
             }
-            \geq 1 - \alpha_{\mathsf{PK}}\parr{\secpar}
+            \geq 1 - \alpha_{\textsf{PK}}\parr{\secpar}
         \end{bralign}
     \end{sitemize}
-    \marginnote{statistical punctured correctness seems inherent?!}
     Furthermore we say a cpPKE is
     \begin{sitemize}
         \item selectively indistinguishable under chosen ciphertext key leakage (sel-IND-CCKL) iff
@@ -258,7 +289,7 @@
                 :
                 b' = b
             }
-            \leq 1/2 + \varepsilon_{\textsf{IND-CCKL}}\parr{\secpar}
+            \leq 1/2 + \varepsilon\parr{\secpar}
             \ ,
         \end{bralign}
 
@@ -283,7 +314,7 @@
                 :
                 b' = b
             }
-            \leq 1/2 + \negl\parr{\secpar}
+            \leq 1/2 + \varepsilon\parr{\secpar}
         \end{bralign}
     \end{sitemize}
     for any efficient two-stage adversary \(\A = \parr{\A_1, \A_2}\) and some negligible function \(\negl\).
