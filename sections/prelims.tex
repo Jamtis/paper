@@ -13,7 +13,7 @@
     an admissible randomness space \(R \coloneqq \parr{R_\secpar}_{\secpar \in \N}\) such that
     \begin{sitemize}
         \item \(\Gen\) on input \(1^\secpar\) generates a pair \(\parr{\pk,\sk}\),
-        \item \(\Enc\) on input a public key \(\pk\) and a tag \(t \in T_\secpar\) outputs a ciphertext \(c\),
+        \item \(\Enc\) on input a public key \(\pk\) and a tag \(t \in T_\secpar\) outputs a ciphertext \(c\) and the encapsulated key \(\kappa \in K_\secpar \cup \parc{\bot}\),
         \item \(\Dec\) on input a secret key \(\sk\) and a ciphertext \(c\) outputs the encapsulated key \(\kappa \in K_\secpar \cup \parc{\bot}\),
         \item \(\Punct\) on input a secret key \(\sk\) and a tag \(t \in T_\secpar\) outputs a punctured secret key \(\sk\pars{t}\) that is able to decrypt (almost) all ciphertexts except those with tag \(t \in T_\secpar\).
     \end{sitemize}
@@ -183,7 +183,7 @@
         \begin{bralign}
             \Pr{
                 \begin{array}{rl}
-                    \parr{m_0,m_1,t^*} &\gets \A_1\parr{1^\secpar}
+                    \parr{m^0,m^1,t^*} &\gets \A_1\parr{1^\secpar}
                     \\
                     \parr{\pk,\sk} &\gets \Gen\parr{1^\secpar}
                     \\
@@ -191,7 +191,7 @@
                     \\
                     \sk\pars{t^*} &\gets \Punct\parr{\sk,t^*}
                     \\
-                    c^* &\gets \Enc\parr{\pk,m_b,t^*}
+                    c^* &\gets \Enc\parr{\pk,m^b,t^*}
                     \\
                     b' &\gets \A_2\parr{\pk,c^*,\sk\pars{t^*}}
                 \end{array}
@@ -202,19 +202,19 @@
             \ ,
         \end{bralign}
 
-        \item adaptively indistinguishable under chosen tag key leakage (ad-IND-CTKL) iff
+        \item fully-adaptively indistinguishable under chosen tag key leakage (ad-IND-CTKL) iff
         \begin{bralign}
             \Pr{
                 \begin{array}{rl}
                     \parr{\pk,\sk} &\gets \Gen\parr{1^\secpar}
                     \\
-                    \parr{m_0,m_1,t^*} &\gets \A_1\parr{\pk}
+                    \parr{m^0,m^1,t^*} &\gets \A_1\parr{\pk}
                     \\
                     b &\gets \bit
                     \\
                     \sk\pars{t^*} &\gets \Punct\parr{\sk,t^*}
                     \\
-                    c^* &\gets \Enc\parr{\pk,m_b,t^*}
+                    c^* &\gets \Enc\parr{\pk,m^b,t^*}
                     \\
                     b' &\gets \A_2\parr{\pk,c^*,\sk\pars{t^*}}
                 \end{array}
@@ -225,7 +225,7 @@
         \end{bralign}
     \end{sitemize}
     for any efficient two-stage adversary \(\A = \parr{\A_1, \A_2}\) and some negligible function \(\negl\).
-    We can analogously define variant where only the messages or only the tag are chosen selectively.
+    We can analogously define variant where only the messages (\(M\)-adaptive) resp.\ only the tag (\(T\)-adaptive) are chosen adaptively.
 \end{definition}
 
 \begin{definition}[Ciphertext-Puncturable PKE]
@@ -274,13 +274,13 @@
         \begin{bralign}
             \Pr{
                 \begin{array}{rl}
-                    \parr{m_0,m_1} &\gets \A_1\parr{1^\secpar}
+                    \parr{m^0,m^1} &\gets \A_1\parr{1^\secpar}
                     \\
                     \parr{\pk,\sk} &\gets \Gen\parr{1^\secpar}
                     \\
                     b &\gets \bit
                     \\
-                    c^* &\gets \Enc\parr{\pk,m_b}
+                    c^* &\gets \Enc\parr{\pk,m^b}
                     \\
                     \sk\pars{c^*} &\gets \Punct\parr{\sk,c^*}
                     \\
@@ -293,19 +293,19 @@
             \ ,
         \end{bralign}
 
-        \item adaptively indistinguishable under chosen ciphertext key leakage (ad-IND-CCKL) iff
+        \item fully-adaptively indistinguishable under chosen ciphertext key leakage (ad-IND-CCKL) iff
         \begin{bralign}
             \Pr{
                 \begin{array}{rl}
                     \parr{\pk,\sk} &\gets \Gen\parr{1^\secpar}
                     \\
-                    \parr{m_0,m_1} &\gets \A_1\parr{\pk}
+                    \parr{m^0,m^1} &\gets \A_1\parr{\pk}
                     \\
                     \parr{\pk,\sk} &\gets \Gen\parr{1^\secpar}
                     \\
                     b &\gets \bit
                     \\
-                    c^* &\gets \Enc\parr{\pk,m_b}
+                    c^* &\gets \Enc\parr{\pk,m^b}
                     \\
                     \sk\pars{c^*} &\gets \Punct\parr{\sk,c^*}
                     \\
