@@ -47,6 +47,7 @@
                 \Dec\parr{\sk\pars{t'},c} = \Dec\parr{\sk,c}
             }
             \geq 1 - \alpha_{\textsf{PK}}\parr{\secpar}
+            \ ,
         \end{bralign}
 
         \item zero-sided decryption error on punctured key:
@@ -63,15 +64,16 @@
                 \Dec\parr{\sk\pars{t'},c} = \bot
             }
             \geq 1 - \alpha_{\textsf{DE}}\parr{\secpar}
+            \ ,
         \end{bralign}
     \end{sitemize}
-    Furthermore we say a tpPKE is
+    Furthermore we say a tpKEM is
     \begin{sitemize}
         \item selectively indistinguishable under chosen tag key leakage (sel-IND-CTKL) iff
         \begin{bralign}
             \Pr{
                 \begin{array}{rl}
-                    t^* &\gets \A_1\parr{1^\secpar}
+                    t^* &\coloneqq \A_1\parr{1^\secpar; r_\A}
                     \\
                     \parr{\pk,\sk} &\gets \Gen\parr{1^\secpar}
                     \\
@@ -83,7 +85,7 @@
                     \\
                     c_1 &\gets K_\secpar
                     \\
-                    b' &\gets \A_2\parr{\pk,c_b,\sk\pars{t^*}}
+                    b' &\coloneqq \A_2\parr{\pk,c_b,\sk\pars{t^*};r_\A}
                 \end{array}
                 :
                 b' = b
@@ -92,13 +94,13 @@
             \ ,
         \end{bralign}
 
-        \item adaptively indistinguishable under chosen tag key leakage (ad-IND-CTKL) iff
+        \item adaptively indistinguishable under chosen plainttext attack with chosen tag key leakage (ad-IND-CPA/CTKL) iff
         \begin{bralign}
             \Pr{
                 \begin{array}{rl}
                     \parr{\pk,\sk} &\gets \Gen\parr{1^\secpar}
                     \\
-                    t^* &\gets \A_1\parr{\pk}
+                    t^* &\gets \A_1\parr{\pk;r_\A}
                     \\
                     b &\gets \bit
                     \\
@@ -108,13 +110,39 @@
                     \\
                     c_1 &\gets K_\secpar
                     \\
-                    b' &\gets \A_2\parr{\pk,c_b,\sk\pars{t^*}}
+                    b' &\coloneqq \A_2\parr{\pk,c_b,\sk\pars{t^*};r_\A}
+                \end{array}
+                :
+                b' = b
+            }
+            \leq 1/2 + \varepsilon\parr{\secpar}
+            \ ,
+        \end{bralign}
+
+        \item adaptively indistinguishable under chosen ciphertext attack with chosen tag key leakage (ad-IND-CCA/CTKL) iff
+        \begin{bralign}
+            \Pr{
+                \begin{array}{rl}
+                    \parr{\pk,\sk} &\gets \Gen\parr{1^\secpar}
+                    \\
+                    t^* &\gets \A_1^{\Dec\parr{\sk,\cdot}}\parr{\pk;r_\A}
+                    \\
+                    b &\gets \bit
+                    \\
+                    \sk\pars{t^*} &\gets \Punct\parr{\sk,t^*}
+                    \\
+                    c_0 &\gets \Enc\parr{\pk,t^*}
+                    \\
+                    c_1 &\gets K_\secpar
+                    \\
+                    b' &\coloneqq \A_2^{\Dec\parr{\sk,\cdot}}\parr{\pk,c_b,\sk\pars{t^*};r_\A}
                 \end{array}
                 :
                 b' = b
             }
             \leq 1/2 + \varepsilon\parr{\secpar}
         \end{bralign}
+        where the decryption oracle outputs \(\bot\) on \(c_b\),
     \end{sitemize}
     for any efficient two-stage adversary \(\A = \parr{\A_1, \A_2}\) and some negligible function \(\negl\).
 \end{definition}
@@ -179,11 +207,11 @@
     \end{sitemize}
     Furthermore we say a tpPKE is
     \begin{sitemize}
-        \item selectively indistinguishable under chosen tag key leakage (sel-IND-CTKL) iff
+        \item selectively indistinguishable under chosen plaintext attack with chosen tag key leakage (sel-IND-CPA/CTKL) iff
         \begin{bralign}
             \Pr{
                 \begin{array}{rl}
-                    \parr{m^0,m^1,t^*} &\gets \A_1\parr{1^\secpar}
+                    \parr{m^0,m^1,t^*} &\coloneqq \A_1\parr{1^\secpar; r_\A}
                     \\
                     \parr{\pk,\sk} &\gets \Gen\parr{1^\secpar}
                     \\
@@ -193,7 +221,7 @@
                     \\
                     c^* &\gets \Enc\parr{\pk,m^b,t^*}
                     \\
-                    b' &\gets \A_2\parr{\pk,c^*,\sk\pars{t^*}}
+                    b' &\gets \A_2\parr{\pk,c^*,\sk\pars{t^*};r_\A}
                 \end{array}
                 :
                 b' = b
@@ -202,13 +230,13 @@
             \ ,
         \end{bralign}
 
-        \item fully-adaptively indistinguishable under chosen tag key leakage (ad-IND-CTKL) iff
+        \item fully-adaptively indistinguishable under chosen plaintext attack with chosen tag key leakage (ad-IND-CPA/CTKL) iff
         \begin{bralign}
             \Pr{
                 \begin{array}{rl}
                     \parr{\pk,\sk} &\gets \Gen\parr{1^\secpar}
                     \\
-                    \parr{m^0,m^1,t^*} &\gets \A_1\parr{\pk}
+                    \parr{m^0,m^1,t^*} &\gets \A_1\parr{\pk;r_\A}
                     \\
                     b &\gets \bit
                     \\
@@ -216,13 +244,37 @@
                     \\
                     c^* &\gets \Enc\parr{\pk,m^b,t^*}
                     \\
-                    b' &\gets \A_2\parr{\pk,c^*,\sk\pars{t^*}}
+                    b' &\gets \A_2\parr{\pk,c^*,\sk\pars{t^*};r_\A}
+                \end{array}
+                :
+                b' = b
+            }
+            \leq 1/2 + \varepsilon\parr{\secpar}
+            \ ,
+        \end{bralign}
+
+        \item fully-adaptively indistinguishable under chosen ciphertext attack with chosen tag key leakage (ad-IND-CCA/CTKL) iff
+        \begin{bralign}
+            \Pr{
+                \begin{array}{rl}
+                    \parr{\pk,\sk} &\gets \Gen\parr{1^\secpar}
+                    \\
+                    \parr{m^0,m^1,t^*} &\gets \A_1^{\Dec\parr{\sk,\cdot}}\parr{\pk;r_\A}
+                    \\
+                    b &\gets \bit
+                    \\
+                    \sk\pars{t^*} &\gets \Punct\parr{\sk,t^*}
+                    \\
+                    c^* &\gets \Enc\parr{\pk,m^b,t^*}
+                    \\
+                    b' &\gets \A_2^{\Dec\parr{\sk,\cdot}}\parr{\pk,c^*,\sk\pars{t^*};r_\A}
                 \end{array}
                 :
                 b' = b
             }
             \leq 1/2 + \varepsilon\parr{\secpar}
         \end{bralign}
+        where the decryption oracle outputs \(\bot\) on \(c^*\),
     \end{sitemize}
     for any efficient two-stage adversary \(\A = \parr{\A_1, \A_2}\) and some negligible function \(\negl\).
     We can analogously define variant where only the messages (\(M\)-adaptive) resp.\ only the tag (\(T\)-adaptive) are chosen adaptively.
@@ -270,11 +322,11 @@
     \end{sitemize}
     Furthermore we say a cpPKE is
     \begin{sitemize}
-        \item selectively indistinguishable under chosen ciphertext key leakage (sel-IND-CCKL) iff
+        \item selectively indistinguishable under chosen plaintext attack with chosen ciphertext key leakage (sel-IND-CPA/CCKL) iff
         \begin{bralign}
             \Pr{
                 \begin{array}{rl}
-                    \parr{m^0,m^1} &\gets \A_1\parr{1^\secpar}
+                    \parr{m^0,m^1} &\coloneqq \A_1\parr{1^\secpar; r_\A}
                     \\
                     \parr{\pk,\sk} &\gets \Gen\parr{1^\secpar}
                     \\
@@ -284,7 +336,7 @@
                     \\
                     \sk\pars{c^*} &\gets \Punct\parr{\sk,c^*}
                     \\
-                    b' &\gets \A_2\parr{\pk,c^*,\sk\pars{c^*}}
+                    b' &\gets \A_2\parr{\pk,c^*,\sk\pars{c^*};r_\A}
                 \end{array}
                 :
                 b' = b
@@ -293,13 +345,13 @@
             \ ,
         \end{bralign}
 
-        \item fully-adaptively indistinguishable under chosen ciphertext key leakage (ad-IND-CCKL) iff
+        \item fully-adaptively indistinguishable under chosen plaintext attack with chosen ciphertext key leakage (ad-IND-CPA/CCKL) iff
         \begin{bralign}
             \Pr{
                 \begin{array}{rl}
                     \parr{\pk,\sk} &\gets \Gen\parr{1^\secpar}
                     \\
-                    \parr{m^0,m^1} &\gets \A_1\parr{\pk}
+                    \parr{m^0,m^1} &\gets \A_1\parr{\pk;r_\A}
                     \\
                     \parr{\pk,\sk} &\gets \Gen\parr{1^\secpar}
                     \\
@@ -309,13 +361,38 @@
                     \\
                     \sk\pars{c^*} &\gets \Punct\parr{\sk,c^*}
                     \\
-                    b' &\gets \A_2\parr{\pk,c^*,\sk\pars{c^*}}
+                    b' &\gets \A_2\parr{\pk,c^*,\sk\pars{c^*};r_\A}
                 \end{array}
                 :
                 b' = b
             }
             \leq 1/2 + \varepsilon\parr{\secpar}
         \end{bralign}
+
+        \item fully-adaptively indistinguishable under chosen ciphertext attack withchosen ciphertext key leakage (ad-IND-CCA/CCKL) iff
+        \begin{bralign}
+            \Pr{
+                \begin{array}{rl}
+                    \parr{\pk,\sk} &\gets \Gen\parr{1^\secpar}
+                    \\
+                    \parr{m^0,m^1} &\gets \A_1^{\Dec\parr{\sk,\cdot}}\parr{\pk;r_\A}
+                    \\
+                    \parr{\pk,\sk} &\gets \Gen\parr{1^\secpar}
+                    \\
+                    b &\gets \bit
+                    \\
+                    c^* &\gets \Enc\parr{\pk,m^b}
+                    \\
+                    \sk\pars{c^*} &\gets \Punct\parr{\sk,c^*}
+                    \\
+                    b' &\gets \A_2^{\Dec\parr{\sk,\cdot}}\parr{\pk,c^*,\sk\pars{c^*};r_\A}
+                \end{array}
+                :
+                b' = b
+            }
+            \leq 1/2 + \varepsilon\parr{\secpar}
+        \end{bralign}
+        where the decryption oracle outputs \(\bot\) on \(c^*\),
     \end{sitemize}
     for any efficient two-stage adversary \(\A = \parr{\A_1, \A_2}\) and some negligible function \(\negl\).
 \end{definition}
