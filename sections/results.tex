@@ -743,9 +743,9 @@
 \begin{theorem}
     Let \(\PKE' = \parr{\Gen',\Enc',\Dec'}\) be a perfectly correct \(\varepsilon_{\PKE'}\)-IND-CPA secure PKE.
     Let \(\iO\) be an \(\varepsilon_{\iO}\)-indistinguishable obfuscator.
-    Let \(\NIWI = \parr{\Prove,\Verify}\) be a \(\varepsilon_{\NIWI}\)-indistinguishable perfectly sound NIWI.
+    Let \(\NIWI = \parr{\Prove,\Verify}\) be a \(\varepsilon_{\textsf{WI}}\)-indistinguishable perfectly sound NIWI.
     Let \(\COM = \parr{\Setup,\Commit,\Open}\) be a \(\varepsilon_{\textsf{hide}}\)-hiding perfectly binding commitment scheme.
-    Then there exists an \(\varepsilon_{\PKE}\)-ad-IND-CPA/CCKL cpPKE \(\PKE\) with binary message space \(M_\secpar \coloneq \parc{0^\secpar,1^\secpar}\) where \(\varepsilon_{\PKE}\parr{\secpar} \leq 2\varepsilon_{\textsf{hide}}\parr{\secpar} + \varepsilon_{\NIWI}\parr{\secpar} + \varepsilon_{\iO}\parr{\secpar} + 2\varepsilon_{\PKE'}\parr{\secpar}\).
+    Then there exists an \(\varepsilon_{\PKE}\)-ad-IND-CPA/CCKL cpPKE \(\PKE\) with binary message space \(M_\secpar \coloneq \parc{0^\secpar,1^\secpar}\) where \(\varepsilon_{\PKE}\parr{\secpar} \leq 2\varepsilon_{\textsf{hide}}\parr{\secpar} + \varepsilon_{\textsf{WI}}\parr{\secpar} + \varepsilon_{\iO}\parr{\secpar} + 2\varepsilon_{\PKE'}\parr{\secpar}\).
 \end{theorem}
 
 \begin{proof}
@@ -929,23 +929,28 @@
 
 
 \begin{theorem}[Informal]
-    Let \(\PKE' = \parr{\Gen',\Enc',\Dec'}\) be a perfectly correct IND-CPA secure PKE.
-    Let \(\CH' = \parr{\Gen',\Eval',\Coll'}\) be a perfectly correct obliviously samplable Chameleon hash function.
+    Let \(\VUF\) be a perfectly correct verifiable unpredictable function.
+    Let \(\PKE'\) be a perfectly correct IND-CPA secure PKE.
     Let \(\pcdiO\) be an public-coin differing-input obfuscator.
-    Let \(\NIWI = \parr{\Prove,\Verify}\) be a perfectly sound NIWI.
-    Let \(\COM = \parr{\Setup,\Commit,\Open}\) be a perfectly binding commitment scheme.
+    Let \(\NIWI\) be a dual-mode NIWI.
+    Let \(\COM\) be a perfectly binding commitment scheme.
     Then there exists an ad-IND-CPA/CTKL cpPKE \(\PKE\) with perfect punctured key correctness.
 \end{theorem}
 
 \begin{theorem}\label{thm:construction-of-perfect-PK-correctness}
-    Let \(\CH' = \parr{\Gen',\Eval',\Coll'}\) be a perfectly correct obliviously samplable Chameleon hash function.
+    Let \(\VUF\) be a perfectly correct verifiable unpredictable function.
     Let \(\pcdiO\) be an \(\varepsilon_{\textsf{iO}}\)-indistinguishable public-coin differing-input obfuscator.
-    Let \(\NIWI = \parr{\Setup_{\textsf{hiding}},\Setup_{\textsf{binding}},\Prove,\Verify}\) be a \(\varepsilon_{\textsf{WI}}\)-indistinguishable (perfectly) dual-mode NIWI.
-    Let \(\COM = \parr{\Setup,\Commit,\Open}\) be a \(\varepsilon_{\textsf{hide}}\)-hiding perfectly binding commitment scheme.
+    Let \(\NIWI\) be a \(\parr{\varepsilon_\CRS,\varepsilon_{\textsf{WI}}}\)-indistinguishable (perfectly) dual-mode NIWI.
+    Let \(\COM\) be a \(\varepsilon_{\textsf{hide}}\)-hiding perfectly binding commitment scheme.
     Then there exists an \(\parr{0,0,\varepsilon}\)-ad-IND-CPA/CTKL tpPKE \(\PKE\) with binary message space \(M_\secpar \coloneq \parc{0^\secpar,1^\secpar}\) where \(\varepsilon\parr{\secpar} \leq ...\).
 \end{theorem}
 
 \begin{proof}
+    Let \(\VUF = \parr{\Gen_\VUF,\Eval_\VUF,\Verify_\VUF}\) be a perfectly correct verifiable unpredictable function.
+    Let \(\pcdiO\) be an \(\varepsilon_{\textsf{iO}}\)-indistinguishable public-coin differing-input obfuscator.
+    Let \(\NIWI = \parr{\Setup^{\textsf{hiding}}_\NIWI,\Setup^{\textsf{binding}}_\NIWI,\Prove_\NIWI,\Verify_\NIWI}\) be a \(\varepsilon_{\textsf{WI}}\)-indistinguishable (perfectly) dual-mode NIWI.
+    Let \(\COM = \parr{\Setup_\COM,\Commit_\COM,\Open_\COM}\) be a \(\varepsilon_{\textsf{hide}}\)-hiding perfectly binding commitment scheme.
+
     W.l.o.g.\ we assume \(m^b \coloneqq b^\secpar\).
     \marginnote{Otherwise we redefine the adversary to flip its output.}
     For simple exhibition we assume that the underlying PKE and obfuscator are perfectly correct and the commitment scheme is perfectly binding.
@@ -955,9 +960,10 @@
         \item \(\Gen\parr{1^\secpar}\):
         \begin{sitemize}
             \item sample \(R \gets \bit^{7\secpar+1}\),
-            \item generate \(\pp \gets \Setup\parr{1^{\secpar}}\),
-            \item generate \(\CRS \gets \Setup_{\textsf{binding}}\),
-            \item generate \(\parr{\pk'_1,\sk'_1}, \parr{\pk'_2,\sk'_2} \gets \Gen'\parr{1^{\secpar}}\),
+            \item generate \(\pp \gets \Setup\parr{1^{7\secpar+1}}\),
+            \item generate \(\CRS \gets \Setup^{\textsf{binding}}_\NIWI\parr{1^\secpar}\),
+            \item generate \(\parr{\pk'_1,\sk'_1} \gets \Gen'\parr{1^{\secpar}}\),
+            \item generate \(\parr{\pk'_2,\sk'_2} \gets \Gen'\parr{1^{2\secpar}}\),
             \item generate \(C \coloneqq \Commit\parr{\pp,0^{7\secpar+1};R}\),
             \item set \(\pk \coloneqq \parr{\pp,\CRS,\pk'_1,\pk'_2,C}\) and \(\sk \coloneqq \parr{\pk,\sk'_1}\),
             \item output \(\parr{\pk,\sk}\).
@@ -965,49 +971,49 @@
 
         \item \(\Enc\parr{\pk,m,t}\):
         \begin{sitemize}
-            \item sample \(r_1,r_2,r_h,r_\COM \gets \bit^\secpar\),
+            \item sample \(r_1,r_2,r_\VUF \gets \bit^\secpar\),
+            \item generate \(\parr{\pk_\VUF,\sk_\VUF} \coloneqq \Gen_\VUF\parr{1^{\secpar};r_\VUF}\),
             \item set \(c_1 \coloneqq \Enc'\parr{\pk'_1,m;r_1} \in \bit^{2\secpar}\),
-            \item set \(c_2 \coloneqq \Enc'\parr{\pk'_2,m;r_2} \in \bit^{2\secpar}\),
-            \item set \(c_h \coloneqq \Commit\parr{\pp,r_h;r_\COM} \in \bit^{2\secpar}\),
-            \item set \(y \coloneqq h\parr{t||c_1||c_2,r_h}\),
-            \item prove \(\pi \gets \Prove\parr{s_{\pk,c_1,c_2,c_h,y},m,r_1,r_2,r_h,r_\COM}\) where \(s_{\pk,c_1,c_2}\) is following statement
+            \item set \(c_2 \coloneqq \Enc'\parr{\pk'_2,m||r_\VUF;r_2} \in \bit^{2\secpar}\),
+            \item set \(\parr{\sigma_\VUF,\pi_\VUF} \coloneqq \Eval_\VUF\parr{\sk_\VUF,t||c_1||c_2}\),
+            \item prove \(\pi \gets \Prove\parr{s_{\pk,c_1,c_2,\pk_\VUF},w}\) with witness \(w \coloneqq \parr{m,r_1,r_2,r_\VUF}\) where \(s_{\pk,c_1,c_2,\pk_\VUF}\) is following statement
             \begin{bralign}\label{eq:consistency2}
                 &\ \parr{\begin{array}{c}
-                    \exists m,r_1,r_2 :
-                    c_1 = \Enc\parr{\pk'_1,m;r_1}
+                    \exists \underline{m,r_1,r_2,r_\VUF} :
+                    c_1 = \Enc\parr{\pk'_1,\underline{m;r_1}}
                     \wedge
-                    c_2 = \Enc\parr{\pk'_2,m;r_2}
-                    \ \wedge
+                    c_2 = \Enc\parr{\pk'_2,\underline{m||r_\VUF;r_2}}
                     \\
-                    \exists r_h,r_\COM :
-                    h\parr{t||c_1||c_2,r_h} = y
-                    \wedge
-                    c_h = \Commit\parr{\pp,r_h;r_\COM}
+                    \wedge\ 
+                    \parr{\pk_\VUF,\cdot} = \Gen_\VUF\parr{1^\secpar;\underline{r_\VUF}}
                 \end{array}}
                 \\\label{eq:trapdoor2}
                 \vee
                 &\ \parr{
-                    \exists R :
-                    C = \Commit\parr{\pp,c_1||c_2||y||1;R}
+                    \exists \underline{R} :
+                    C = \Commit\parr{\pp,c_1||c_2||\pk_\VUF||1;\underline{R}}
                 }
                 \ ,
             \end{bralign}
-            \item output \(c \coloneqq \parr{c_1,c_2,c_h,y,\pi}\),
+            \item output \(c \coloneqq \parr{t,c_1,c_2,\pk_\VUF,\pi,\sigma_\VUF,\pi_\VUF}\),
         \end{sitemize}
         Note that with an honestly generated public key \cref{eq:trapdoor2} cannot be fulfilled.
 
         \item \(\Dec\parr{\sk,c}\):
         \begin{sitemize}
-            \item parse \(\parr{c_1,c_2,c_h,y,\pi} \coloneqq c\),
-            \item if \(\Verify\parr{s_{\pk,c_1,c_2,c_h,y},\pi} = 0\) output \(\bot\),
+            \item parse \(\parr{t,c_1,c_2,\pk_\VUF,\pi,\sigma_\VUF,\pi_\VUF} \coloneqq c\),
+            \item if \(\Verify_\NIWI\parr{s_{\pk,c_1,c_2,\pk_\VUF},\pi} = 0\) output \(\bot\),
+            \item if \(\Verify_\VUF\parr{\pk_\VUF,t||c_1||c_2,\sigma_\VUF,\pi_\VUF} = 0\) output \(\bot\),
             \item output \(\widetilde{m} \coloneqq \Dec'\parr{\sk'_1,c_1}\).
         \end{sitemize}
 
         \item \(\Punct\parr{\sk,t'}\):
         \begin{sitemize}
-            \item output \(\sk\pars{t'} \gets \pcdiO\parr{C_{\sk,t'}}\) where \(C_{\sk,t'}\) is the circuit that on input \(c = \parr{t,c_1,c_2,c_h,y,\pi}\)
+            \item output \(\sk\pars{t'} \gets \pcdiO\parr{C_{\sk,t'}}\) where \(C_{\sk,t'}\) is the circuit that on input \(c = \parr{t,c_1,c_2,\pk\VUF,\pi,\sigma_\VUF,\pi_\VUF}\)
             \begin{sitemize}
-                \item if \(\Verify\parr{s_{\pk,c_1,c_2,c_h,y},\pi} = 0\) or \(t=t'\), outputs \(\bot\),
+                \item if \(t=t'\) outputs \(\bot\),
+                \item if \(\Verify_\NIWI\parr{s_{\pk,c_1,c_2,\pk_\VUF},\pi} = 0\) outputs \(\bot\),
+                \item if \(\Verify_\VUF\parr{\pk_\VUF,t||c_1||c_2,\sigma_\VUF,\pi_\VUF} = 0\) outputs \(\bot\),
                 \item outputs \(\widetilde{m} \coloneqq \Dec'\parr{\sk'_1,c_1}\).
             \end{sitemize}
         \end{sitemize}
@@ -1017,62 +1023,59 @@
             \item output \(\sk\pars{t'}\parr{c}\).
         \end{sitemize}
     \end{sitemize}
-    Perfect message correctness follows directly from the perfect correctness of \(\PKE'\) and \(\NIWI\).
-    Similarly, perfect punctured key correctness follows from the perfect correctness of \(\PKE'\), \(\NIWI\) and \(\pcdiO\).
+    Perfect message correctness follows directly from the perfect correctness of \(\PKE'\), \(\VUF\) and \(\NIWI\).
+    Similarly, perfect punctured key correctness follows from the perfect correctness of \(\PKE'\), \(\VUF\), \(\NIWI\) and \(\pcdiO\).
     Now, let's prove ad-IND-CPA/CCKL security of our scheme.
     \begin{hybrids}
         \item This is the original ad-IND-CPA/CTKL with a uniformly random bit \(b \gets \bit\).
-        In particular, the challenge ciphertext is \(c^* = \parr{c^*_1,c^*_2,c^*_h,y^*,\pi^*}\).
-        Additionally, let \(\hat{r}^*_h \coloneqq \Coll\parr{\tau,t^*||c^*_1||c^*_2,r^*_h,0^{5\secpar}}\) be a (yet) unused value such that \(y^* = h\parr{0^{5\secpar},\hat{r}^*_h}\).
+        In particular, the challenge ciphertext is \(c^* = \parr{c^*_1,c^*_2,\pk^*_\VUF,\pi^*,\sigma^*_\VUF,\pi^*_\VUF}\).
 
-        \item We set \(\CRS \coloneqq \Setup_{\textsf{hiding}}\parr{1^\secpar}\).
+        \item We set \(\CRS \coloneqq \Setup^{\textsf{hiding}}_\NIWI\parr{1^\secpar}\).
         This step is justified by the (computational) CRS indistinguishability of the dual-mode NIWI.
 
-        \item We set \(C \coloneqq \Commit\parr{\pp,c^*_1||c^*_2||c^*_h||y^*||1;R}\).
+        \item We set \(C \coloneqq \Commit\parr{\pp,c^*_1||c^*_2||\pk^*_\VUF||1;R}\).
         This step is justified by the (computational) hiding property of the commitment scheme because the randomness \(R\) is only used to generate \(C\).
 
-        \item We prove \(\pi^* \gets \Prove\parr{s_{\pk,c^*_1,c^*_2,c^*_h,y^*},w}\) using as witness \(w \coloneqq R\) instead of \(\parr{m^b,r^*_1,r^*_2,r^*_h,r^*_\COM}\).
+        \item We prove \(\pi^* \gets \Prove\parr{s_{\pk,c^*_1,c^*_2,\pk^*_\VUF},w}\) using as witness \(w \coloneqq R\) instead of \(\parr{m^b,r^*_1,r^*_2,r^*_\VUF}\).
         Note that now \cref{eq:trapdoor2} is fulfilled instead of \cref{eq:consistency2}.
-        This step is justified by the (computational) witness indistinguishability of the NIWI.
-        \marginnote{randomness \(r^*_2\) and \(r^*_\COM\) is no longer used}
-
-        \item We sample \(\hat{r}^*_h \gets \bit^{5\secpar}\) and set \(y^* \coloneqq h\parr{0^{5\secpar},\hat{r}^*_h}\).
-        This step is justified by the (computational) well-distributedness property of the Chameleon hash function because the trapdoor \(\tau\) is not used anywhere else.
+        This step is justified by the (perfect) witness indistinguishability of the NIWI.
+        \marginnote{randomness \(r^*_\VUF\) is no longer used}
 
         \item We set \(c^*_2 \gets \Enc\parr{\pk'_2,0^{\secpar-1}||1;r^*_2}\) instead of \(\Enc\parr{\pk'_2,m^b;r^*_2}\).
         This step is justified by the (computational) IND-CPA security of the underlying PKE \(\PKE'\) because neither the secret key \(\sk'_2\) nor the randomness \(r^*_2\) are used (except to generate \(c^*_2\)).
 
-        \item We set \(c^*_h \coloneqq \Commit\parr{\pp,0^\secpar;r^*_\COM}\).
-        This step is justified by the (computational) hiding property of the commitment scheme because the randomness \(r^*_\COM\) is only used to generate \(c^*_h\).
-        \marginnote{\(r^*_h\) is no long used \(\implies\) \(\tau\) is no longer used}
-
-        \item We set \(\CRS \coloneqq \Setup_{\textsf{binding}}\parr{1^\secpar}\).
+        \item We set \(\CRS \coloneqq \Setup^{\textsf{binding}}_\NIWI\parr{1^\secpar}\).
         This step is justified by the (computational) CRS indistinguishability of the dual-mode NIWI.
 
         \item We set \(\sk\pars{t^*} \gets \pcdiO\parr{C_{\sk_2}}\) where \(C_{\sk_2}\) does the following on input a ciphertext \(c\):
         \begin{sitemize}
-            \item parse \(\parr{c_1,c_2,c_h,y\pi} \coloneqq c\),
+            \item parse \(\parr{c_1,c_2,c_h,y,\pi} \coloneqq c\),
             \item if \(\Verify\parr{s_{\pk,c_1,c_2,c_h,y},\pi} = 0\) or \(t=t'\), output \(\bot\),
             \item output \(\widetilde{m} \coloneqq \Dec'\parr{\sk'_2,c_2}\).
         \end{sitemize}
         Now, \(\sk\pars{t^*}\) contains \(\sk'_2\) but \(\sk'_1\) is no longer used.
-        This step is justified by the indistinguishability of \(\pcdiO\) and the computational equivalence of \(C_{\sk_1}\) and \(C'_{\sk_2}\).
+        This step is justified by the indistinguishability of \(\pcdiO\) and the computational equivalence of \(C_{\sk_1}\) and \(C_{\sk_2}\).
         Let us argue in detail why it is hard to find differing inputs for the two circuit.
-        First, if the verification fails \(\Verify\parr{s_{\pk,c_1,c_2,c_h,y} = 0}\),
+        First, if the verification fails \(\Verify\parr{s_{\pk,c_1,c_2,\pk_\VUF},\pi} = 0\),
         then both circuits output \(\bot\).
-        Thus we can concentrate on inputs (ciphertexts) where the verification passes \(\Verify\parr{s_{\pk,c^*_1,c^*_2,c^*_h,y^*} = 1}\).
+        Thus we can concentrate on inputs (ciphertexts) where the verification passes \(\Verify\parr{s_{\pk,c^*_1,c^*_2,\pk^*_\VUF},\pi} = 1\).
         Because of the perfect soundness of the NIWI that either \cref{eq:consistency2} or \cref{eq:trapdoor2} holds but not both because \(c^*_2\) contains \(0^{\secpar-1}||1\) while \(c^*_1\) contains \(m^b = b^\secpar\).
         If \cref{eq:consistency2} holds,
         then (by perfect correctness of \(\PKE'\)) \(c_1\) and \(c_2\) contain the same plaintext \(\widetilde{m}\) and hence both circuits the same value.
         \\
-        Consequently, the two circuits only differ on inputs \(c = \parr{t,c_1,c_2,c_h,y,\pi}\) where \(\pi\) verifies but \(c_1\) and \(c_2\) contain inconsistent messages.
-        By the perfect soundness of the NIWI (in the binding mode) \cref{eq:trapdoor2} must hold and using the extraction trapdoor \(\tau_\NIWI\) we can extract the witness \(w = R\) from such a proof \(\pi\).
-        However, the easiness of finding such a commitment randomness \(R\) contradicts the hiding property of the commitment scheme.
+        Consequently, the two circuits only differ on inputs \(c = \parr{t,c_1,c_2,\pk_\VUF,\pi,\sigma_\VUF,\pi_\VUF}\) where \(\pi\) verifies but \(c_1\) and \(c_2\) contain inconsistent messages, i.e., \cref{eq:trapdoor2} holds.
+        For a differing input \(c = \parr{t,c^*_1,c^*_2,\pk^*_\VUF,\pi,\sigma_\VUF,\pi_\VUF}\) it holds in particular that \(t \neq t^*\) and \(\Verify_\VUF\parr{\pk^*_\VUF,t||c^*_1||c^*_2,\sigma_\VUF,\pi_\VUF}=1\).
+        If there was an adversary \(\A\) that finds such differing inputs,
+        then we could use \(\A\) to predict value of \(\VUF\).
+        Concretely, let \(\S\) be the sampler that on randomness input \(r=r_1||r_2\) generates \(\parr{\pk'_1,\sk'_1} \coloneqq \Gen'\parr{1^{\secpar;r_1}}\) and \(\parr{\pk'_2,\sk'_2} \coloneqq \Gen'\parr{1^{2\secpar};r_2}\) honestly, and outputs the two circuits \(\parr{C_{\sk'_1},C_{\sk'_2}}\).
+        Now, suppose there exists some adversary \(\A\) that given \(r\) outputs some differing input \(c\).
+        \marginnote{How to deal with pcdiO? Obliviously sample \(\pk_\VUF\)?}
 
         \item We set \(c^*_1 \gets \Enc\parr{\pk'_1,0^{\secpar};r^*_1}\) instead of \(\Enc\parr{\pk'_1,m^b||k^*;r^*_1}\).
         Note that this hybrid is independent of the bit \(b\).
         This step is justified by the (computational) IND-CPA security of the underlying PKE \(\PKE'\) because neither the secret key \(\sk'_1\) nor the randomness \(r^*_1\) are used (except to generate \(c^*_1\)).
     \end{hybrids}
+    Now, we analyze the adversary's success probability.
     Let
     \begin{bralign}
         p_i \coloneqq
