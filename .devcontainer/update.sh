@@ -1,8 +1,10 @@
 git submodule update --init --recursive
 apt update
-apt install qpdf -y
+
+# fix docker issue
 cd /var/lib/dpkg/info
 rm usrmerge.*
+
 apt -y upgrade
 apt -y autoclean
 apt -y autoremove

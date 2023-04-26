@@ -12,6 +12,6 @@
 	"runArgs": [
 		"--memory=5g"
 	],
-	"postCreateCommand": "bash .devcontainer/update.sh",
+	"postCreateCommand": "bash .devcontainer/create.sh",
 	"postAttachCommand": "bash .devcontainer/update.sh"
 }
