@@ -7,14 +7,18 @@ dpkg -i libssl1.1_1.1.1f-1ubuntu2.17_amd64.deb
 cd ..
 rm -r temp
 
-git submodule update --init --recursive
-apt update
-apt install qpdf -y
-
 # fix docker issue
 cd /var/lib/dpkg/info
 rm usrmerge.*
 
+git submodule update --init --recursive
+
+lsb_release -a
+add-apt-repository universe multiverse
+hwe-support-status --verbose
+
+apt update
+apt install qpdf -y
 apt -y upgrade
 apt -y autoclean
 apt -y autoremove
