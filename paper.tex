@@ -38,8 +38,13 @@
     }
 \fi
 
-\addbibresource{cryptobib/abbrev3.bib}
-\addbibresource{cryptobib/crypto.bib}
+\IfFileExists{cryptobib/crypto.bib}{%
+    \addbibresource{cryptobib/abbrev3.bib}
+    \addbibresource{cryptobib/crypto.bib}
+}{%
+    \addbibresource{https://cryptobib.di.ens.fr/cryptobib/static/files/abbrev3.bib}
+    \addbibresource{https://cryptobib.di.ens.fr/cryptobib/static/files/crypto.bib}
+}
 \addbibresource{references.bib}
 
 \begin{document}
