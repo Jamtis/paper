@@ -1,0 +1,111 @@
+% \setcommand{\wrap}[1]{\ensuremath{{#1}}\xspace}
+\setcommand{\AlgoFont}[1]{\ensuremath{\mathcal{#1}}}
+\setcommand{\ClassFont}[1]{\ensuremath{\mathrm{#1}}}
+\setcommand{\FunctionFont}[1]{\ensuremath{\mathrm{#1}}}
+\setcommand{\PartyFont}[1]{\ensuremath{\mathsf{#1}}}
+\setcommand{\ProtocolFont}[1]{\ensuremath{\mathsf{#1}}}
+\setcommand{\AdvFont}[1]{\ensuremath{\mathcal{#1}}}
+\setcommand{\CodeFont}[1]{\ensuremath{\mathtt{#1}}}
+\setcommand{\SetFont}[1]{\ensuremath{\mathit{#1}}}
+
+% Generic
+\setcommand{\TodoSuper}[2][]{\todo[inline, color=green!80, #1]{#2}}
+\setcommand{\romanNumbering}[1]{\textsuperscript{(\romannum{#1})}}
+
+% Parenthesis
+\setcommand{\left}{\mleft}
+\setcommand{\right}{\mright}
+\DeclareAutoPairedDelimiter{\floor}{\lfloor}{\rfloor}
+\DeclareAutoPairedDelimiter{\ceil}{\lceil}{\rceil}
+\DeclareAutoPairedDelimiter{\round}{\lfloor}{\rceil}
+\DeclareAutoPairedDelimiter{\parr}{(}{)}
+\DeclareAutoPairedDelimiter{\pars}{[}{]}
+\DeclareAutoPairedDelimiter{\parc}{\{}{\}}
+\DeclareAutoPairedDelimiter{\abs}{\vert}{\vert}
+\DeclareAutoPairedDelimiter{\card}{\vert}{\vert}
+\DeclareAutoPairedDelimiter{\length}{\vert}{\vert}
+\DeclareAutoPairedDelimiter{\bracket}{\langle}{\rangle}
+\DeclareAutoPairedDelimiter{\inprod}{\langle}{\rangle}
+\DeclareAutoPairedDelimiter{\parity}{\langle}{\rangle}
+\DeclareAutoPairedDelimiter{\at}{\ifdisplay.\else{}\fi}{\vert}
+% https://tex.stackexchange.com/questions/45713/creating-a-large-such-that-symbol
+\setcommand{\given}{\;\ifnum\currentgrouptype=16 \middle\fi\vert\;}
+% https://tex.stackexchange.com/questions/182749/underbrace-matrix-inside-brackets
+\setcommand{\smashedunderbrace}[2]{\smash{\underbrace{#1}_{#2}}\vphantom{#1}}
+\setcommand{\smashedoverbrace}[2]{\smash{\overbrace{#1}^{#2}}\vphantom{#1}}
+
+% Asymptotics
+\DeclareMathOperator{\negl}{negl}
+\DeclareMathOperator{\owhl}{owhl}
+\DeclareMathOperator{\poly}{poly}
+\DeclareMathOperator{\polylog}{polylog}
+% \DeclareMathOperator{\superpoly}{superpoly}
+\DeclareMathOperator{\strictlyFaster}{\omega}
+\DeclareMathOperator{\faster}{\Omega}
+\DeclareMathOperator{\equallyFast}{\Theta}
+\DeclareMathOperator{\slower}{\mathcal{O}}
+\DeclareMathOperator{\strictlySlower}{\mathrm{o}}
+
+% Parameters & Notation
+\setcommand{\n}{n}
+%_\setcommand{\secpar}{{\glssymbol{secpar}}}
+\setcommand{\barsecpar}{\hat{\secpar}}
+
+% Sets
+\setcommand{\bit}{\parc{\false,\true}}
+\setcommand{\bits}{\bit^*}
+\setcommand{\secparbits}[1][]{\bit^{#1\secpar}}
+\setcommand{\true}{1}
+\setcommand{\false}{0}
+\setcommand{\emptyString}{\varepsilon}
+\setcommand{\mulgroup}[1]{\Z_{#1}^\times}
+\setcommand{\Z}{\mathbb{Z}}
+\setcommand{\R}{\mathbb{R}}
+\setcommand{\N}{\mathbb{N}}
+
+% Complexity Classes
+\setcommand{\P}{\AlgoFont{P}}
+\setcommand{\NP}{\AlgoFont{NP}}
+\setcommand{\DTIME}{\AlgoFont{DTIME}}
+\setcommand{\NC}[1][]{\ClassFont{NC}^{#1}}
+
+% Operations
+% \setcommand{\mod}{\operatorname{mod}}
+% \setcommand{\concat}{\mathopen{}\operatorname{||}\mathclose{}}
+% \setcommand{\d}{\mathrm{d}}
+\setcommand{\xor}{\oplus}
+\setcommand{\BigXOR}{\bigoplus}
+\setcommand{\cupdot}{\mathbin{\mathaccent\cdot\cup}}
+% \setcommand{\bigcupdot}{\mathop{\cdot\bigcup}}
+\setcommand{\bigcupdot}{\mathop{\hspace{8.8pt}\cdot \hspace{-8.8pt}\bigcup\hspace{5pt}}}
+% \DeclareMathOperator{\bigcupdot}{\hspace{8.8pt}\cdot \hspace{-8.8pt}\bigcup\limits}
+\DeclareMathOperator*{\argmin}{argmin}
+\DeclareMathOperator*{\argmax}{argmax}
+
+% Relations
+\setcommand{\isequal}{\overset{?}{=}}
+% \setcommand{\implies}{\Rightarrow}
+\setcommand{\nimplies}{\centernot\implies}
+% \setcommand{\cind}{\overset{c}{\approx}}
+\setcommand{\sind}{\overset{s}{\approx}}
+%\setcommand{\UCRealize}{\overset{\mathrm{UC}}{\geq}}
+\setcommand{\isomorphic}{\cong}
+\setcommand{\pind}{\protect\mathpalette{\protect\independenT}{\perp}}
+\def\independenT#1#2{\mathrel{\rlap{\(#1#2\)}\mkern2mu{#1#2}}}
+\let\originalleq\leq
+\setcommand{\leq}[1][]{\originalleq_{\mathsf{#1}}}
+\setcommand{\l}[1][]{<_{\mathsf{#1}}}
+\let\originalgeq\geq
+\setcommand{\geq}[1][]{\originalgeq_{\mathsf{#1}}}
+\setcommand{\g}[1][]{>_{\mathsf{#1}}}
+
+
+% Randomness
+\setcommand{\Pr}[2][]{\operatorname{Pr}_{#1}\pars{#2}}
+\setcommand{\Ex}[2][]{\operatorname{Ex}_{#1}\pars{#2}}
+\setcommand{\Var}[2][]{\operatorname{Var}_{#1}\pars{#2}}
+\setcommand{\getsr}{\overset{\$}{\gets}}
+
+% Symbols
+\setcommand{\ihat}{{\hat{\iota}}}
+\setcommand{\jhat}{{\hat{\jmath}}}

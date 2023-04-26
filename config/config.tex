@@ -1,0 +1,344 @@
+% https://tex.stackexchange.com/questions/128797/a-renewcommand-that-does-not-care-if-a-command-is-already-defined
+\makeatletter
+\newcommand*{\setcommand}{%
+  \@star@or@long\set@command
+}
+\newcommand*{\set@command}[1]{%
+  \provide@command{#1}{}%
+  % \let#1\@empty % would be more efficient, but without error checking
+  \renew@command{#1}%
+}
+\makeatother
+
+
+%% geometry
+\ifbeamer{}{
+    \ifdraft{
+        \geometry{
+            paperwidth=25cm,
+            textheight=24cm,
+            heightrounded,
+            left=1cm,
+            right=8cm,
+            marginparwidth=7cm
+        }
+    }{
+        \ifllncs{}{
+            \geometry{
+                a4paper,
+                left=1in,
+                right=1in,
+            }
+        }
+    }
+}
+
+
+%% Environments
+\ifllncs{}{
+    % environments
+    \newtheoremstyle{break} % name
+        {}                    % Space above, empty = `usual value'
+        {}                    % Space below
+        {}                    % Body font
+        {}                    % Indent amount (empty = no indent, \parindent = para indent)
+        {\bfseries}           % Thm head font
+        {}                    % Punctuation after thm head
+        {\newline}            % Space after thm head: \newline = linebreak
+        {}                    % Thm head spec
+    
+    \theoremstyle{break}
+    \ifbeamer{}{
+        \newtheorem{theorem}{Theorem}[section]
+        \newtheorem{corollary}[theorem]{Corollary}
+        \newtheorem{lemma}[theorem]{Lemma}
+        \newtheorem{definition}[theorem]{Definition}
+        \newtheorem{example}{Example}[theorem]
+    }
+    \newtheorem{remark}[theorem]{Remark}
+    \newtheorem{construction}[theorem]{Construction}
+    %\newtheorem{observation}{Observation}
+    %\newtheorem{notation}[theorem]{Notation}
+    %\crefname{observation}{observation}{observations}
+    %\Crefname{observation}{Observation}{Observations}
+    \declaretheorem[name=Conjecture]{conjecture}
+    \crefname{conjecture}{Conjecture}{Conjectures}
+}
+\declaretheorem[name=Notation]{notation}
+\crefname{notation}{Notation}{Notations}
+\declaretheorem[name=Observation]{observation}
+\crefname{observation}{Observation}{Observations}
+\let\claim\relax
+\declaretheorem[name=Claim]{claim}
+\crefname{claim}{Claim}{Claims}
+\ifbeamer{}{
+    \declaretheorem[name=Fact]{fact}
+    \crefname{fact}{Fact}{Facts}
+}
+\declaretheorem[name=Assumption]{assumption}
+\crefname{assumption}{Assumption}{Assumptions}
+
+\newenvironment{nalign}{
+    \begin{equation}
+        \begin{aligned}
+}{
+        \end{aligned}
+    \end{equation}
+    \ignorespacesafterend
+}
+
+\newenvironment{sitemize}{
+    \begin{itemize}[leftmargin=3.5mm]
+}{
+    \end{itemize}
+    \ignorespacesafterend
+}
+
+\newenvironment{senumerate}{
+    \begin{enumerate}[leftmargin=3.5mm]
+}{
+    \end{enumerate}
+    \ignorespacesafterend
+}
+
+\makeatletter
+\let\oldframetitle\mdf@@frametitle@use
+\let\mdf@@frametitle@use\relax
+\setcommand{\mdf@@frametitle@use}{}
+\makeatother
+\newcommand{\newcontdbox}[2]{
+    \newenvironment{#1}[1]{
+        \setcommand{\sitem}{}
+        % \tolerance=6500
+        \tolerance=99999
+        \begin{mdframed}[
+            frametitle={#2 ##1 (cont'd)},
+            repeatframetitle=true,
+            frametitlealignment=\center,
+            frametitlebelowskip=0,
+            frametitlefont=\textrm,
+            innertopmargin=2mm,
+            innerleftmargin=1mm,
+            innerrightmargin=1mm,
+            everyline=true,
+            needspace=6cm
+        ]
+            \mdfsubtitle[
+                subtitleaboveskip=0,
+                subtitlebelowskip=0,
+                subtitleinneraboveskip=0,
+                subtitleinnerbelowskip=1mm,
+                subtitlefont=\textrm
+            ]{#2 ##1}
+    }{
+        \end{mdframed}
+        \ignorespacesafterend
+    }
+}
+\newcontdbox{functionalitybox}{Functionality}
+\newcontdbox{protocolbox}{Protocol}
+\newcontdbox{simulatorbox}{Simulator for}
+
+% https://tex.stackexchange.com/questions/391726/the-quotation-environment
+\NewDocumentCommand{\bywhom}{m}{% the Bourbaki trick
+  {\nobreak\hfill\penalty50\hskip1em\null\nobreak
+   \hfill\mbox{\normalfont{#1}}%
+   \parfillskip=0pt \finalhyphendemerits=0 \par}%
+}
+
+\NewDocumentEnvironment{pquotation}{m}{
+    \begin{quoting}[
+        leftmargin=\parindent,
+        rightmargin=\parindent,]\itshape
+}{
+    \end{quoting}
+    \vspace{-3mm}
+    \bywhom{#1}
+}
+
+\NewDocumentEnvironment{hybrids}{}{
+    \begin{enumerate}[label=\(\mathcal{H}_{\arabic*}\)]
+}{
+    \end{enumerate}%
+}
+
+% https://tex.stackexchange.com/questions/223948/suggestions-for-nested-proofs
+\newenvironment{subproof}[1][\proofname]{%
+    \providecommand{\qedsymbol}{}%
+    \renewcommand{\qedsymbol}{\(\blacksquare\)}%
+  \begin{proof}[#1]%
+}{%
+  \end{proof}%
+}
+
+\newenvironment{bralign}{
+    \begingroup
+    \allowdisplaybreaks
+    \align
+}{
+    \endalign
+    \endgroup
+}
+
+
+%% Square at end of each proof
+\let\originalendproof\endproof
+% \providecommand{\endproof}{~\hfill\originalendproof}
+
+
+%% Todos
+\ifdraft{
+    \providecommand{\marginpar}[1]{}
+    \providecommand{\marginnote}{\marginpar}
+}{
+    \setcommand{\marginpar}[1]{}
+    \setcommand{\marginnote}[1]{}
+}
+
+
+%% lists
+\setcommand\labelitemi{\textbullet}
+\setcommand\labelitemii{\textopenbullet}
+%\setcommand\labelitemi{$\vcenter{\hbox{\tiny$\bullet$}}$}
+\setlist{noitemsep, topsep=0pt}
+
+
+%% tikz
+\usetikzlibrary{calc}
+\usetikzlibrary{patterns}
+\usetikzlibrary{shapes.misc}
+\usetikzlibrary{shapes.callouts}
+\usetikzlibrary{tikzmark}
+\tikzset{
+    square/.style={rectangle, minimum width=.8cm, minimum height=.8cm, draw=black!60},
+    % party/.style={rectangle, minimum width=.8cm, minimum height=.8cm, draw=black!60, rounded corners=.2cm},
+    party/.style={circle, minimum size=.8cm, draw=black!60},
+    func/.style={rectangle, draw=black, minimum width = .8cm, minimum height = .8cm},
+    title/.style={rectangle, minimum width=.8cm, minimum height=.8cm},
+    label/.style={rectangle, minimum width=.8cm, minimum height=.8cm},
+    dummyicon/.style={circle, inner sep=0.05cm, minimum size=.8cm, draw=black!60, dotted, line width=.03cm},
+    partyset/.style={circle, inner sep=0.05cm, minimum size=.8cm, draw=black!60, densely dashed, line width=.03cm},
+    partyicon/.style={circle, inner sep=0.05cm, minimum size=.8cm, draw=black!60, fill=white},
+    placeholder/.style={circle, inner sep=0.05cm, minimum size=.8cm},
+    advicon/.style={circle, inner sep=0.05cm, minimum size=.8cm, draw=black!60, double},
+    smallpartyicon/.style={circle, inner sep=0.05cm, minimum size=.08cm, draw=black!60},
+    line/.style={densely dotted, line width=.02cm},
+    functionalitybox/.style={draw=black!70,fill=black!70, text=white, minimum width=1cm,minimum height=.6cm}
+}
+
+
+%% Print URLs not in Typewriter Font
+\def\UrlFont{\rm}
+
+
+%% Page numbering
+\ifllncs{
+    % We need page numbers according to https://crypto.iacr.org/2021/callforpapers.html
+    \pagestyle{plain}
+}{}
+
+\ifbeamer{
+    \beamertemplatenavigationsymbolsempty
+}{}
+
+%% ulem...
+\normalem
+
+
+%% Equations alignment
+\AtBeginDocument{\setlength\abovedisplayskip{4pt}}
+\AtBeginDocument{\setlength\belowdisplayskip{4pt}}
+
+
+%% Typography
+\renewcommand*{\bibfont}{\small}
+
+
+%% Table
+\def\arraystretch{1.2}
+\AtBeginDocument{\setlength{\tabcolsep}{0.5em}}
+
+%% Default hyper setup
+\ifanonymous
+    \hypersetup{
+        linktoc=all,
+        pdfauthor={},
+        pdftitle={},
+        pdfsubject={},
+        pdfkeywords={}
+    }
+\fi
+\setcounter{tocdepth}{2}
+
+
+%% Cross-referencing: hyper-xr
+\makeatletter
+\newcommand*{\addFileDependency}[1]{% argument=file name and extension
+  \typeout{(#1)}
+  \@addtofilelist{#1}
+  \IfFileExists{#1}{}{\typeout{No file #1.}}
+}
+\makeatother
+
+\newcommand*{\myexternaldocument}[1]{%
+    \externaldocument{#1}%
+    \addFileDependency{#1.tex}%
+    \addFileDependency{#1.aux}%
+}
+
+%% providing llncs dummy commands
+\providecommand{\inst}[1]{}
+\providecommand{\institute}[1]{}
+\providecommand{\email}[1]{}
+\providecommand{\keywords}[1]{}
+\providecommand{\and}{}
+
+
+%% My TOC
+\setcommand{\mytoc}{
+    \begingroup
+        \let\clearpage\relax
+        \let\chapter\section
+        \def\contentsname{Contents}
+        \tableofcontents
+    \endgroup
+}
+
+
+%% My maketitle
+\setcommand{\mymaketitle}{
+    \begingroup
+        \let\oldaddcontentsline\addcontentsline
+        \renewcommand*{\addcontentsline}[3]{%
+            \ifstrequal{##1}{toc}{%
+                \ifstrequal{##2}{author}{}{%
+                    \ifstrequal{##2}{title}{}{%
+                        \oldaddcontentsline{##1}{##2}{##3}
+                    }
+                }
+            }{%
+                \oldaddcontentsline{##1}{##2}{##3}
+            }
+        }
+        %\let\addtocontents\relax
+        \maketitle
+    \endgroup
+}
+
+
+%% Auto delimiters
+\let\ifdisplay\iffalse
+\everydisplay\expandafter{\let\ifdisplay\iftrue}
+\setcommand{\DeclareAutoPairedDelimiter}[3]{%
+    \setcommand{#1}[1]{\ifdisplay\left#2\else#2\fi##1\ifdisplay\right#3\else#3\fi}
+}
+
+
+%% auto cref
+\let\originalcref\cref
+\setcommand{\cref}[1]{\ifdisplay\textup{\originalcref{#1}}\else\originalcref{#1}\fi}
+
+
+%% strikeout in math mode
+\let\originalsout\sout
+\setcommand{\sout}[1]{\ifmmode\text{\originalsout{\ensuremath{#1}}}\else\originalsout{#1}\fi}

@@ -12,8 +12,6 @@
 \input{config/macros}
 \input{custom_config/macros}
 
-\usetikzlibrary{tikzmark}
-
 \title{title}
 
 \ifanonymous
@@ -36,8 +34,6 @@
     }
 \fi
 
-\beamertemplatenavigationsymbolsempty
-
 \addbibresource{cryptobib/abbrev3.bib}
 \addbibresource{cryptobib/crypto.bib}
 \addbibresource{references.bib}
@@ -52,12 +48,12 @@
     \titlepage
 \end{frame}
 
-\input{sections/preliminaries}
-\input{sections/results}
-\input{sections/summary}
+\input{slides/preliminaries}
+\input{slides/results}
+\input{slides/summary}
 
 \appendix
-\input{sections/backup}
-\input{sections/references}
+\input{slides/backup}
+\input{slides/references}
 
 \end{document}
