@@ -27,3 +27,4 @@
 *.slo
 **/*.bak
 **/*.orig
+*.swp
