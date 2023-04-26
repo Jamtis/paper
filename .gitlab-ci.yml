@@ -2,7 +2,6 @@ variables:
     GIT_SUBMODULE_STRATEGY: recursive
 
 compile_pdf:
-    stage: compile
     image:
         name: texlive/texlive
         entrypoint: [ '/bin/bash', '-c', 'ln -snf /bin/bash /bin/sh && /bin/bash -c $0' ]
