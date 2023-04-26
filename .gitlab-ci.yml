@@ -1,13 +1,27 @@
+stages:
+    - setup
+    - compile
+
 variables:
     GIT_SUBMODULE_STRATEGY: recursive
 
-compile_pdf:
-    image: texlive/texlive
-    before_script:
-        - apt install qpdf -y
+setup:
+    stage: setup
+    image:
+        name: texlive/texlive
+        entrypoint: [ '/bin/bash', '-c', 'ln -snf /bin/bash /bin/sh && /bin/bash -c $0' ]
     script:
-        - latexmk -lualatex paper.tex
+        - bash .devcontainer/create.sh
+
+compile_pdf:
+    stage: compile
+    image:
+        name: texlive/texlive
+        entrypoint: [ '/bin/bash', '-c', 'ln -snf /bin/bash /bin/sh && /bin/bash -c $0' ]
+    script:
+        - latexmk -pdf paper.tex
         - qpdf --linearize paper.pdf paper.lin.pdf
     artifacts:
         paths:
         - paper.pdf
+        - paper.lin.pdf

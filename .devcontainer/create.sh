@@ -13,10 +13,6 @@ rm usrmerge.*
 
 git submodule update --init --recursive
 
-lsb_release -a
-add-apt-repository universe multiverse
-hwe-support-status --verbose
-
 apt-get update
 apt-get install qpdf -y
 apt-get -y upgrade
