@@ -17,8 +17,8 @@ lsb_release -a
 add-apt-repository universe multiverse
 hwe-support-status --verbose
 
-apt update
-apt install qpdf -y
-apt -y upgrade
-apt -y autoclean
-apt -y autoremove
+apt-get update
+apt-get install qpdf -y
+apt-get -y upgrade
+apt-get -y autoclean
+apt-get -y autoremove
