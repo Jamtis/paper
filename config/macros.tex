@@ -1,15 +1,4 @@
-% \setcommand{\wrap}[1]{\ensuremath{{#1}}\xspace}
-\setcommand{\AlgoFont}[1]{\ensuremath{\mathcal{#1}}}
-\setcommand{\ClassFont}[1]{\ensuremath{\mathrm{#1}}}
-\setcommand{\FunctionFont}[1]{\ensuremath{\mathrm{#1}}}
-\setcommand{\PartyFont}[1]{\ensuremath{\mathsf{#1}}}
-\setcommand{\ProtocolFont}[1]{\ensuremath{\mathsf{#1}}}
-\setcommand{\AdvFont}[1]{\ensuremath{\mathcal{#1}}}
-\setcommand{\CodeFont}[1]{\ensuremath{\mathtt{#1}}}
-\setcommand{\SetFont}[1]{\ensuremath{\mathit{#1}}}
-
 % Generic
-\setcommand{\TodoSuper}[2][]{\todo[inline, color=green!80, #1]{#2}}
 \setcommand{\romanNumbering}[1]{\textsuperscript{(\romannum{#1})}}
 
 % Parenthesis
@@ -46,28 +35,15 @@
 \DeclareMathOperator{\slower}{\mathcal{O}}
 \DeclareMathOperator{\strictlySlower}{\mathrm{o}}
 
-% Parameters & Notation
-\setcommand{\n}{n}
-%_\setcommand{\secpar}{{\glssymbol{secpar}}}
-\setcommand{\barsecpar}{\hat{\secpar}}
-
 % Sets
 \setcommand{\bit}{\parc{\false,\true}}
 \setcommand{\bits}{\bit^*}
-\setcommand{\secparbits}[1][]{\bit^{#1\secpar}}
 \setcommand{\true}{1}
 \setcommand{\false}{0}
 \setcommand{\emptyString}{\varepsilon}
-\setcommand{\mulgroup}[1]{\Z_{#1}^\times}
 \setcommand{\Z}{\mathbb{Z}}
 \setcommand{\R}{\mathbb{R}}
 \setcommand{\N}{\mathbb{N}}
-
-% Complexity Classes
-\setcommand{\P}{\AlgoFont{P}}
-\setcommand{\NP}{\AlgoFont{NP}}
-\setcommand{\DTIME}{\AlgoFont{DTIME}}
-\setcommand{\NC}[1][]{\ClassFont{NC}^{#1}}
 
 % Operations
 % \setcommand{\mod}{\operatorname{mod}}
@@ -99,7 +75,6 @@
 \setcommand{\geq}[1][]{\originalgeq_{\mathsf{#1}}}
 \setcommand{\g}[1][]{>_{\mathsf{#1}}}
 
-
 % Randomness
 \setcommand{\Pr}[2][]{\operatorname{Pr}_{#1}\pars{#2}}
 \setcommand{\Ex}[2][]{\operatorname{Ex}_{#1}\pars{#2}}
@@ -109,3 +84,92 @@
 % Symbols
 \setcommand{\ihat}{{\hat{\iota}}}
 \setcommand{\jhat}{{\hat{\jmath}}}
+\setcommand{\H}{\mathcal{H}}
+\setcommand{\frakH}{\mathfrak{H}}
+\setcommand{\D}{\mathcal{D}}
+\setcommand{\T}{\mathcal{T}}
+\setcommand{\E}{\mathcal{E}}
+\setcommand{\A}{\mathcal{A}}
+\setcommand{\M}{\mathcal{M}}
+\setcommand{\K}{\mathsf{K}}
+\setcommand{\C}{\mathsf{C}}
+\setcommand{\F}{\mathsf{F}}
+\setcommand{\I}{\mathcal{I}}
+\setcommand{\Sim}{\mathcal{S}}
+\setcommand{\U}{\mathcal{U}}
+\setcommand{\S}{\mathcal{S}}
+\setcommand{\fraka}{\mathfrak{a}}
+\setcommand{\frakb}{\mathfrak{b}}
+\setcommand{\frakc}{\mathfrak{c}}
+\setcommand{\frakd}{\mathfrak{d}}
+\setcommand{\frake}{\mathfrak{e}}
+\setcommand{\frakf}{\mathfrak{f}}
+\setcommand{\frakg}{\mathfrak{g}}
+\setcommand{\frakh}{\mathfrak{h}}
+\setcommand{\fraki}{\mathfrak{i}}
+\setcommand{\frakj}{\mathfrak{j}}
+\setcommand{\frakk}{\mathfrak{k}}
+\setcommand{\frakl}{\mathfrak{l}}
+\setcommand{\frakm}{\mathfrak{m}}
+\setcommand{\frakn}{\mathfrak{n}}
+\setcommand{\frako}{\mathfrak{o}}
+\setcommand{\frakp}{\mathfrak{p}}
+\setcommand{\frakq}{\mathfrak{q}}
+\setcommand{\frakr}{\mathfrak{r}}
+\setcommand{\fraks}{\mathfrak{s}}
+\setcommand{\frakt}{\mathfrak{t}}
+\setcommand{\fraku}{\mathfrak{u}}
+\setcommand{\frakv}{\mathfrak{v}}
+\setcommand{\frakw}{\mathfrak{w}}
+\setcommand{\frakx}{\mathfrak{x}}
+\setcommand{\fraky}{\mathfrak{y}}
+\setcommand{\frakz}{\mathfrak{z}}
+\setcommand{\frakA}{\mathfrak{A}}
+\setcommand{\frakB}{\mathfrak{B}}
+\setcommand{\frakC}{\mathfrak{C}}
+\setcommand{\frakD}{\mathfrak{D}}
+\setcommand{\frakE}{\mathfrak{E}}
+\setcommand{\frakF}{\mathfrak{F}}
+\setcommand{\frakG}{\mathfrak{G}}
+\setcommand{\frakH}{\mathfrak{H}}
+\setcommand{\frakI}{\mathfrak{I}}
+\setcommand{\frakJ}{\mathfrak{J}}
+\setcommand{\frakK}{\mathfrak{K}}
+\setcommand{\frakL}{\mathfrak{L}}
+\setcommand{\frakM}{\mathfrak{M}}
+\setcommand{\frakN}{\mathfrak{N}}
+\setcommand{\frakO}{\mathfrak{O}}
+\setcommand{\frakP}{\mathfrak{P}}
+\setcommand{\frakQ}{\mathfrak{Q}}
+\setcommand{\frakR}{\mathfrak{R}}
+\setcommand{\frakS}{\mathfrak{S}}
+\setcommand{\frakT}{\mathfrak{T}}
+\setcommand{\frakU}{\mathfrak{U}}
+\setcommand{\frakV}{\mathfrak{V}}
+\setcommand{\frakW}{\mathfrak{W}}
+\setcommand{\frakX}{\mathfrak{X}}
+\setcommand{\frakY}{\mathfrak{Y}}
+\setcommand{\frakZ}{\mathfrak{Z}}
+
+% Complexity Classes
+\setcommand{\Heur}{\mathsf{Heur}}
+\setcommand{\Avg}{\mathsf{Avg}}
+\setcommand{\DTIME}{\mathsf{DTIME}}
+\setcommand{\BPTIME}{\mathsf{BPTIME}}
+\setcommand{\RTIME}{\mathsf{RTIME}}
+\setcommand{\ZPTIME}{\mathsf{ZPTIME}}
+\setcommand{\NTIME}{\mathsf{NTIME}}
+\setcommand{\SPACE}{\mathsf{SPACE}}
+\setcommand{\PSPACE}{\mathsf{PSPACE}}
+\setcommand{\LEARN}{\mathsf{LEARN}}
+\setcommand{\NP}{\mathsf{NP}}
+\setcommand{\NEXP}{\mathsf{NEXP}}
+\setcommand{\EXP}{\mathsf{EXP}}
+\setcommand{\BPP}{\mathsf{BPP}}
+\setcommand{\Ppoly}{\mathsf{P/poly}}
+\setcommand{\P}{\mathsf{P}}
+\setcommand{\QP}{\mathsf{QP}}
+\setcommand{\UP}{\mathsf{UP}}
+\setcommand{\DSR}{\mathsf{DSR}}
+\setcommand{\RE}{\mathsf{RE}}
+\setcommand{\Rrecursive}{\mathsf{R}}
