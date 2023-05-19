@@ -201,6 +201,8 @@
 \setcommand\labelitemii{\textopenbullet}
 %\setcommand\labelitemi{$\vcenter{\hbox{\tiny$\bullet$}}$}
 \setlist{noitemsep, topsep=0pt}
+\setenumerate[2]{labelindent=0pt,itemindent=0pt}
+
 
 
 %% tikz
@@ -209,6 +211,7 @@
 \usetikzlibrary{shapes.misc}
 \usetikzlibrary{shapes.callouts}
 \usetikzlibrary{tikzmark}
+\usetikzlibrary{decorations.pathreplacing,calligraphy}
 \tikzset{
     square/.style={rectangle, minimum width=.8cm, minimum height=.8cm, draw=black!60},
     % party/.style={rectangle, minimum width=.8cm, minimum height=.8cm, draw=black!60, rounded corners=.2cm},
