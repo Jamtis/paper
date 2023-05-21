@@ -1,12 +1,12 @@
 % https://tex.stackexchange.com/questions/128797/a-renewcommand-that-does-not-care-if-a-command-is-already-defined
 \makeatletter
 \newcommand*{\setcommand}{%
-  \@star@or@long\set@command
+    \@star@or@long\set@command
 }
 \newcommand*{\set@command}[1]{%
-  \provide@command{#1}{}%
-  % \let#1\@empty % would be more efficient, but without error checking
-  \renew@command{#1}%
+    \provide@command{#1}{}%
+    % \let#1\@empty % would be more efficient, but without error checking
+    \renew@command{#1}%
 }
 \makeatother
 
@@ -35,33 +35,20 @@
 
 
 %% Environments
+\theoremstyle{plain}
 \ifllncs{}{
-    % environments
-    \newtheoremstyle{break} % name
-        {}                    % Space above, empty = `usual value'
-        {}                    % Space below
-        {}                    % Body font
-        {}                    % Indent amount (empty = no indent, \parindent = para indent)
-        {\bfseries}           % Thm head font
-        {}                    % Punctuation after thm head
-        {\newline}            % Space after thm head: \newline = linebreak
-        {}                    % Thm head spec
-    
-    \theoremstyle{break}
     \ifbeamer{}{
         \newtheorem{theorem}{Theorem}[section]
         \newtheorem{corollary}[theorem]{Corollary}
         \newtheorem{lemma}[theorem]{Lemma}
+        \theoremstyle{definition}
         \newtheorem{definition}[theorem]{Definition}
+        \theoremstyle{remark}
         \newtheorem{example}{Example}[theorem]
-        \newtheorem{question}[theorem]{Question}
     }
+    \declaretheorem[name=Question]{question}
     \newtheorem{remark}[theorem]{Remark}
     \newtheorem{construction}[theorem]{Construction}
-    %\newtheorem{observation}{Observation}
-    %\newtheorem{notation}[theorem]{Notation}
-    %\crefname{observation}{observation}{observations}
-    %\Crefname{observation}{Observation}{Observations}
     \declaretheorem[name=Conjecture]{conjecture}
     \crefname{conjecture}{Conjecture}{Conjectures}
 }
@@ -82,7 +69,7 @@
 \newenvironment{nalign}{
     \begin{equation}
         \begin{aligned}
-}{
+            }{
         \end{aligned}
     \end{equation}
     \ignorespacesafterend
@@ -90,14 +77,14 @@
 
 \newenvironment{sitemize}{
     \begin{itemize}[leftmargin=3.5mm]
-}{
+        }{
     \end{itemize}
     \ignorespacesafterend
 }
 
 \newenvironment{senumerate}{
     \begin{enumerate}[leftmargin=3.5mm]
-}{
+        }{
     \end{enumerate}
     \ignorespacesafterend
 }
@@ -113,17 +100,17 @@
         % \tolerance=6500
         \tolerance=99999
         \begin{mdframed}[
-            frametitle={#2 ##1 (cont'd)},
-            repeatframetitle=true,
-            frametitlealignment=\center,
-            frametitlebelowskip=0,
-            frametitlefont=\textrm,
-            innertopmargin=2mm,
-            innerleftmargin=1mm,
-            innerrightmargin=1mm,
-            everyline=true,
-            needspace=6cm
-        ]
+                frametitle={#2 ##1 (cont'd)},
+                repeatframetitle=true,
+                frametitlealignment=\center,
+                frametitlebelowskip=0,
+                frametitlefont=\textrm,
+                innertopmargin=2mm,
+                innerleftmargin=1mm,
+                innerrightmargin=1mm,
+                everyline=true,
+                needspace=6cm
+            ]
             \mdfsubtitle[
                 subtitleaboveskip=0,
                 subtitlebelowskip=0,
@@ -131,7 +118,7 @@
                 subtitleinnerbelowskip=1mm,
                 subtitlefont=\textrm
             ]{#2 ##1}
-    }{
+            }{
         \end{mdframed}
         \ignorespacesafterend
     }
@@ -142,16 +129,16 @@
 
 % https://tex.stackexchange.com/questions/391726/the-quotation-environment
 \NewDocumentCommand{\bywhom}{m}{% the Bourbaki trick
-  {\nobreak\hfill\penalty50\hskip1em\null\nobreak
-   \hfill\mbox{\normalfont{#1}}%
-   \parfillskip=0pt \finalhyphendemerits=0 \par}%
+    {\nobreak\hfill\penalty50\hskip1em\null\nobreak
+            \hfill\mbox{\normalfont{#1}}%
+            \parfillskip=0pt \finalhyphendemerits=0 \par}%
 }
 
 \NewDocumentEnvironment{pquotation}{m}{
     \begin{quoting}[
-        leftmargin=\parindent,
-        rightmargin=\parindent,]\itshape
-}{
+            leftmargin=\parindent,
+            rightmargin=\parindent,]\itshape
+        }{
     \end{quoting}
     \vspace{-3mm}
     \bywhom{#1}
@@ -159,7 +146,7 @@
 
 \NewDocumentEnvironment{hybrids}{}{
     \begin{enumerate}[label=\(\mathcal{H}_{\arabic*}\)]
-}{
+        }{
     \end{enumerate}%
 }
 
@@ -167,9 +154,9 @@
 \newenvironment{subproof}[1][\proofname]{%
     \providecommand{\qedsymbol}{}%
     \renewcommand{\qedsymbol}{\(\blacksquare\)}%
-  \begin{proof}[#1]%
-}{%
-  \end{proof}%
+    \begin{proof}[#1]%
+        }{%
+    \end{proof}%
 }
 
 \newenvironment{bralign}{
@@ -278,9 +265,9 @@
 %% Cross-referencing: hyper-xr
 \makeatletter
 \newcommand*{\addFileDependency}[1]{% argument=file name and extension
-  \typeout{(#1)}
-  \@addtofilelist{#1}
-  \IfFileExists{#1}{}{\typeout{No file #1.}}
+    \typeout{(#1)}
+    \@addtofilelist{#1}
+    \IfFileExists{#1}{}{\typeout{No file #1.}}
 }
 \makeatother
 
@@ -301,10 +288,10 @@
 %% My TOC
 \setcommand{\mytoc}{
     \begingroup
-        \let\clearpage\relax
-        \let\chapter\section
-        \def\contentsname{Contents}
-        \tableofcontents
+    \let\clearpage\relax
+    \let\chapter\section
+    \def\contentsname{Contents}
+    \tableofcontents
     \endgroup
 }
 
@@ -312,20 +299,20 @@
 %% My maketitle
 \setcommand{\mymaketitle}{
     \begingroup
-        \let\oldaddcontentsline\addcontentsline
-        \renewcommand*{\addcontentsline}[3]{%
-            \ifstrequal{##1}{toc}{%
-                \ifstrequal{##2}{author}{}{%
-                    \ifstrequal{##2}{title}{}{%
-                        \oldaddcontentsline{##1}{##2}{##3}
-                    }
+    \let\oldaddcontentsline\addcontentsline
+    \renewcommand*{\addcontentsline}[3]{%
+        \ifstrequal{##1}{toc}{%
+            \ifstrequal{##2}{author}{}{%
+                \ifstrequal{##2}{title}{}{%
+                    \oldaddcontentsline{##1}{##2}{##3}
                 }
-            }{%
-                \oldaddcontentsline{##1}{##2}{##3}
             }
+        }{%
+            \oldaddcontentsline{##1}{##2}{##3}
         }
-        %\let\addtocontents\relax
-        \maketitle
+    }
+    %\let\addtocontents\relax
+    \maketitle
     \endgroup
 }
 
