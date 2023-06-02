@@ -7,29 +7,19 @@
 \@ifundefined{iffullversion}{
     \let\iffullversion\iftrue
 }{}
-\iffullversion
-    \def\class{article}
-\else
-\fi
 
 \@ifundefined{ifnumeric}{
     \let\ifnumeric\iftrue
 }{}
 
-\newcommand{\ifllncs}[2]{\@ifclassloaded{llncs}{#1}{#2}}
+% \newcommand{\ifllncs}[2]{\@ifclassloaded{llncs}{#1}{#2}}
 \newcommand{\ifbeamer}[2]{\@ifclassloaded{beamer}{#1}{#2}}
 
 \makeatother
 
 \ifdraft
     \def\draftmode{draft}
-    \def\class{article}
 \else
     \def\draftmode{final}
-    \iffullversion
-        \def\class{article}
-    \else
-        \def\class{llncs}
-    \fi
 \fi
 \let\ifdraft\relax

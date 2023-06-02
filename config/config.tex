@@ -23,12 +23,10 @@
             marginparwidth=7cm
         }
     }{
-        \ifllncs{}{
-            \geometry{
-                a4paper,
-                left=1in,
-                right=1in,
-            }
+        \geometry{
+            a4paper,
+            left=1in,
+            right=1in,
         }
     }
 }
@@ -36,22 +34,6 @@
 
 %% Environments
 \theoremstyle{plain}
-\ifllncs{}{
-    \ifbeamer{}{
-        \newtheorem{theorem}{Theorem}[section]
-        \newtheorem{corollary}[theorem]{Corollary}
-        \newtheorem{lemma}[theorem]{Lemma}
-        \theoremstyle{definition}
-        \newtheorem{definition}[theorem]{Definition}
-        \theoremstyle{remark}
-        \newtheorem{example}{Example}[theorem]
-    }
-    \declaretheorem[name=Question]{question}
-    \newtheorem{remark}[theorem]{Remark}
-    \newtheorem{construction}[theorem]{Construction}
-    \declaretheorem[name=Conjecture]{conjecture}
-    \crefname{conjecture}{Conjecture}{Conjectures}
-}
 \crefname{question}{Question}{Questions}
 \declaretheorem[name=Notation]{notation}
 \crefname{notation}{Notation}{Notations}
@@ -224,10 +206,8 @@
 
 
 %% Page numbering
-\ifllncs{
-    % We need page numbers according to https://crypto.iacr.org/2021/callforpapers.html
-    \pagestyle{plain}
-}{}
+% We need page numbers according to https://crypto.iacr.org/2021/callforpapers.html
+\pagestyle{plain}
 
 \ifbeamer{
     \beamertemplatenavigationsymbolsempty
