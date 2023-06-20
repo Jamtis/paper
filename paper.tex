@@ -21,7 +21,7 @@
 
 \ifanonymous
     \author{\vspace*{-1cm}}
-    \institute{\vspace*{-.5cm}}
+    \institute{\vspace*{-1cm}}
 \else
     \author{
         author\inst{1}
@@ -54,27 +54,17 @@
 
 \begin{document}
 
+\mymaketitle
+
+\begin{abstract}
+    \input{sections/abstract}
+    \keywords{
+    }
+\end{abstract}
+
 \iffullversion
-    \maketitle
-
-    \begin{abstract}
-        \input{sections/abstract}
-        \keywords{
-        }
-    \end{abstract}
-
+    \vspace*{-6mm}
     \mytoc
-\else
-    \maketitle
-
-    \begin{abstract}
-        \input{sections/abstract}
-        \keywords{
-            keyword1
-            \and
-            keyword2
-        }
-    \end{abstract}
 \fi
 \setcounter{footnote}{0}
 
