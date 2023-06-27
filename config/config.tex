@@ -165,15 +165,14 @@
     \providecommand{\marginpar}[1]{}
     \providecommand{\marginnote}{\marginpar}
     
-    % fix margin are on the right side
-    \makeatletter
-    \@mparswitchtrue
-    \makeatother
-
 }{
     \setcommand{\marginpar}[1]{}
     \setcommand{\marginnote}[1]{}
 }
+% fix margin are on the right side
+\makeatletter
+\ifdraft{\@mparswitchtrue}{}
+\makeatother
 
 
 %% lists
