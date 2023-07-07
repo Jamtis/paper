@@ -2,7 +2,7 @@
 cd /var/lib/dpkg/info
 rm usrmerge.*
 
-git submodule update --init --recursive
+git submodule update --init --recursive --remote
 
 apt-get update
 apt-get -y upgrade
