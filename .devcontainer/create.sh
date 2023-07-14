@@ -1,9 +1,9 @@
+# update submodules
+git submodule update --init --recursive --remote
+
 # fix docker issue
 cd /var/lib/dpkg/info
 rm usrmerge.*
-
-# update submodules
-git submodule update --init --recursive --remote
 
 # update system
 apt-get update

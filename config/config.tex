@@ -10,7 +10,6 @@
 }
 \makeatother
 
-
 %% geometry
 \ifbeamer{}{
     \ifdraft
@@ -33,7 +32,6 @@
         \fi
     \fi
 }
-
 
 %% Environments
 \theoremstyle{plain}
@@ -154,16 +152,12 @@
     \endgroup
 }
 
-
 %% Square at end of each proof
 \let\originalendproof\endproof
 % \providecommand{\endproof}{~\hfill\originalendproof}
 
-
 %% Todos
 \ifdraft
-    \providecommand{\marginpar}[1]{}
-    %\providecommand{\marginnote}{\marginpar}
 \else
     \setcommand{\marginpar}[1]{}
     \setcommand{\marginnote}[1]{}
@@ -225,16 +219,12 @@
 }
 \makeatother
 
-
-
 %% lists
 \setcommand\labelitemi{\textbullet}
 \setcommand\labelitemii{\textopenbullet}
 %\setcommand\labelitemi{$\vcenter{\hbox{\tiny$\bullet$}}$}
 \setlist{noitemsep, topsep=0pt}
 \setenumerate[2]{labelindent=0pt,itemindent=0pt}
-
-
 
 %% tikz
 \usetikzlibrary{calc}
@@ -260,10 +250,8 @@
     functionalitybox/.style={draw=black!70,fill=black!70, text=white, minimum width=1cm,minimum height=.6cm}
 }
 
-
 %% Print URLs not in Typewriter Font
 \def\UrlFont{\rm}
-
 
 %% Page numbering
 % We need page numbers according to https://crypto.iacr.org/2021/callforpapers.html
@@ -273,19 +261,15 @@
     \beamertemplatenavigationsymbolsempty
 }{}
 
-
 %% ulem...
 \normalem
-
 
 %% Equations alignment
 \AtBeginDocument{\setlength\abovedisplayskip{4pt}}
 \AtBeginDocument{\setlength\belowdisplayskip{4pt}}
 
-
 %% Typography
 \renewcommand*{\bibfont}{\small}
-
 
 %% Table
 \def\arraystretch{1.2}
@@ -294,6 +278,7 @@
 %% Default hyper setup
 \ifanonymous
     \hypersetup{
+        final,
         linktoc=all,
         pdfauthor={},
         pdftitle={},
@@ -302,7 +287,6 @@
     }
 \fi
 \setcounter{tocdepth}{2}
-
 
 %% Cross-referencing: hyper-xr
 \makeatletter
@@ -326,7 +310,6 @@
 \providecommand{\keywords}[1]{}
 \providecommand{\and}{}
 
-
 %% My TOC
 \setcommand{\mytoc}{
     \begingroup
@@ -336,7 +319,6 @@
     \tableofcontents
     \endgroup
 }
-
 
 %% My maketitle
 \setcommand{\mymaketitle}{
@@ -360,7 +342,6 @@
     \let\abstractname\relax
 }
 
-
 %% Auto delimiters
 \let\ifdisplay\iffalse
 \everydisplay\expandafter{\let\ifdisplay\iftrue}
@@ -368,11 +349,9 @@
     \setcommand{#1}[1]{\ifdisplay\left#2\else#2\fi##1\ifdisplay\right#3\else#3\fi}
 }
 
-
 %% auto cref
 \let\originalcref\cref
 \setcommand{\cref}[1]{\ifdisplay\textup{\originalcref{#1}}\else\originalcref{#1}\fi}
-
 
 %% strikeout in math mode
 \let\originalsout\sout
