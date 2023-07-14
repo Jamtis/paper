@@ -1,4 +1,4 @@
-\usepackage{ifdraft}
+% \usepackage{ifdraft}
 % \usepackage{ifluatex}
 
 
@@ -29,11 +29,11 @@
 \usepackage[tableposition=top,labelfont=bf,font={small}]{caption}
 \usepackage[]{subcaption}
 \usepackage{ulem}
-\ifdraft{
+\ifdraft
     \def\backend{bibtex}
-}{
+\else
     \def\backend{biber}
-}
+\fi
 \ifnumeric
     \def\citestyle{numeric}
 \else
@@ -46,14 +46,14 @@
 \usepackage{mdframed}
 \usepackage[]{tikzpeople}
 \usepackage{tikz}
-\ifdraft{
+\ifdraft
     \usepackage{geometry}
     \usepackage{marginnote}
-}{
+\else
     \iffullversion
         \usepackage{geometry}
     \fi
-}
+\fi
 \usepackage{calc}
 \usepackage{orcidlink}
 

@@ -13,7 +13,7 @@
 
 %% geometry
 \ifbeamer{}{
-    \ifdraft{
+    \ifdraft
         \geometry{
             paperwidth=25cm,
             textheight=24cm,
@@ -23,7 +23,7 @@
             marginparwidth=7cm,
             asymmetric
         }
-    }{
+    \else
         \iffullversion
             \geometry{
                 a4paper,
@@ -31,7 +31,7 @@
                 right=1in,
             }
         \fi
-    }
+    \fi
 }
 
 
@@ -161,17 +161,70 @@
 
 
 %% Todos
-\ifdraft{
+\ifdraft
     \providecommand{\marginpar}[1]{}
-    \providecommand{\marginnote}{\marginpar}
-}{
+    %\providecommand{\marginnote}{\marginpar}
+\else
     \setcommand{\marginpar}[1]{}
     \setcommand{\marginnote}[1]{}
-}
+\fi
 % fix margin are on the right side
+% https://tex.stackexchange.com/questions/69595/marginnote-always-on-right-side-of-the-page
 \makeatletter
-\ifdraft{\@mparswitchtrue}{}
+\long\def\@mn@@@marginnote[#1]#2[#3]{%
+  \begingroup
+    \ifmmode\mn@strut\let\@tempa\mn@vadjust\else
+      \if@inlabel\leavevmode\fi
+      \ifhmode\mn@strut\let\@tempa\mn@vadjust\else\let\@tempa\mn@vlap\fi
+    \fi
+    \@tempa{%
+      \vbox to\z@{%
+        \vss
+        \@mn@margintest
+        \if@reversemargin\if@tempswa
+            \@tempswafalse
+          \else
+            \@tempswatrue
+        \fi\fi
+        %\if@tempswa
+          \rlap{%
+            \if@mn@verbose
+              \PackageInfo{marginnote}{xpos seems to be \@mn@currxpos}%
+            \fi
+            \begingroup
+              \ifx\@mn@currxpos\relax\else\ifx\@mn@currxpos\@empty\else
+                  \kern-\dimexpr\@mn@currxpos\relax
+              \fi\fi
+              \ifx\@mn@currpage\relax
+                \let\@mn@currpage\@ne
+              \fi
+              \if@twoside\ifodd\@mn@currpage\relax
+                  \kern\oddsidemargin
+                \else
+                  \kern\evensidemargin
+                \fi
+              \else
+                \kern\oddsidemargin
+              \fi
+              \kern 1in
+            \endgroup
+            \kern\marginnotetextwidth\kern\marginparsep
+            \vbox to\z@{\kern\marginnotevadjust\kern #3
+              \vbox to\z@{%
+                \hsize\marginparwidth
+                \linewidth\hsize
+                \kern-\parskip
+                \marginfont\raggedrightmarginnote\strut\hspace{\z@}%
+                \ignorespaces#2\endgraf
+                \vss}%
+              \vss}%
+          }%
+      }%
+    }%
+  \endgroup
+}
 \makeatother
+
 
 
 %% lists
