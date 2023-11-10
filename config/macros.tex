@@ -1,6 +1,7 @@
 % Generic
 \setcommand{\romanNumbering}[1]{\textsuperscript{(\romannum{#1})}}
 \setcommand{\clb}{\iffullversion\else\\\fi}
+\setcommand{\contradiction}{\ensuremath{{\Rightarrow\mspace{-2mu}\Leftarrow}}}
 
 % Parenthesis
 \setcommand{\left}{\mleft}
@@ -23,6 +24,11 @@
 % https://tex.stackexchange.com/questions/182749/underbrace-matrix-inside-brackets
 \setcommand{\smashedunderbrace}[2]{\smash{\underbrace{#1}_{#2}}\vphantom{#1}}
 \setcommand{\smashedoverbrace}[2]{\smash{\overbrace{#1}^{#2}}\vphantom{#1}}
+% https://tex.stackexchange.com/questions/83509/hfill-in-math-mode
+\makeatletter
+\setcommand{\pushright}[1]{\ifmeasuring@#1\else\omit\hfill$\displaystyle#1$\fi\ignorespaces}
+\setcommand{\pushleft}[1]{\ifmeasuring@#1\else\omit$\displaystyle#1$\hfill\fi\ignorespaces}
+\makeatother
 
 % Asymptotics
 \DeclareMathOperator{\negl}{negl}
