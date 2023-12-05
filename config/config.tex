@@ -256,8 +256,12 @@
 \def\UrlFont{\rm}
 
 %% Page numbering
-% We need page numbers according to https://crypto.iacr.org/2021/callforpapers.html
-\pagestyle{plain}
+\ifbeamer{%
+    \pagestyle{empty}
+}{%
+    % We need page numbers according to https://crypto.iacr.org/2021/callforpapers.html
+    \pagestyle{plain}
+}
 
 \ifbeamer{
     \beamertemplatenavigationsymbolsempty
