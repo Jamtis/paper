@@ -1,5 +1,5 @@
 docker_name=$(basename "$(pwd)")
-docker $docker_name run  -p 127.0.0.1:8080:8080 nicholasbrandt/texdocker
+docker run -d --name docker_$docker_name -p 127.0.0.1:8080:8080 -v "$PWD:/home/coder" nicholasbrandt/texdocker
 url="http://localhost:8080"
 
 # Try xdg-open for Linux systems
