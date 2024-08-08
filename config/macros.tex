@@ -3,6 +3,14 @@
 \setcommand{\clb}{\iffullversion\else\\\fi}
 \setcommand{\contradiction}{\ensuremath{{\Rightarrow\mspace{-2mu}\Leftarrow}}}
 
+% Highlight
+% https://tex.stackexchange.com/questions/33401/a-version-of-colorbox-that-works-inside-math-environments
+\setcommand{\highlight}[2][gray!20]{\mathchoice%
+  {\colorbox{#1}{$\displaystyle#2$}}%
+  {\colorbox{#1}{$\textstyle#2$}}%
+  {\colorbox{#1}{$\scriptstyle#2$}}%
+  {\colorbox{#1}{$\scriptscriptstyle#2$}}}%
+
 % Parenthesis
 \setcommand{\left}{\mleft}
 \setcommand{\right}{\mright}
