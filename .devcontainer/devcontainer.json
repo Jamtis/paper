@@ -1,0 +1,17 @@
+
+{
+	"name": "texlive",
+	"image": "texlive/texlive:latest",
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"james-yu.latex-workshop"
+			]
+		}
+	},
+	"runArgs": [
+		"--memory=5g"
+	],
+	"postCreateCommand": "bash .devcontainer/create.sh",
+	"postAttachCommand": "bash .devcontainer/update.sh"
+}

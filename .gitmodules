@@ -1,0 +1,4 @@
+[submodule "cryptobib"]
+	path = cryptobib
+	url = https://github.com/cryptobib/export
+	shallow = true

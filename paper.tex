@@ -1,0 +1,78 @@
+\let\ifdraft\iftrue
+\let\iffullversion\iftrue
+\let\ifanonymous\iftrue
+\let\ifnumeric\iftrue
+
+\input{config/conditionals}
+
+\documentclass[\draftmode]{llncs}
+
+\input{config/packages}
+\input{config/config}
+\input{config/macros}
+\input{config/custom_config}
+
+\title{Paper title}
+
+\iffullversion
+\else
+    \date{}
+\fi
+
+\ifanonymous
+    \author{\vspace*{-1cm}}
+    \institute{\vspace*{-1cm}}
+\else
+    \author{
+        author\inst{1}
+        %\and
+        %author2\inst{2}
+    }
+    \institute{
+         institute
+         \email{author@email.org}
+    }
+    % hyper setup
+    \hypersetup{
+        final,
+        linktoc=all,
+        pdfauthor={author},
+        pdftitle={title},
+        pdfsubject={},
+        pdfkeywords={}
+    }
+\fi
+
+\IfFileExists{cryptobib/crypto.bib}{%
+    \addbibresource{cryptobib/abbrev3.bib}
+    \addbibresource{cryptobib/crypto.bib}
+}{%
+    \addbibresource{https://cryptobib.di.ens.fr/cryptobib/static/files/abbrev3.bib}
+    \addbibresource{https://cryptobib.di.ens.fr/cryptobib/static/files/crypto.bib}
+}
+\addbibresource{references.bib}
+
+\begin{document}
+
+\mymaketitle
+
+\begin{abstract}
+    \input{sections/abstract}
+    \keywords{}
+\end{abstract}
+
+\iffullversion
+    \vspace*{-6mm}
+    \mytoc
+\fi
+\setcounter{footnote}{0}
+
+\input{sections/introduction}
+\input{sections/contribution}
+\input{sections/prelims}
+\input{sections/results}
+\printbibliography
+\appendix
+%\input{sections/appendix}
+
+\end{document}

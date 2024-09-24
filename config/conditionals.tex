@@ -1,0 +1,28 @@
+\makeatletter
+
+\@ifundefined{ifanonymous}{
+    \let\ifanonymous\iffalse
+}{}
+
+\@ifundefined{iffullversion}{
+    \let\iffullversion\iftrue
+}{}
+
+\@ifundefined{iflncs}{
+    \let\iflncs\iffalse
+}{}
+
+\@ifundefined{ifnumeric}{
+    \let\ifnumeric\iftrue
+}{}
+
+% \newcommand{\iflncs}[2]{\@ifclassloaded{lncs}{#1}{#2}}
+\newcommand{\ifbeamer}[2]{\@ifclassloaded{beamer}{#1}{#2}}
+
+\makeatother
+
+\ifdraft
+    \def\draftmode{draft}
+\else
+    \def\draftmode{final}
+\fi

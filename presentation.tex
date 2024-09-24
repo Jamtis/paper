@@ -1,0 +1,59 @@
+\let\ifdraft\iffalse
+\let\iffullversion\iffalse
+\let\ifanonymous\iffalse
+\let\ifnumeric\iffalse
+
+\input{config/conditionals}
+
+\documentclass[18pt]{beamer}
+
+\input{config/packages}
+\input{config/config}
+\input{config/macros}
+\input{config/custom_config}
+
+\title{title}
+
+\ifanonymous
+    \author{\vspace*{-1cm}}
+    \institute{\vspace*{-1cm}}
+\else
+    \author{
+        author1
+        \and
+        author2
+    }
+
+    % hyper setup
+    \hypersetup{
+        linktoc=all,
+        pdfauthor={author},
+        pdftitle={title},
+        pdfsubject={},
+        pdfkeywords={}
+    }
+\fi
+
+\addbibresource{cryptobib/abbrev3.bib}
+\addbibresource{cryptobib/crypto.bib}
+\addbibresource{references.bib}
+
+\begin{document}
+% \setcounter{footnote}{0}
+
+\normalfont
+\vspace*{-1cm}
+
+\begin{frame}
+    \titlepage
+\end{frame}
+
+\input{slides/preliminaries}
+\input{slides/results}
+\input{slides/summary}
+
+\appendix
+\input{slides/backup}
+\input{slides/references}
+
+\end{document}
