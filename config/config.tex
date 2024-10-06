@@ -131,11 +131,43 @@
     \bywhom{#1}
 }
 
-\NewDocumentEnvironment{hybrids}{}{
-    \begin{enumerate}[label=\(\mathcal{H}_{\arabic*}\)]
-        }{
-    \end{enumerate}%
+% environment for hybrid proofs
+\newif\ifitemstar
+\def\customlabelstring{}
+\newcommand{\hybridcustomref}{\arabic{enumi}}
+\newcommand{\hybridcustomlabel}{%
+    \textbf{Game{\ifitemstar{*}\fi} \hybridcustomref\customlabelstring:}%
 }
+\newcommand{\hybriditem}{}
+\newcommand{\hybriditemstar}{}
+% the following enivorment takes an optional argument specifying the a template as which an item gets referenced, i.e., \ref{item:one} = "this is the \arabic{enumi} (first) item"
+% the \hybriditem(star) command takes an optional argument specifying the name of the hybrid; displayed in parenthesis
+\let\hybrids\relax
+\newenvironment{hybrids}[1][]{%
+    \begingroup%
+    \ifthenelse{\equal{#1}{}}{}{%
+        \renewcommand{\hybridcustomref}{#1}%
+    }
+    \renewcommand{\hybriditem}[1][]{%
+        \ifthenelse{\equal{##1}{}}{}{%
+            \def\customlabelstring{ (##1)}
+        }
+        \item%
+        \def\customlabelstring{}%
+    }%
+    \renewcommand{\hybriditemstar}[1][]{%
+        \global\itemstartrue%
+        \hybriditem[##1]%
+        \global\itemstarfalse%
+    }%
+    \begin{enumerate}[start=0,wide=0pt,label={\protect\hybridcustomlabel},ref={\hybridcustomref}]% \protect seems important
+        %\begin{enumerate}[start=0,wide=0pt,ref={\hybridcustomref}]% \protect seems important
+        }{%
+    \end{enumerate}%
+    \endgroup%
+}
+\newcommand\currenthybrid\hybridcustomref
+\newcommand\previoushybrid{\the\numexpr\value{enumi}-1\relax}
 
 % https://tex.stackexchange.com/questions/223948/suggestions-for-nested-proofs
 \newenvironment{subproof}[1][\proofname]{%
