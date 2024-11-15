@@ -27,10 +27,10 @@
 \usepackage[tableposition=top,labelfont=bf,font={small}]{caption}
 \usepackage[]{subcaption}
 \usepackage{ulem}
-\ifdraft
-    \def\backend{bibtex}
-\else
+\ifbiber
     \def\backend{biber}
+\else
+    \def\backend{bibtex}
 \fi
 \ifnumeric
     \def\citestyle{numeric}
