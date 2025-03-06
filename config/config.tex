@@ -36,44 +36,45 @@
 
 %% Environments
 \theoremstyle{plain}
-\crefname{question}{Question}{Questions}
-\declaretheorem[name=Notation]{notation}
-\crefname{notation}{Notation}{Notations}
-\declaretheorem[name=Observation]{observation}
-\crefname{observation}{Observation}{Observations}
-\let\claim\relax
-\declaretheorem[name=Claim]{claim}
-\crefname{claim}{Claim}{Claims}
-\ifbeamer{}{
-    \declaretheorem[name=Fact]{fact}
-    \crefname{fact}{Fact}{Facts}
+\newcommand{\defineenvironment}[1]{%
+    %\typeout{start debug: #1}
+    \edef\capenvname{\xmakefirstuc{#1}}%
+    \expandafter\let\csname#1\endcsname\relax
+    %\typeout{set up #1}
+    \declaretheorem[name=\capenvname]{#1}%
+    \crefname{#1}{\capenvname}{{\capenvname}s}%
+    %\typeout{end debug: #1}
 }
-\declaretheorem[name=Assumption]{assumption}
-\crefname{assumption}{Assumption}{Assumptions}
-\declaretheorem[name=Construction]{construction}
-\crefname{construction}{Construction}{Constructions}
+\defineenvironment{question}
+\defineenvironment{notation}
+\defineenvironment{observation}
+\let\claim\relax
+\defineenvironment{claim}
+\defineenvironment{fact}
+\defineenvironment{assumption}
+\defineenvironment{construction}
 
 \newenvironment{nalign}{
     \begin{equation}
         \begin{aligned}
             }{
         \end{aligned}
-    \end{equation}
-    \ignorespacesafterend
+    \end{equation}%
+    \ignorespacesafterend%
 }
 
 \newenvironment{sitemize}{
     \begin{itemize}[leftmargin=3.5mm]
         }{
-    \end{itemize}
-    \ignorespacesafterend
+    \end{itemize}%
+    \ignorespacesafterend%
 }
 
 \newenvironment{senumerate}{
     \begin{enumerate}[leftmargin=3.5mm]
         }{
-    \end{enumerate}
-    \ignorespacesafterend
+    \end{enumerate}%
+    \ignorespacesafterend%
 }
 
 \makeatletter
@@ -133,9 +134,9 @@
 
 % environment for hybrid proofs
 \newif\ifitemstar
-\def\customlabelstring{}
-\newcommand{\hybridcustomref}{\arabic{enumi}}
-\newcommand{\hybridcustomlabel}{%
+    \def\customlabelstring{}
+    \newcommand{\hybridcustomref}{\arabic{enumi}}
+    \newcommand{\hybridcustomlabel}{%
     \textbf{Game{\ifitemstar{*}\fi} \(\hybridcustomref\)\customlabelstring:}%
 }
 \newcommand{\hybriditem}{}
@@ -201,56 +202,56 @@
 % https://tex.stackexchange.com/questions/69595/marginnote-always-on-right-side-of-the-page
 \makeatletter
 \long\def\@mn@@@marginnote[#1]#2[#3]{%
-  \begingroup
+    \begingroup
     \ifmmode\mn@strut\let\@tempa\mn@vadjust\else
-      \if@inlabel\leavevmode\fi
-      \ifhmode\mn@strut\let\@tempa\mn@vadjust\else\let\@tempa\mn@vlap\fi
+        \if@inlabel\leavevmode\fi
+        \ifhmode\mn@strut\let\@tempa\mn@vadjust\else\let\@tempa\mn@vlap\fi
     \fi
     \@tempa{%
-      \vbox to\z@{%
-        \vss
-        \@mn@margintest
-        \if@reversemargin\if@tempswa
-            \@tempswafalse
-          \else
-            \@tempswatrue
-        \fi\fi
-        %\if@tempswa
-          \rlap{%
-            \if@mn@verbose
-              \PackageInfo{marginnote}{xpos seems to be \@mn@currxpos}%
-            \fi
-            \begingroup
-              \ifx\@mn@currxpos\relax\else\ifx\@mn@currxpos\@empty\else
-                  \kern-\dimexpr\@mn@currxpos\relax
-              \fi\fi
-              \ifx\@mn@currpage\relax
-                \let\@mn@currpage\@ne
-              \fi
-              \if@twoside\ifodd\@mn@currpage\relax
-                  \kern\oddsidemargin
+        \vbox to\z@{%
+            \vss
+            \@mn@margintest
+            \if@reversemargin\if@tempswa
+                    \@tempswafalse
                 \else
-                  \kern\evensidemargin
+                    \@tempswatrue
+                \fi\fi
+            %\if@tempswa
+            \rlap{%
+                \if@mn@verbose
+                    \PackageInfo{marginnote}{xpos seems to be \@mn@currxpos}%
                 \fi
-              \else
-                \kern\oddsidemargin
-              \fi
-              \kern 1in
-            \endgroup
-            \kern\marginnotetextwidth\kern\marginparsep
-            \vbox to\z@{\kern\marginnotevadjust\kern #3
-              \vbox to\z@{%
-                \hsize\marginparwidth
-                \linewidth\hsize
-                \kern-\parskip
-                \marginfont\raggedrightmarginnote\strut\hspace{\z@}%
-                \ignorespaces#2\endgraf
-                \vss}%
-              \vss}%
-          }%
-      }%
+                \begingroup
+                \ifx\@mn@currxpos\relax\else\ifx\@mn@currxpos\@empty\else
+                        \kern-\dimexpr\@mn@currxpos\relax
+                    \fi\fi
+                \ifx\@mn@currpage\relax
+                    \let\@mn@currpage\@ne
+                \fi
+                \if@twoside\ifodd\@mn@currpage\relax
+                        \kern\oddsidemargin
+                    \else
+                        \kern\evensidemargin
+                    \fi
+                \else
+                    \kern\oddsidemargin
+                \fi
+                \kern 1in
+                \endgroup
+                \kern\marginnotetextwidth\kern\marginparsep
+                \vbox to\z@{\kern\marginnotevadjust\kern #3
+                    \vbox to\z@{%
+                        \hsize\marginparwidth
+                        \linewidth\hsize
+                        \kern-\parskip
+                        \marginfont\raggedrightmarginnote\strut\hspace{\z@}%
+                        \ignorespaces#2\endgraf
+                        \vss}%
+                    \vss}%
+            }%
+        }%
     }%
-  \endgroup
+    \endgroup
 }
 \makeatother
 
@@ -285,9 +286,6 @@
     functionalitybox/.style={draw=black!70,fill=black!70, text=white, minimum width=1cm,minimum height=.6cm}
 }
 
-%% Print URLs not in Typewriter Font
-\def\UrlFont{\rm}
-
 %% Page numbering
 \ifbeamer{%
     \pagestyle{empty}
@@ -308,6 +306,7 @@
 \AtBeginDocument{\setlength\belowdisplayskip{4pt}}
 
 %% Typography
+\def\UrlFont{\textrm}
 \renewcommand*{\bibfont}{\small}
 
 %% Table
