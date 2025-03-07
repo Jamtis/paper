@@ -38,12 +38,14 @@
 \theoremstyle{plain}
 \newcommand{\defineenvironment}[1]{%
     %\typeout{start debug: #1}
+    \begingroup
     \edef\capenvname{\xmakefirstuc{#1}}%
     \expandafter\let\csname#1\endcsname\relax
     %\typeout{set up #1}
     \declaretheorem[name=\capenvname]{#1}%
     \crefname{#1}{\capenvname}{{\capenvname}s}%
     %\typeout{end debug: #1}
+    \endgroup
 }
 \defineenvironment{definition}
 \defineenvironment{construction}
