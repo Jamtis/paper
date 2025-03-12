@@ -37,9 +37,10 @@
 %% Environments
 \theoremstyle{plain}
 \newcommand{\defineenvironment}[1]{%
-    \edef\capenvname{\xmakefirstuc{#1}}%
     \expandafter\let\csname#1\endcsname\relax
-    \declaretheorem[name=\capenvname]{#1}%
+    \makeatletter
+    \expandafter\let\csname c@#1\endcsname\relax
+    \declaretheorem[name=#1]{#1}%
     \crefname{#1}{#1}{{#1}s}
 }
 \defineenvironment{definition}
