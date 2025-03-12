@@ -1,3 +1,7 @@
+% default \include messes up \ref{fig:...}
+% must come before thmtools
+\usepackage{newclude}
+
 %% Math
 \usepackage{nicefrac}
 \usepackage{mleftright}
@@ -8,18 +12,17 @@
 \usepackage{aligned-overset}
 %\usepackage{amsfonts}
 \usepackage{amssymb}
-\usepackage{thmtools,thm-restate}
+\usepackage{thmtools}
+\usepackage{thm-restate}
 \usepackage{mathtools}
 \usepackage{braket}
 \usepackage{centernot}
 \usepackage[b]{esvect}
 \usepackage{fnpct} % kerns footnote superscripts
 
-
 \usepackage[lambda,keys]{cryptocode} % load before hyperref
 
 %% Typesetting
-\usepackage{mfirstuc} % upper case first letter
 \usepackage[english]{babel}
 \usepackage{xr} % load before hyperref
 % \usepackage[nopostdot,nomain,acronym,symbols,nogroupskip,nonumberlist]{glossaries} % load before hyperref (otherwise acronyms will link to glossary)
@@ -55,14 +58,14 @@
     \fi
 \fi
 \usepackage{calc}
-\usepackage{orcidlink}
+\usepackage{xspace}
 
 
 %% Extras
 \usepackage{algorithm} % load after hyperref
 \usepackage{algpseudocode}
 \usepackage{algorithmicx}
-
+\usepackage{orcidlink}
 
 %% Obsolete
 % \usepackage{lmodern}
@@ -76,7 +79,6 @@
 %_\usepackage[sort&compress]{natbib}
 %\usepackage[protrusion=true,expansion,babel=true]{microtype}
 %\usepackage{dsfont}
-%\usepackage{xspace}
 %\usepackage{xparse}
 %\usepackage[notext]{stix}
 % \usepackage{MnSymbol}
@@ -106,3 +108,4 @@
 % \usepackage[svgnames]{xcolor} % load this before todonotes
 % \usepackage{ifdraft}
 % \usepackage{ifluatex}
+%\usepackage{mfirstuc} % upper case first letter
