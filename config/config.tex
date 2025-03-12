@@ -289,16 +289,10 @@
 }
 
 %% Page numbering
-\ifbeamer{%
-    \pagestyle{empty}
-}{%
+\ifbeamer{}{%
     % We need page numbers according to https://crypto.iacr.org/2021/callforpapers.html
     \pagestyle{plain}
 }
-
-\ifbeamer{
-    \beamertemplatenavigationsymbolsempty
-}{}
 
 %% ulem...
 \normalem

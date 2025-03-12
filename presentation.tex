@@ -5,7 +5,7 @@
 
 \input{config/conditionals}
 
-\documentclass[18pt]{beamer}
+\documentclass[11pt,aspectratio=169]{beamer}
 
 \input{config/packages}
 \input{config/config}
@@ -19,10 +19,11 @@
     \institute{\vspace*{-1cm}}
 \else
     \author{
-        author1
-        \and
-        author2
+        Nicholas Brandt
+        \\
+        \texttt{crypto@nicholasbrandt.de}
     }
+    \institute{Department of Computer Science}
 
     % hyper setup
     \hypersetup{
@@ -34,26 +35,21 @@
     }
 \fi
 
+\let\email\relax%
+\usepackage{theme/beamerthemeeth}
+
+\colorlet{titlefgcolor}{ETHBlue}
+\colorlet{accentcolor}{ETHRed}
+
 \addbibresource{cryptobib/abbrev3.bib}
 \addbibresource{cryptobib/crypto.bib}
 \addbibresource{references.bib}
 
 \begin{document}
-% \setcounter{footnote}{0}
 
-\normalfont
-\vspace*{-1cm}
+\setlength{\titleboxwidth}{0.76\textwidth}
+\titleframe
 
-\begin{frame}
-    \titlepage
-\end{frame}
-
-\include{slides/preliminaries}
-\include{slides/results}
-\include{slides/summary}
-
-\appendix
-\include{slides/backup}
-\include{slides/references}
+\tocframe
 
 \end{document}
