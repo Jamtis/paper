@@ -395,7 +395,7 @@
 }
 
 %% auto cref
-\let\originalcref\cref
+\let\originalcref\cref%
 \setcommand{\cref}[1]{\ifdisplay\textup{\originalcref{#1}}\else\originalcref{#1}\fi}
 
 %% strikeout in math mode
@@ -405,4 +405,13 @@
 %% ifthen lncs for math mode
 \setcommand{\ifthenlncs}[2]{%
     \ifthenelse{\boolean{lncs}}{#1}{#2}%
+}
+
+%% don't clearpage on include
+\let\originalinclude\include%
+\let\originalclearpage\clearpage%
+\renewcommand{\include}[1]{%
+    \let\clearpage\relax%
+    \originalinclude{#1}%
+    \let\clearpage\originalclearpage%
 }
