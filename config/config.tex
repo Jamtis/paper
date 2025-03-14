@@ -40,7 +40,7 @@
     \expandafter\let\csname#1\endcsname\relax
     \makeatletter
     \expandafter\let\csname c@#1\endcsname\relax
-    \declaretheorem[name=#1]{#1}%
+    \declaretheorem[name=\makefirstuc{#1}]{#1}%
     \crefname{#1}{#1}{{#1}s}
 }
 \defineenvironment{definition}
