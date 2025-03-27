@@ -36,13 +36,19 @@
 
 %% Environments
 \theoremstyle{plain}
-\newcommand{\defineenvironment}[1]{%
-    \expandafter\let\csname#1\endcsname\relax
+\makeatletter
+\newcommand{\defineenvironment}[2][\@nil]{%
+    \expandafter\let\csname#2\endcsname\relax
     \makeatletter
-    \expandafter\let\csname c@#1\endcsname\relax
-    \declaretheorem[name=\makefirstuc{#1}]{#1}%
-    \crefname{#1}{#1}{{#1}s}
+    \expandafter\let\csname c@#2\endcsname\relax
+    \declaretheorem[name=\makefirstuc{#2}]{#2}%
+    \ifx#1\@nil
+        \crefname{#2}{#2}{#2{}s}
+    \else
+        \crefname{#2}{#2}{#1}
+    \fi
 }
+\makeatother
 \defineenvironment{definition}
 \defineenvironment{construction}
 \defineenvironment{notation}
@@ -52,7 +58,7 @@
 \defineenvironment{observation}
 \defineenvironment{lemma}
 \defineenvironment{theorem}
-\defineenvironment{corollary}
+\defineenvironment[corollaries]{corollary}
 \defineenvironment{claim}
 \defineenvironment{fact}
 
