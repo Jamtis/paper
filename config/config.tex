@@ -35,13 +35,21 @@
 }
 
 %% Environments
-\theoremstyle{plain}
+\newtheoremstyle{boldstyle}
+  {\topsep}   % Space above
+  {\topsep}   % Space below
+  {\normalfont}  % Body font
+  {}          % Indent
+  {\bfseries} % Head font (bold)
+  {.}         % Punctuation after head
+  { }         % Space after head
+  {\thmname{#1}\thmnumber{ #2}\thmnote{ (#3)}} % Head spec
 \makeatletter
 \newcommand{\defineenvironment}[2][\@nil]{%
     \expandafter\let\csname#2\endcsname\relax
     \makeatletter
     \expandafter\let\csname c@#2\endcsname\relax
-    \declaretheorem[name=\makefirstuc{#2}]{#2}%
+    \declaretheorem[name=\makefirstuc{#2},style=boldstyle]{#2}%
     \ifx#1\@nil
         \crefname{#2}{#2}{#2{}s}
     \else
