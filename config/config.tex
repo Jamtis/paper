@@ -195,6 +195,7 @@
     \end{proof}%
 }
 
+% math environment that breaks across pages
 \newenvironment{bralign}{
     \begingroup
     \allowdisplaybreaks
@@ -279,12 +280,8 @@
 \setenumerate[2]{labelindent=0pt,itemindent=0pt}
 
 %% tikz
-\usetikzlibrary{calc}
 % \usetikzlibrary{patterns} % incompatible with tikzpeople -> jester -> pattern
-\usetikzlibrary{shapes.misc}
-\usetikzlibrary{shapes.callouts}
-\usetikzlibrary{tikzmark}
-\usetikzlibrary{decorations.pathreplacing,calligraphy}
+\usetikzlibrary{calc,shapes.misc,shapes.callouts,tikzmark,decorations.pathreplacing,calligraphy,graphs,arrows.meta,positioning}
 \tikzset{
     square/.style={rectangle, minimum width=.8cm, minimum height=.8cm, draw=black!60},
     % party/.style={rectangle, minimum width=.8cm, minimum height=.8cm, draw=black!60, rounded corners=.2cm},

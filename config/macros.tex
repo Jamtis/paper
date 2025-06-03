@@ -22,6 +22,7 @@
 \DeclareAutoPairedDelimiter{\floor}{\lfloor}{\rfloor}
 \DeclareAutoPairedDelimiter{\ceil}{\lceil}{\rceil}
 \DeclareAutoPairedDelimiter{\round}{\lfloor}{\rceil}
+\DeclareAutoPairedDelimiter{\norm}{\|}{\|}
 \DeclareAutoPairedDelimiter{\parr}{(}{)}
 \DeclareAutoPairedDelimiter{\pars}{[}{]}
 \DeclareAutoPairedDelimiter{\parc}{\{}{\}}
@@ -51,7 +52,6 @@
 \DeclareMathOperator{\owhl}{owhl}
 \DeclareMathOperator{\poly}{poly}
 \DeclareMathOperator{\polylog}{polylog}
-% \DeclareMathOperator{\superpoly}{superpoly}
 \DeclareMathOperator{\strictlyFaster}{\omega}
 \DeclareMathOperator{\faster}{\Omega}
 \DeclareMathOperator{\equallyFast}{\Theta}
@@ -69,9 +69,6 @@
 \setcommand{\N}{\mathbb{N}}
 
 % Operations
-% \setcommand{\mod}{\operatorname{mod}}
-% \setcommand{\concat}{\mathopen{}\operatorname{||}\mathclose{}}
-% \setcommand{\d}{\mathrm{d}}
 \setcommand{\xor}{\oplus}
 \setcommand{\diff}{\mathrel{\triangle}}
 \setcommand{\BigXOR}{\bigoplus}
@@ -86,11 +83,8 @@
 
 % Relations
 \setcommand{\isequal}{\overset{?}{=}}
-% \setcommand{\implies}{\Rightarrow}
 \setcommand{\nimplies}{\centernot\implies}
-% \setcommand{\cind}{\overset{c}{\approx}}
 \setcommand{\sind}{\overset{s}{\approx}}
-%\setcommand{\UCRealize}{\overset{\mathrm{UC}}{\geq}}
 \setcommand{\isomorphic}{\cong}
 \setcommand{\pind}{\protect\mathpalette{\protect\independenT}{\perp}}
 \def\independenT#1#2{\mathrel{\rlap{\(#1#2\)}\mkern2mu{#1#2}}}
@@ -106,6 +100,15 @@
 \setcommand{\Ex}[2][]{\operatorname{Ex}_{#1}\pars{#2}}
 \setcommand{\Var}[2][]{\operatorname{Var}_{#1}\pars{#2}}
 \setcommand{\getsr}{\overset{\$}{\gets}}
+
+%% custom colors
+\definecolor{mygreen}{RGB}{177,185,137}
+\definecolor{myred}{RGB}{219,154,150}
+
+%% custom codewords
+\setcommand{\pcreq}{\highlightkeyword{req}~}
+\setcommand{\pcbruteforce}{\highlightkeyword{bruteforce}~}
+\setcommand{\pcdo}{\highlightkeyword{do}~}
 
 % Symbols
 \setcommand{\ihat}{{\hat{\iota}}}
