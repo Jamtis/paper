@@ -20,21 +20,31 @@
 \setcommand{\left}{\mleft}
 \setcommand{\right}{\mright}
 \DeclareAutoPairedDelimiter{\floor}{\lfloor}{\rfloor}
+\WithSuffix\newcommand\floor*[1]{\lfloor#1\rfloor}
 \DeclareAutoPairedDelimiter{\ceil}{\lceil}{\rceil}
+\WithSuffix\newcommand\ceil*[1]{\lceil#1\rceil}
 \DeclareAutoPairedDelimiter{\round}{\lfloor}{\rceil}
+\WithSuffix\newcommand\round*[1]{\lfloor#1\rceil}
 \DeclareAutoPairedDelimiter{\norm}{\|}{\|}
+\WithSuffix\newcommand\norm*[1]{\|#1\|}
 \DeclareAutoPairedDelimiter{\parr}{(}{)}
-\DeclareAutoPairedDelimiter{\pars}{[}{]}
-\DeclareAutoPairedDelimiter{\parc}{\{}{\}}
 \WithSuffix\newcommand\parr*[1]{(#1)}
+\DeclareAutoPairedDelimiter{\pars}{[}{]}
 \WithSuffix\newcommand\parc*[1]{\{#1\}}
+\DeclareAutoPairedDelimiter{\parc}{\{}{\}}
 \WithSuffix\newcommand\pars*[1]{[#1]}
 \DeclareAutoPairedDelimiter{\abs}{\vert}{\vert}
+\WithSuffix\newcommand\abs*[1]{\vert#1\vert}
 \DeclareAutoPairedDelimiter{\card}{\vert}{\vert}
+\WithSuffix\newcommand\card*[1]{\vert#1\vert}
 \DeclareAutoPairedDelimiter{\length}{\vert}{\vert}
+\WithSuffix\newcommand\length*[1]{\vert#1\vert}
 \DeclareAutoPairedDelimiter{\bracket}{\langle}{\rangle}
+\WithSuffix\newcommand\bracket*[1]{\langle#1\rangle}
 \DeclareAutoPairedDelimiter{\inprod}{\langle}{\rangle}
+\WithSuffix\newcommand\inprod*[1]{\langle#1\rangle}
 \DeclareAutoPairedDelimiter{\parity}{\langle}{\rangle}
+\WithSuffix\newcommand\parity*[1]{\langle#1\rangle}
 \DeclareAutoPairedDelimiter{\at}{\ifdisplay.\else{}\fi}{\vert}
 % https://tex.stackexchange.com/questions/45713/creating-a-large-such-that-symbol
 \setcommand{\given}{\;\ifnum\currentgrouptype=16 \middle\fi\vert\;}
