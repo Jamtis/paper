@@ -392,9 +392,11 @@
     \setcommand{#1}[1]{\ifdisplay\left#2\else#2\fi##1\ifdisplay\right#3\else#3\fi}
 }
 
-%% auto cref
+%% auto cref / text upright in display mode
 \let\originalcref\cref%
 \setcommand{\cref}[1]{\ifdisplay\textup{\originalcref{#1}}\else\originalcref{#1}\fi}
+\let\originalCref\Cref%
+\setcommand{\Cref}[1]{\ifdisplay\textup{\originalCref{#1}}\else\originalCref{#1}\fi}
 
 %% strikeout in math mode
 \let\originalsout\sout
@@ -403,15 +405,6 @@
 %% ifthen lncs for math mode
 \setcommand{\ifthenlncs}[2]{%
     \ifthenelse{\boolean{lncs}}{#1}{#2}%
-}
-
-%% don't clearpage on include
-\let\originalinclude\include%
-\let\originalclearpage\clearpage%
-\renewcommand{\include}[1]{%
-    \let\clearpage\relax%
-    \originalinclude{#1}%
-    \let\clearpage\originalclearpage%
 }
 
 %% keep the title capitalization as it is
