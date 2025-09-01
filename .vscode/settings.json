@@ -68,6 +68,7 @@
                 "-file-line-error",
                 "-pdf",
                 "-outdir=%OUTDIR%",
+                "-auxdir=/temp_disk/aux/%DOCFILE%/",
                 "%DOC%"
             ],
             "command": "latexmk",
