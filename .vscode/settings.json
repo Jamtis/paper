@@ -92,6 +92,7 @@
                 "-file-line-error",
                 "-lualatex",
                 "-outdir=%OUTDIR%",
+                "-auxdir=/temp_disk/aux/%DOC%/",
                 "%DOC%"
             ],
             "command": "latexmk",
