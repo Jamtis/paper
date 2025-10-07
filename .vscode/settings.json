@@ -149,8 +149,6 @@
     "latex-workshop.view.pdf.internal.synctex.keybinding": "double-click",
     "latex-workshop.view.pdf.trim": 0,
     "latex-workshop.view.pdf.zoom": "page-width",
-    "security.workspace.trust.startupPrompt": "never",
-    "telemetry.telemetryLevel": "off",
     "terminal.integrated.defaultLocation": "editor",
     "terminal.integrated.defaultProfile.linux": "bash",
     "terminal.integrated.defaultProfile.windows": "Git Bash",

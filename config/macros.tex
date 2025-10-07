@@ -1,6 +1,12 @@
 % Generic
 \setcommand{\romanNumbering}[1]{\textsuperscript{(\romannum{#1})}}
 \setcommand{\contradiction}{\ensuremath{{\Rightarrow\mspace{-2mu}\Leftarrow}}}
+\setcommand{\property}[1]{%
+    \begingroup
+    \parindent=0pt
+    \par\textup{\textbf{#1}}~%
+    \endgroup
+}
 
 % Highlight
 % https://tex.stackexchange.com/questions/33401/a-version-of-colorbox-that-works-inside-math-environments
