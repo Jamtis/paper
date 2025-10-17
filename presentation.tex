@@ -19,11 +19,11 @@
     \institute{\vspace*{-1cm}}
 \else
     \author{
-        Nicholas Brandt
+        Fistname Lastname
         \\
-        \texttt{crypto@nicholasbrandt.de}
+        \texttt{author@email.org}
     }
-    \institute{Department of Computer Science}
+    % \institute{Department of Computer Science}
 
     % hyper setup
     \hypersetup{
@@ -35,21 +35,18 @@
     }
 \fi
 
-\let\email\relax%
-\usepackage{theme/beamerthemeeth}
-
-\colorlet{titlefgcolor}{ETHBlue}
-\colorlet{accentcolor}{ETHRed}
-
 \addbibresource{cryptobib/abbrev3.bib}
 \addbibresource{cryptobib/crypto.bib}
 \addbibresource{references.bib}
 
 \begin{document}
 
-\setlength{\titleboxwidth}{0.76\textwidth}
-\titleframe
+\setbeamertemplate{navigation symbols}{}
 
-\tocframe
+\begin{frame}
+    \titlepage
+\end{frame}
+
+% \tocframe
 
 \end{document}
